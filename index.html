@@ -144,6 +144,11 @@
         
         .menu-card h3 { margin: 0 0 10px 0; color: #1E293B; font-size: 18px; }
         .menu-card p { margin: 0; color: #64748B; font-size: 14px; }
+        
+        .menu-card.disabled { 
+            background-color: #F8FAFC; color: #94A3B8; cursor: not-allowed; opacity: 0.6; 
+        }
+        .menu-card.disabled h3 { color: #94A3B8; }
 
         /* Tassello Impostazioni segreto */
         .menu-card.settings-card {
@@ -227,16 +232,6 @@
         .input-scrutinio { width: 70px; text-align: center; font-weight: bold; border: 2px solid var(--primary-red); padding: 6px !important; background: #FFF5F5; border-radius: 4px; }
         
         .box-scrutinio-split { background: #F8FAFC; border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; margin-bottom: 25px; }
-
-        /* === CALENDARIO STILE === */
-        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: white; padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
-        .calendar-day-name { text-align: center; font-weight: bold; background: #E2E8F0; padding: 10px; border-radius: 4px; font-size: 13px; color: #475569; }
-        .calendar-cell { background: white; min-height: 100px; padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 4px; position: relative; }
-        .calendar-cell .day-number { font-weight: bold; color: #64748B; margin-bottom: 5px; font-size: 14px; }
-        .calendar-cell.today { border: 2px solid var(--primary-red); background: var(--light-red); }
-        .calendar-cell.other-month { background: #F1F5F9; opacity: 0.5; }
-        .calendar-event-tag { font-size: 11px; padding: 2px 6px; border-radius: 3px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     </style>
 </head>
 <body>
@@ -268,18 +263,19 @@
                         <h3>📚 Le mie classi</h3>
                         <p>Appello, Firme, Voti, Scrutini e Agenda</p>
                     </div>
-                    <div class="menu-card" onclick="openLibriView()">
-                        <h3>📖 Adozione Libri di Testo</h3>
-                        <p>Catalogo e adozioni ministeriali</p>
+                    <div class="menu-card disabled">
+                        <h3>📖 Adozione libri di testo</h3>
+                        <p>Gestione testi scolastici</p>
                     </div>
-                    <div class="menu-card" onclick="openAgendaGeneraleView()">
+                    <div class="menu-card" onclick="alert('Seleziona prima una classe per aprirne l\'agenda correlata e le materie!')">
                         <h3>📅 Agenda Generale</h3>
-                        <p>Calendario unificato di tutte le classi</p>
+                        <p>Visualizza impegni classi</p>
                     </div>
-                    <div class="menu-card" onclick="openColloquiView()">
+                    <div class="menu-card disabled">
                         <h3>💬 Colloqui</h3>
-                        <p>Gestione orari e prenotazioni genitori</p>
+                        <p>Prenotazioni genitori</p>
                     </div>
+                    <!-- ZONA INTERFACCIA AMMINISTRAZIONE NASCOSTA -->
                     <div class="menu-card settings-card" onclick="showView('settings-view')">
                         <h3>⚙️ Impostazioni di Sistema</h3>
                         <p>Cambio Anno, Avanzamento Classi, Configurazione</p>
@@ -294,98 +290,6 @@
                 <div class="menu-grid" id="container-elenco-classi"></div>
             </div>
 
-            <!-- INTERFACCIA: AGENDA GENERALE CALENDARIO -->
-            <div id="agenda-generale-view" class="hidden">
-                <button class="back-btn" onclick="showView('dashboard-view')">🡠 Torna al menu</button>
-                <h2>📅 Calendario Agenda Generale Unificata</h2>
-                <p style="color:#64748B; font-size:14px; margin-top:-15px; margin-bottom:20px;">Visualizzazione mensile complessiva di tutti gli impegni, compiti e note assegnati in tutte le tue classi.</p>
-                
-                <div class="calendar-header">
-                    <button class="logout-btn" onclick="navigaMese(-1)">◀ Mese Prec.</button>
-                    <h3 id="calendar-month-title" style="margin:0; font-size:20px; color:var(--primary-dark);">Mese Anno</h3>
-                    <button class="logout-btn" onclick="navigaMese(1)">Mese Succ. ▶</button>
-                </div>
-
-                <div class="calendar-grid" id="calendar-grid-container"></div>
-            </div>
-
-            <!-- INTERFACCIA: LIBRI DI TESTO -->
-            <div id="libri-view" class="hidden">
-                <button class="back-btn" onclick="showView('dashboard-view')">🡠 Torna al menu</button>
-                <h2>📖 Adozione Libri di Testo Ministeriali</h2>
-                
-                <div style="background:white; padding:20px; border-radius:var(--radius); border:1px solid var(--border-color); box-shadow:var(--shadow-sm); margin-bottom:20px; display:flex; gap:15px; align-items:center;">
-                    <label style="font-weight:bold;">Seleziona Classe per Verifica Adozioni:</label>
-                    <select id="libri-classe-select" onchange="renderLibriClasse()" style="font-weight:bold;"></select>
-                </div>
-
-                <div style="background:white; padding:25px; border-radius:var(--radius); border:1px solid var(--border-color); box-shadow:var(--shadow-sm);">
-                    <h3>Libri in Adozione per la classe</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Codice ISBN</th>
-                                <th>Titolo Opera</th>
-                                <th>Autori</th>
-                                <th>Materia</th>
-                                <th>Tipo</th>
-                                <th>Stato</th>
-                            </tr>
-                        </thead>
-                        <tbody id="libri-tabella-body"></tbody>
-                    </table>
-                    
-                    <hr style="border:0; border-top:1px solid var(--border-color); margin:25px 0;">
-                    <h3>Simula Nuova Proposta di Adozione</h3>
-                    <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-                        <input type="text" id="libro-nuovo-titolo" placeholder="Titolo del Libro..." style="width:250px;">
-                        <input type="text" id="libro-nuovo-autore" placeholder="Autore..." style="width:180px;">
-                        <input type="text" id="libro-nuovo-isbn" placeholder="ISBN (13 cifre)..." style="width:150px;">
-                        <select id="libro-nuovo-materia"></select>
-                        <button class="btn-primary" style="width:auto; margin-top:0;" onclick="aggiungiLibroSimulato()">Proponi Adozione</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- INTERFACCIA: COLLOQUI -->
-            <div id="colloqui-view" class="hidden">
-                <button class="back-btn" onclick="showView('dashboard-view')">🡠 Torna al menu</button>
-                <h2>💬 Gestione Colloqui e Ricevimento Genitori</h2>
-                
-                <div style="display:grid; grid-template-columns: 1fr 2fr; gap:20px;">
-                    <!-- Impostazione orario -->
-                    <div style="background:white; padding:20px; border-radius:var(--radius); border:1px solid var(--border-color); box-shadow:var(--shadow-sm); height:fit-content;">
-                        <h3>⚙️ Imposta Orario di Ricevimento</h3>
-                        <div class="form-group">
-                            <label>Giorno e Orario Settimanale</label>
-                            <input type="text" id="colloquio-orario-stringa" value="Lunedì dalle 10:00 alle 11:00 (Sede Centrale)" style="width:90%;">
-                        </div>
-                        <div class="form-group">
-                            <label>Max Genitori per Seduta</label>
-                            <input type="number" id="colloquio-max" value="5" style="width:60px; text-align:center;">
-                        </div>
-                        <button class="btn-primary" onclick="alert('Disponibilità oraria aggiornata per le famiglie su ClasseViva Alunni!')">Aggiorna Disponibilità</button>
-                    </div>
-
-                    <!-- Elenco prenotazioni simulate -->
-                    <div style="background:white; padding:20px; border-radius:var(--radius); border:1px solid var(--border-color); box-shadow:var(--shadow-sm);">
-                        <h3>📅 Prenotazioni Ricevute dalle Famiglie</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Data Colloquio</th>
-                                    <th>Alunno / Famiglia</th>
-                                    <th>Classe</th>
-                                    <th>Ora Slot</th>
-                                    <th>Stato</th>
-                                </tr>
-                            </thead>
-                            <tbody id="colloqui-tabella-body"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
             <!-- PANNELLO DI CONFIGURAZIONE NASCOSTO -->
             <div id="settings-view" class="hidden">
                 <button class="back-btn" onclick="showView('dashboard-view')">🡠 Torna al menu</button>
@@ -394,7 +298,7 @@
                 <div style="background:white; padding:25px; border-radius:var(--radius); border:1px solid var(--border-color); box-shadow:var(--shadow-sm); display:flex; flex-direction:column; gap:20px;">
                     <div>
                         <h3>⏰ Cambia Anno Scolastico Attivo</h3>
-                        <p style="color:#64748B; font-size:14px; margin-top:0;">Selezionando un anno precedente potrai visualizzare i dati archiviati (storico voti ed elenchi).</p>
+                        <p style="color:#64748B; font-size:14px; margin-top:0;">Selezionando un anno precedente potrai visualizzare i dati archiviati (storico voti ed elenchi). Selezionando un anno futuro vedrai il registro vuoto pronto per essere configurato.</p>
                         <select id="select-cambio-anno" onchange="cambiaAnnoAttivo()" style="font-size:15px; font-weight:bold; padding:10px 20px;">
                             <option value="2024/2025">Anno Scolastico 2024/2025 (Archivio)</option>
                             <option value="2025/2026" selected>Anno Scolastico 2025/2026 (Corrente)</option>
@@ -407,6 +311,7 @@
 
                     <div>
                         <h3>🚀 Avanzamento Automatico Anno Successivo</h3>
+                        <p style="color:#64748B; font-size:14px; margin-top:0;">Questa operazione copia le classi dell'anno corrente nell'anno successivo facendole avanzare di livello (le seconde classi diventano terze, le terze quarte, ecc.). Gli studenti verranno trasferiti automaticamente.</p>
                         <button class="btn-primary" style="width:auto; background:#16A34A; box-shadow:0 3px 6px rgba(22,163,74,0.2);" onclick="eseguiAvanzamentoAnno()">Promuovi ed Avanza Classi all'Anno Successivo</button>
                     </div>
 
@@ -414,9 +319,10 @@
 
                     <div>
                         <h3>➕ Aggiungi Nuova Classe Manuale</h3>
+                        <p style="color:#64748B; font-size:14px; margin-top:0;">Crea da zero una nuova classe per l'anno scolastico correntemente selezionato.</p>
                         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
                             <input type="text" id="nuova-classe-nome" placeholder="Es. 1A" style="width:100px; font-weight:bold; text-transform:uppercase;">
-                            <input type="text" id="nuova-classe-materie" placeholder="Materie divise da virgola" style="width:400px;">
+                            <input type="text" id="nuova-classe-materie" placeholder="Materie divise da virgola (es. STORIA, GEOGRAFIA)" style="width:400px;">
                             <button class="btn-primary" style="width:auto; margin-top:0;" onclick="aggiungiNuovaClasseManuale()">Crea Classe</button>
                         </div>
                     </div>
@@ -554,6 +460,7 @@
                         <button class="btn-primary" style="width: auto; background-color: #16A34A;" onclick="saveVotiRapidi()">Salva Voti della Classe</button>
                     </div>
 
+                    <!-- TABELLONE REALE DEI VOTI -->
                     <h3>Tabellone Riepilogativo Separato</h3>
                     <table>
                         <thead>
@@ -572,6 +479,9 @@
                 <!-- TAB I DUE SCRUTINI -->
                 <div id="tab-scrutinio" class="tab-content">
                     <h3 id="titolo-scrutinio-materia">Tabellone dei Due Scrutini Generati</h3>
+                    <p style="color:#64748B; font-size:14px; margin-bottom:20px;">Gestione separata per il primo scrutinio intermedio (Trimestre) e lo scrutinio finale (Pentamestre).</p>
+                    
+                    <!-- SCRUTINIO 1: TRIMESTRE -->
                     <div class="box-scrutinio-split">
                         <h4 style="margin-top:0; color:var(--primary-dark); font-size:16px; border-left:4px solid var(--primary-red); padding-left:10px;">1° SCRUTINIO - Fine Trimestre</h4>
                         <table>
@@ -587,6 +497,7 @@
                         <button class="btn-primary" style="width: auto; background-color: #4F46E5;" onclick="saveProposteScrutinio('Trimestre')">Salva Proposte 1° Scrutinio</button>
                     </div>
 
+                    <!-- SCRUTINIO 2: PENTAMESTRE -->
                     <div class="box-scrutinio-split" style="border-color:#CBD5E1;">
                         <h4 style="margin-top:0; color:#1E293B; font-size:16px; border-left:4px solid #475569; padding-left:10px;">2° SCRUTINIO - Finale Pentamestre</h4>
                         <table>
@@ -653,25 +564,16 @@
         let currentMateria = "";
         let currentVotiMode = "singolo";
         
-        // Calendario Focus Stato
-        let dataCalendarioFocus = new Date();
-
+        // Database degli studenti fisso di riferimento
         const elencoStudentiDefault = {
-            "2C": ["Amato Sofia", "Barbieri Alessandro", "Bianchi Lorenzo", "Botezatu Andrei", "Caruso Emma"],
-            "2O": ["Ali Samir", "Barbieri Sara", "Battaglia Simone", "Bellini Edoardo"],
-            "3H": ["Barone Matteo", "Basile Camilla", "Bernardi Federico", "Carbone Martina"],
-            "4C": ["Ahmed Youssef", "Amato Eleonora", "Benedetti Tommaso", "Bianco Gabriele"],
-            "5A": ["Antonelli Giacomo", "Bazzi Leonardo", "Belloni Beatrice", "Bresciani Federico"]
+            "2C": ["Amato Sofia", "Barbieri Alessandro", "Bianchi Lorenzo", "Botezatu Andrei", "Caruso Emma", "Catalano Giorgia", "Chen Wei", "Colombo Leonardo", "Conti Francesco", "Costa Aurora", "De Angelis Giulia", "Di Stefano Marco", "Esposito Beatrice", "Fabbri Mattia", "Ferrari Alice", "Fiore Martina", "Fontana Riccardo", "Gallo Davide", "Greco Greta", "Hossain Omar", "Hu Yiting", "Lombardi Gabriele", "Marino Chiara", "Ndiaye Fatou", "Russo Andrea", "Santoro Anna"],
+            "2O": ["Ali Samir", "Barbieri Sara", "Battaglia Simone", "Bellini Edoardo", "Bianco Marta", "Bogdan Elena", "Bruno Federico", "Caputo Vittoria", "Coppola Ginevra", "D'Amico Ludovica", "De Luca Christian", "El Fassi Amine", "Ferrara Giacomo", "Gatti Alessio", "Giuliani Noemi", "Ionescu Mihai", "Leone Viola", "Longo Tommaso", "Marchetti Elisa", "Messina Samuele", "Moretti Arianna", "Pagano Luigi", "Pellegrini Nicole", "Rizzo Michele", "Romano Pietro", "Rossi Valentina", "Singh Raj"],
+            "3H": ["Barone Matteo", "Basile Camilla", "Bernardi Federico", "Carbone Martina", "Conte Edoardo", "D'Angelo Sara", "De Santis Andrea", "Fabbri Lorenzo", "Ferri Aurora", "Garcia Maria", "Gargiulo Francesco", "Gjata Kevin", "Grasso Sofia", "Li Jun", "Lombardo Alessandro", "Mariani Alessia", "Marini Giulio", "Monti Leonardo", "Neri Giorgia", "Palumbo Mattia", "Popa Gabriel", "Riva Ginevra", "Ruggiero Davide", "Serra Beatrice", "Silvestri Alice"],
+            "4C": ["Ahmed Youssef", "Amato Eleonora", "Benedetti Tommaso", "Bianco Gabriele", "Calabrese Christian", "Castiglioni Marta", "Cattaneo Ilaria", "D'Agostino Pietro", "De Rosa Martina", "Donati Filippo", "Fall Aminata", "Farina Ludovica", "Fioretti Riccardo", "Franchi Alessio", "Galli Sara", "Gentile Marco", "Grassi Viola", "Ivanova Daria", "Kovacs Mate", "Mancuso Emma", "Marchese Antonio", "Martino Aurora", "Montanari Giulia", "Piras Valerio", "Rinaldi Sofia", "Sorrentino Lorenzo", "Villa Camilla", "Zhao Xin"],
+            "5A": ["Antonelli Giacomo", "Bazzi Leonardo", "Belloni Beatrice", "Bresciani Federico", "Capuano Vittoria", "Casati Alessandro", "Castelli Ginevra", "Colombo Davide", "D'Alessandro Sofia", "De Biase Alice", "Di Pietro Francesco", "El Asri Yassine", "Esposito Luca", "Fabbri Chiara", "Ferretti Mattia", "Galdino Thiago", "Gallo Aurora", "Guerra Lorenzo", "Hussain Bilal", "Lin Xiaoyu", "Marra Arianna", "Negri Edoardo", "Orlando Martina", "Parodi Elisa", "Rizzi Riccardo", "Rossi Elena", "Sala Tommaso", "Sartori Giulia", "Stan Andrei"]
         };
 
-        const catalogoLibriDefault = [
-            { isbn: "978-8808620149", titolo: "Il tantucci più. Laboratorio di latino", autori: "Vittorio Tantucci", materia: "LINGUA E LETTERE LATINE", tipo: "Testo Obbligatorio" },
-            { isbn: "978-8842417283", titolo: "La città dell'uomo. Corso di storia", autori: "F. M. Feltri", materia: "STORIA", tipo: "Testo Obbligatorio" },
-            { isbn: "978-8869105432", titolo: "Geografia del mondo contemporaneo", autori: "G. De Vecchis", materia: "GEOGRAFIA", tipo: "Consigliato" },
-            { isbn: "978-8808932145", titolo: "La scrittura e l'interpretazione", autori: "G. Baldi", materia: "LINGUA E LETTERE ITALIANE", tipo: "Testo Obbligatorio" },
-            { isbn: "978-8824771239", titolo: "Costituzione e Cittadinanza attiva", autori: "M. Zagrebelsky", materia: "EDUCAZIONE CIVICA", tipo: "Consigliato" }
-        ];
-
+        // Struttura Dati Globale Divisa per Anni Scolastici
         let dbAnni = {};
 
         window.onload = function() {
@@ -684,8 +586,10 @@
         };
 
         function loadMemory() {
-            const savedData = localStorage.getItem("registroDatiDocenteV6_Anni");
-            if (savedData) dbAnni = JSON.parse(savedData);
+            const savedData = localStorage.getItem("registroDatiDocenteV5_Anni");
+            if (savedData) {
+                dbAnni = JSON.parse(savedData);
+            }
             const savedAnnoAct = localStorage.getItem("registroAnnoAttivo");
             if(savedAnnoAct) {
                 currentAnno = savedAnnoAct;
@@ -694,7 +598,7 @@
         }
 
         function saveMemory() {
-            localStorage.setItem("registroDatiDocenteV6_Anni", JSON.stringify(dbAnni));
+            localStorage.setItem("registroDatiDocenteV5_Anni", JSON.stringify(dbAnni));
             localStorage.setItem("registroAnnoAttivo", currentAnno);
         }
 
@@ -710,21 +614,13 @@
                         "5A": ["LINGUA E LETTERE LATINE", "EDUCAZIONE CIVICA"]
                     },
                     students: JSON.parse(JSON.stringify(elencoStudentiDefault)),
-                    appello: {}, firme: {}, voti: {}, scrutiniTrimestre: {}, scrutiniPentamestre: {}, agenda: {},
-                    libriAdozione: {},
-                    colloquiConfig: "Lunedì dalle 10:00 alle 11:00 (Sede Centrale)",
-                    colloquiPrenotazioni: [
-                        { data: "2026-06-01", famiglia: "Fam. Amato (Sofia)", classe: "2C", ora: "10:00 - 10:12", stato: "Confermato" },
-                        { data: "2026-06-01", famiglia: "Fam. Barbieri (Alessandro)", classe: "2C", ora: "10:12 - 10:24", stato: "In attesa" },
-                        { data: "2026-06-08", famiglia: "Fam. Ali (Samir)", classe: "2O", ora: "10:00 - 10:12", stato: "Confermato" }
-                    ]
+                    appello: {},
+                    firme: {},
+                    voti: {},
+                    scrutiniTrimestre: {},
+                    scrutiniPentamestre: {},
+                    agenda: {}
                 };
-
-                // Assegna libri di default per classe
-                dbAnni[anno].classiDisponibili.forEach(cl => {
-                    dbAnni[anno].libriAdozione[cl] = [...catalogoLibriDefault];
-                    dbAnni[anno].agenda[cl] = [];
-                });
             }
         }
 
@@ -732,8 +628,10 @@
             document.getElementById("label-anno-attivo").innerText = currentAnno;
             document.querySelectorAll(".placeholder-anno-testo").forEach(el => el.innerText = currentAnno);
             
+            // Renderizza l'elenco delle schede classe in base all'anno attivo
             const container = document.getElementById("container-elenco-classi");
             container.innerHTML = "";
+            
             let annoData = dbAnni[currentAnno];
             annoData.classiDisponibili.forEach(cl => {
                 let stringaMaterie = (annoData.materiePerClasse[cl] || []).map(m => m.substring(0,10) + ".").join(" / ");
@@ -752,179 +650,79 @@
             aggiornaInterfacciaAnno();
         }
 
-        // --- APERTURA SEZIONI NUOVE ---
-        function openAgendaGeneraleView() {
-            showView('agenda-generale-view');
-            renderCalendarUnificato();
-        }
-
-        function openLibriView() {
-            showView('libri-view');
-            let annoData = dbAnni[currentAnno];
-            const selectCl = document.getElementById("libri-classe-select");
-            selectCl.innerHTML = "";
-            annoData.classiDisponibili.forEach(cl => {
-                selectCl.innerHTML += `<option value="${cl}">Classe ${cl}</option>`;
-            });
-            renderLibriClasse();
-        }
-
-        function openColloquiView() {
-            showView('colloqui-view');
-            let annoData = dbAnni[currentAnno];
-            document.getElementById("colloquio-orario-stringa").value = annoData.colloquiConfig || "";
-            renderColloquiLista();
-        }
-
-        // --- GESTIONE CALENDARIO GENERALE ---
-        function navigaMese(direzione) {
-            dataCalendarioFocus.setMonth(dataCalendarioFocus.getMonth() + direzione);
-            renderCalendarUnificato();
-        }
-
-        function renderCalendarUnificato() {
-            const container = document.getElementById("calendar-grid-container");
-            container.innerHTML = "";
-
-            const mesiTesto = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
-            document.getElementById("calendar-month-title").innerText = mesiTesto[dataCalendarioFocus.getMonth()] + " " + dataCalendarioFocus.getFullYear();
-
-            // Nomi Giorni della settimana
-            const giorniSettimana = ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"];
-            giorniSettimana.forEach(g => {
-                container.innerHTML += `<div class="calendar-day-name">${g}</div>`;
-            });
-
-            let anno = dataCalendarioFocus.getFullYear();
-            let mese = dataCalendarioFocus.getMonth();
-
-            let primoGiornoMese = new Date(anno, mese, 1).getDay();
-            // Allinea Griglia se Domenica (0 diventa 6 nell'ottica lunedì partente)
-            let offset = primoGiornoMese === 0 ? 6 : primoGiornoMese - 1;
-
-            let totaleGiorniMese = new Date(anno, mese + 1, 0).getDate();
-            let totaleGiorniMesePrecedente = new Date(anno, mese, 0).getDate();
-
-            // Giorni Mese Precedente (riempimento iniziale)
-            for(let i = offset; i > 0; i--) {
-                let giornoPad = totaleGiorniMesePrecedente - i + 1;
-                container.innerHTML += `<div class="calendar-cell other-month"><span class="day-number">${giornoPad}</span></div>`;
-            }
-
-            // Recupera tutti gli eventi di tutte le classi per questo anno scolastico
-            let annoData = dbAnni[currentAnno];
-            let mappaEventi = {}; // Struttura temporanea indicizzata "YYYY-MM-DD"
+        // FUNZIONE NASCOSTA: AVANZAMENTO CLASSI ALL'ANNO SUCCESSIVO
+        function eseguiAvanzamentoAnno() {
+            let parti = currentAnno.split("/");
+            let prossimoAnno = (parseInt(parti[0])+1) + "/" + (parseInt(parti[1])+1);
             
-            annoData.classiDisponibili.forEach(cl => {
-                let agendaClasse = annoData.agenda[cl] || [];
-                agendaClasse.forEach(ev => {
-                    if(!mappaEventi[ev.data]) mappaEventi[ev.data] = [];
-                    mappaEventi[ev.data].push({ classe: cl, ...ev });
-                });
-            });
+            if(confirm(`Sei sicuro di voler far avanzare le classi dell'anno ${currentAnno} nell'anno ${prossimoAnno}?\nGli alunni delle seconde passeranno in terza, le terze in quarta, ecc.`)) {
+                initAnnoSeMancante(prossimoAnno);
+                let annoCorrenteData = dbAnni[currentAnno];
+                let annoNuovoData = dbAnni[prossimoAnno];
 
-            // Giorni Mese Attivo
-            let oggi = new Date();
-            for(let g = 1; g <= totaleGiorniMese; g++) {
-                let dataStringa = `${anno}-${String(mese+1).padStart(2, '0')}-${String(g).padStart(2, '0')}`;
-                let isOggi = oggi.getDate() === g && oggi.getMonth() === mese && oggi.getFullYear() === anno ? "today" : "";
-                
-                let stringaHtmlEventi = "";
-                if(mappaEventi[dataStringa]) {
-                    mappaEventi[dataStringa].forEach(ev => {
-                        let tagColor = ev.tipo === 'Compito' ? 'background:#B9E6FE; color:#0369A1;' : 'background:#FEF3C7; color:#B45309;';
-                        stringaHtmlEventi += `<div class="calendar-event-tag" style="${tagColor}" title="[Classe ${ev.classe}] ${ev.testo}">
-                            <strong>${ev.classe}</strong>: ${ev.testo}
-                        </div>`;
-                    });
+                annoNuovoData.classiDisponibili = [];
+                annoNuovoData.materiePerClasse = {};
+                annoNuovoData.students = {};
+
+                annoCorrenteData.classiDisponibili.forEach(cl => {
+                    let numero = parseInt(cl.charAt(0));
+                    let sezione = cl.substring(1);
+                    
+                    if(numero < 5) {
+                        let nuovaSigla = (numero + 1) + sezione;
+                        annoNuovoData.classiDisponibili.push(nuovaSigla);
+                        
+                        // Mantiene le stesse materie ereditate o imposta un default coerente
+                        let vecchieMaterie = annoCorrenteData.materiePerClasse[cl] || ["EDUCAZIONE CIVICA"];
+                        // Se era italiano o latino, mantiene la continuità
+                        annoNuovoData.materiePerClasse[nuovaSigla] = vecchieMaterie;
+                        
+                        // Copia l'elenco degli alunni
+                        annoNuovoData.students[nuovaSigla] = JSON.parse(JSON.stringify(annoCorrenteData.students[cl] || []));
+                    }
+                });
+
+                // Aggiunge comunque la classe 2C e 2O di partenza se non create
+                if(!annoNuovoData.classiDisponibili.includes("2C")) {
+                    annoNuovoData.classiDisponibili.push("2C");
+                    annoNuovoData.materiePerClasse["2C"] = ["LINGUA E LETTERE LATINE", "EDUCAZIONE CIVICA"];
+                    annoNuovoData.students["2C"] = JSON.parse(JSON.stringify(elencoStudentiDefault["2C"] || []));
                 }
 
-                container.innerHTML += `
-                    <div class="calendar-cell ${isOggi}">
-                        <span class="day-number">${g}</span>
-                        <div style="display:flex; flex-direction:column; gap:2px; overflow-y:auto; max-height:75px;">${stringaHtmlEventi}</div>
-                    </div>`;
+                currentAnno = prossimoAnno;
+                document.getElementById("select-cambio-anno").value = currentAnno;
+                saveMemory();
+                aggiornaInterfacciaAnno();
+                alert(`Operazione completata! Sei stato reindirizzato al nuovo Anno Scolastico: ${prossimoAnno}`);
+                showView('dashboard-view');
             }
         }
 
-        // --- GESTIONE LIBRI DI TESTO ---
-        function renderLibriClasse() {
-            let cl = document.getElementById("libri-classe-select").value;
-            let annoData = dbAnni[currentAnno];
-            if(!annoData.libriAdozione[cl]) annoData.libriAdozione[cl] = [...catalogoLibriDefault];
-
-            const tbody = document.getElementById("libri-tabella-body");
-            tbody.innerHTML = "";
-
-            annoData.libriAdozione[cl].forEach(lib => {
-                tbody.innerHTML += `<tr>
-                    <td><code>${lib.isbn}</code></td>
-                    <td><strong>${lib.title || lib.titolo}</strong></td>
-                    <td>${lib.autori}</td>
-                    <td><span style="font-size:11px; font-weight:bold; background:#E2E8F0; padding:3px 6px; border-radius:4px;">${lib.materia}</span></td>
-                    <td>${lib.tipo}</td>
-                    <td><span style="color:var(--green-pass); font-weight:bold;">Adottato ✓</span></td>
-                </tr>`;
-            });
-
-            // Popola anche la tendina delle materie per la simulazione
-            const selMat = document.getElementById("libro-nuovo-materia");
-            selMat.innerHTML = "";
-            (annoData.materiePerClasse[cl] || ["EDUCAZIONE CIVICA"]).forEach(m => {
-                selMat.innerHTML += `<option value="${m}">${m}</option>`;
-            });
-        }
-
-        function aggiungiLibroSimulato() {
-            let cl = document.getElementById("libri-classe-select").value;
-            let tit = document.getElementById("libro-nuovo-titolo").value.trim();
-            let aut = document.getElementById("libro-nuovo-autore").value.trim();
-            let isbn = document.getElementById("libro-nuovo-isbn").value.trim();
-            let mat = document.getElementById("libro-nuovo-materia").value;
-
-            if(!tit || !aut || !isbn) { alert("Compila tutti i campi del libro!"); return; }
+        function aggiungiNuovaClasseManuale() {
+            let nome = document.getElementById("nuova-classe-nome").value.trim().toUpperCase();
+            let materieInput = document.getElementById("nuova-classe-materie").value.trim().toUpperCase();
+            
+            if(!nome) { alert("Inserisci la sigla della classe!"); return; }
+            let arrMaterie = materieInput.split(",").map(m => m.trim()).filter(m => m.length > 0);
+            if(!arrMaterie.includes("EDUCAZIONE CIVICA")) arrMaterie.push("EDUCAZIONE CIVICA");
 
             let annoData = dbAnni[currentAnno];
-            annoData.libriAdozione[cl].push({ isbn: isbn, titolo: tit, autori: aut, materia: mat, tipo: "Nuova Adozione" });
+            if(annoData.classiDisponibili.includes(nome)) { alert("Questa classe esiste già per l'anno selezionato."); return; }
+            
+            annoData.classiDisponibili.push(nome);
+            annoData.materiePerClasse[nome] = arrMaterie;
+            // Genera una lista fittizia o vuota di alunni per la classe manuale
+            annoData.students[nome] = ["Alunno Esempio Uno", "Alunno Esempio Due", "Alunno Esempio Tre"];
+            
             saveMemory();
-            renderLibriClasse();
-
-            document.getElementById("libro-nuovo-titolo").value = "";
-            document.getElementById("libro-nuovo-autore").value = "";
-            document.getElementById("libro-nuovo-isbn").value = "";
-            alert("Nuovo testo scolastico proposto e inserito nel piano adozioni di classe!");
+            aggiornaInterfacciaAnno();
+            document.getElementById("nuova-classe-nome").value = "";
+            document.getElementById("nuova-classe-materie").value = "";
+            alert(`Classe ${nome} aggiunta con successo per l'anno ${currentAnno}!`);
         }
 
-        // --- GESTIONE COLLOQUI ---
-        function renderColloquiLista() {
-            const tbody = document.getElementById("colloqui-tabella-body");
-            tbody.innerHTML = "";
-            let annoData = dbAnni[currentAnno];
-            let lista = annoData.colloquiPrenotazioni || [];
 
-            lista.forEach((col, idx) => {
-                let badgeStato = col.stato === 'Confermato' ? 'background:var(--green-bg); color:var(--green-pass);' : 'background:#FEF3C7; color:#B45309;';
-                tbody.innerHTML += `<tr>
-                    <td><strong>${col.data.split('-').reverse().join('/')}</strong></td>
-                    <td>${col.famiglia}</td>
-                    <td><span style="font-weight:bold; color:var(--primary-red);">${col.classe}</span></td>
-                    <td><code>${col.ora}</code></td>
-                    <td>
-                        <span style="padding:4px 8px; font-size:12px; font-weight:bold; border-radius:20px; ${badgeStato}">${col.stato}</span>
-                        ${col.stato === 'In attesa' ? `<button style="margin-left:8px; font-size:11px; cursor:pointer;" onclick="accettaColloquio(${idx})">Accetta</button>` : ''}
-                    </td>
-                </tr>`;
-            });
-        }
-
-        function accettaColloquio(idx) {
-            let annoData = dbAnni[currentAnno];
-            annoData.colloquiPrenotazioni[idx].stato = "Confermato";
-            saveMemory();
-            renderColloquiLista();
-        }
-
-        // --- LOGICA DI FUNZIONAMENTO GENERALE PRE-ESISTENTE ---
+        // --- LOGICA DI GESTIONE APPLICATIVO CORRENTE ---
         function login() {
             const user = document.getElementById("username").value;
             const pass = document.getElementById("password").value;
@@ -953,10 +751,20 @@
             document.getElementById('classes-view').classList.add('hidden');
             document.getElementById('settings-view').classList.add('hidden');
             document.getElementById('class-detail-view').classList.add('hidden');
-            document.getElementById('agenda-generale-view').classList.add('hidden');
-            document.getElementById('libri-view').classList.add('hidden');
-            document.getElementById('colloqui-view').classList.add('hidden');
             document.getElementById(viewId).classList.remove('hidden');
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            if(event && event.target && event.target.classList.contains('tab-btn')) {
+                event.target.classList.add('active');
+            } else {
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    if(btn.getAttribute('onclick').includes(tabId)) btn.classList.add('active');
+                });
+            }
+            document.getElementById(tabId).classList.add('active');
         }
 
         function openClass(className) {
@@ -972,10 +780,12 @@
             });
             
             currentMateria = elencoMat[0];
+            
             showView('class-detail-view');
             switchTab('tab-appello'); 
             switchVotiMode('singolo');
 
+            // Setup sicuro sotto-strutture anno corrente
             if(!annoData.appello[currentClass]) annoData.appello[currentClass] = {};
             if(!annoData.firme[currentClass]) annoData.firme[currentClass] = {};
             if(!annoData.voti[currentClass]) annoData.voti[currentClass] = {};
@@ -1005,21 +815,13 @@
             document.getElementById("firma-materia-readonly").value = currentMateria;
             document.getElementById("titolo-voti-materia").innerText = `Registro Valutazioni: ${currentMateria}`;
             document.getElementById("titolo-scrutinio-materia").innerText = `I due Scrutini per: ${currentMateria}`;
+            
             renderFirmeStorico();
             renderVotiTabellone();
             renderScrutiniTabelloni();
         }
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            if(event && event.target && event.target.classList.contains('tab-btn')) {
-                event.target.classList.add('active');
-            }
-            document.getElementById(tabId).classList.add('active');
-        }
-
-        // --- INTEGRAZIONE FUNZIONI CORE REGISTRO ---
+        // --- APPELLO ---
         function renderAppello() {
             let annoData = dbAnni[currentAnno];
             const tbody = document.getElementById("appello-body");
@@ -1048,9 +850,11 @@
                 const cleanId = student.replace(/[^a-zA-Z0-9]/g, '');
                 annoData.appello[currentClass][student] = document.getElementById(`stato-${cleanId}`).value;
             });
-            saveMemory(); alert("Appello salvato!");
+            saveMemory();
+            alert("Appello salvato!");
         }
 
+        // --- FIRME ---
         function renderFirmeStorico() {
             document.getElementById("firma-data").valueAsDate = new Date();
             document.getElementById("firma-argomento").value = "";
@@ -1059,7 +863,8 @@
             let annoData = dbAnni[currentAnno];
             let storico = annoData.firme[currentClass][currentMateria] || [];
             if(storico.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#94A3B8;">Nessuna firma.</td></tr>`; return;
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#94A3B8;">Nessuna firma.</td></tr>`;
+                return;
             }
             storico.forEach(f => {
                 tbody.innerHTML += `<tr>
@@ -1073,19 +878,22 @@
         function addFirma() {
             const data = document.getElementById("firma-data").value;
             const argomento = document.getElementById("firma-argomento").value.trim();
-            if(!data || !argomento) return;
+            if(!data || !argomento) { alert("Campi incompleti."); return; }
             let annoData = dbAnni[currentAnno];
             annoData.firme[currentClass][currentMateria].push({ data: data, argomento: argomento });
             annoData.firme[currentClass][currentMateria].sort((a, b) => new Date(b.data) - new Date(a.data));
-            saveMemory(); renderFirmeStorico(); 
+            saveMemory();
+            renderFirmeStorico(); 
         }
 
+        // --- GESTIONE VOTI ---
         function switchVotiMode(mode) {
             currentVotiMode = mode;
             document.getElementById("mode-singolo").classList.remove("active");
             document.getElementById("mode-rapido").classList.remove("active");
             document.getElementById("voti-form-singolo").classList.add("hidden");
             document.getElementById("voti-form-rapido").classList.add("hidden");
+
             if (mode === 'singolo') {
                 document.getElementById("mode-singolo").classList.add("active");
                 document.getElementById("voti-form-singolo").classList.remove("hidden");
@@ -1100,44 +908,71 @@
             let annoData = dbAnni[currentAnno];
             const tbody = document.getElementById("rapido-studenti-body");
             tbody.innerHTML = "";
-            (annoData.students[currentClass] || []).forEach(student => {
+            let alunni = annoData.students[currentClass] || [];
+            alunni.forEach(student => {
                 const cleanId = student.replace(/[^a-zA-Z0-9]/g, '');
                 tbody.innerHTML += `<tr>
                     <td><strong>${student}</strong></td>
-                    <td style="text-align: center;"><input type="number" class="input-voto-rapido" id="rapido-${cleanId}" step="0.25" min="1" max="10" placeholder="-"></td>
-                    <td><input type="text" class="input-commento-rapido" id="rapido-comm-${cleanId}" placeholder="Nota..."></td>
+                    <td style="text-align: center;">
+                        <input type="number" class="input-voto-rapido" id="rapido-${cleanId}" step="0.25" min="1" max="10" placeholder="-">
+                    </td>
+                    <td>
+                        <input type="text" class="input-commento-rapido" id="rapido-comm-${cleanId}" placeholder="Nota...">
+                    </td>
                 </tr>`;
             });
         }
 
         function helperCalcolaMedia(arrayVoti) {
             if(!arrayVoti || arrayVoti.length === 0) return null;
-            return arrayVoti.reduce((acc, curr) => acc + parseFloat(curr.val), 0) / arrayVoti.length;
+            let sum = arrayVoti.reduce((acc, curr) => acc + parseFloat(curr.val), 0);
+            return sum / arrayVoti.length;
         }
 
         function renderVotiTabellone() {
             let annoData = dbAnni[currentAnno];
             const tbody = document.getElementById("voti-body");
             const selectAlunno = document.getElementById("voto-alunno");
-            tbody.innerHTML = ""; selectAlunno.innerHTML = "";
+            tbody.innerHTML = "";
+            selectAlunno.innerHTML = "";
             
-            (annoData.students[currentClass] || []).forEach(student => {
+            let alunni = annoData.students[currentClass] || [];
+            alunni.forEach(student => {
                 selectAlunno.innerHTML += `<option value="${student}">${student}</option>`;
+                
                 let tuttiVoti = annoData.voti[currentClass][currentMateria][student] || [];
-                let votiTri = tuttiVoti.filter(v => v.periodo === "Trimestre");
-                let votiPen = tuttiVoti.filter(v => v.periodo === "Pentamestre");
+                let votiTrimestre = tuttiVoti.filter(v => v.periodo === "Trimestre");
+                let votiPentamestre = tuttiVoti.filter(v => v.periodo === "Pentamestre");
 
-                const stringaVoti = (arr) => arr.map(v => {
-                    let idx = tuttiVoti.indexOf(v);
-                    return `<span class="voto-box"><span class="${v.val>=6?'voto-verde':'voto-rosso'}">${v.val}</span> <small>(${v.tipo.charAt(0)})</small><span class="btn-delete-voto" onclick="deleteVoto('${student}', ${idx})">×</span></span>`;
-                }).join("");
-
-                const badgeMedia = (arr) => {
-                    let m = helperCalcolaMedia(arr);
-                    return m === null ? `<span class="badge-media">-</span>` : `<span class="badge-media ${m>=6?'pass':'fail'}">${m.toFixed(2)}</span>`;
+                const creaStringaVoti = (arrayVoti) => {
+                    return arrayVoti.map((v) => {
+                        let idx = tuttiVoti.indexOf(v); 
+                        let colorClass = v.val >= 6 ? 'voto-verde' : 'voto-rosso';
+                        let visualNota = v.nota ? `<span class="voto-commento" title="${v.nota}">"${v.nota}"</span>` : '';
+                        return `<span class="voto-box">
+                            <div>
+                                <span class="${colorClass}">${v.val}</span> <small>(${v.tipo.charAt(0)})</small>
+                                ${visualNota}
+                            </div>
+                            <span class="btn-delete-voto" onclick="deleteVoto('${student}', ${idx})" title="Cancella">×</span>
+                        </span>`;
+                    }).join("");
                 };
 
-                tbody.innerHTML += `<tr><td><strong>${student}</strong></td><td>${stringaVoti(votiTri)}</td><td style="text-align:center;">${badgeMedia(votiTri)}</td><td>${stringaVoti(votiPen)}</td><td style="text-align:center;">${badgeMedia(votiPen)}</td></tr>`;
+                const calcolaMediaBadge = (arrayVoti) => {
+                    let media = helperCalcolaMedia(arrayVoti);
+                    if(media === null) return `<span class="badge-media" style="color:#aaa; background:#eee;">-</span>`;
+                    let passClass = media >= 6 ? 'pass' : 'fail';
+                    return `<span class="badge-media ${passClass}">${media.toFixed(2)}</span>`;
+                };
+
+                tbody.innerHTML += `<tr>
+                    <td><strong>${student}</strong></td>
+                    <td>${creaStringaVoti(votiTrimestre) || "<span style='color:#cbd5e1; font-style:italic; font-size:12px;'>Nessun voto</span>"}</td>
+                    <td style="text-align:center;">${calcolaMediaBadge(votiTrimestre)}</td>
+                    <td>${creaStringaVoti(votiPentamestre) || "<span style='color:#cbd5e1; font-style:italic; font-size:12px;'>Nessun voto</span>"}</td>
+                    <td style="text-align:center;">${calcolaMediaBadge(votiPentamestre)}</td>
+                </tr>`;
             });
         }
 
@@ -1148,50 +983,99 @@
             const tipo = document.getElementById("voto-tipo").value;
             const periodo = document.getElementById("voto-periodo").value;
             const nota = document.getElementById("voto-commento-singolo").value.trim();
-            if (isNaN(val) || val < 1 || val > 10) return;
+
+            if (isNaN(val) || val < 1 || val > 10) { alert("Voto non valido."); return; }
             if(!annoData.voti[currentClass][currentMateria][student]) annoData.voti[currentClass][currentMateria][student] = [];
+            
             annoData.voti[currentClass][currentMateria][student].push({val: val, tipo: tipo, periodo: periodo, nota: nota});
-            saveMemory(); renderVotiTabellone(); renderScrutiniTabelloni();
+            saveMemory();
+            
+            document.getElementById("voto-valore").value = ""; 
+            document.getElementById("voto-commento-singolo").value = "";
+            renderVotiTabellone(); 
+            renderScrutiniTabelloni();
         }
 
         function saveVotiRapidi() {
             let annoData = dbAnni[currentAnno];
             const tipo = document.getElementById("voto-tipo-rapido").value;
             const periodo = document.getElementById("voto-periodo-rapido").value;
+            let count = 0;
+
             annoData.students[currentClass].forEach(student => {
                 const cleanId = student.replace(/[^a-zA-Z0-9]/g, '');
                 const val = parseFloat(document.getElementById(`rapido-${cleanId}`).value);
                 const nota = document.getElementById(`rapido-comm-${cleanId}`).value.trim();
-                if (!isNaN(val)) {
+
+                if (!isNaN(val) && val >= 1 && val <= 10) {
                     if(!annoData.voti[currentClass][currentMateria][student]) annoData.voti[currentClass][currentMateria][student] = [];
                     annoData.voti[currentClass][currentMateria][student].push({val: val, tipo: tipo, periodo: periodo, nota: nota});
+                    count++;
                 }
             });
-            saveMemory(); renderVotiRapidiElenco(); renderVotiTabellone(); renderScrutiniTabelloni();
+
+            if (count > 0) {
+                saveMemory();
+                alert(`Salvati ${count} voti.`);
+                renderVotiRapidiElenco();
+                renderVotiTabellone();
+                renderScrutiniTabelloni();
+            }
         }
 
         function deleteVoto(student, index) {
             let annoData = dbAnni[currentAnno];
-            annoData.voti[currentClass][currentMateria][student].splice(index, 1);
-            saveMemory(); renderVotiTabellone(); renderScrutiniTabelloni();
+            if(confirm("Eliminare?")) {
+                annoData.voti[currentClass][currentMateria][student].splice(index, 1);
+                saveMemory();
+                renderVotiTabellone();
+                renderScrutiniTabelloni();
+            }
         }
 
+        // --- GESTIONE DEI DUE TABELLONI DI SCRUTINIO ---
         function renderScrutiniTabelloni() {
             let annoData = dbAnni[currentAnno];
             const tbodyTri = document.getElementById("scrutinio-trimestre-body");
             const tbodyPen = document.getElementById("scrutinio-pentamestre-body");
-            tbodyTri.innerHTML = ""; tbodyPen.innerHTML = "";
+            
+            tbodyTri.innerHTML = "";
+            tbodyPen.innerHTML = "";
 
-            (annoData.students[currentClass] || []).forEach(student => {
+            let alunni = annoData.students[currentClass] || [];
+            alunni.forEach(student => {
                 let tuttiVoti = annoData.voti[currentClass][currentMateria][student] || [];
-                let medTri = helperCalcolaMedia(tuttiVoti.filter(v => v.periodo === "Trimestre"));
-                let medPen = helperCalcolaMedia(tuttiVoti.filter(v => v.periodo === "Pentamestre"));
+                let votiTri = tuttiVoti.filter(v => v.periodo === "Trimestre");
+                let votiPen = tuttiVoti.filter(v => v.periodo === "Pentamestre");
+
+                let medTri = helperCalcolaMedia(votiTri);
+                let medPen = helperCalcolaMedia(votiPen);
+
+                let visualMedTri = medTri !== null ? medTri.toFixed(2) : "-";
+                let visualMedPen = medPen !== null ? medPen.toFixed(2) : "-";
+
                 let propTri = annoData.scrutiniTrimestre[currentClass][currentMateria][student] || "";
                 let propPen = annoData.scrutiniPentamestre[currentClass][currentMateria][student] || "";
+
                 const cleanId = student.replace(/[^a-zA-Z0-9]/g, '');
 
-                tbodyTri.innerHTML += `<tr><td><strong>${student}</strong></td><td style="text-align:center;">${medTri?medTri.toFixed(2):'-'}</td><td style="text-align:center;"><input type="text" class="input-scrutinio" id="prop-tri-${cleanId}" value="${propTri}"></td></tr>`;
-                tbodyPen.innerHTML += `<tr><td><strong>${student}</strong></td><td style="text-align:center;">${medPen?medPen.toFixed(2):'-'}</td><td style="text-align:center;"><input type="text" class="input-scrutinio" id="prop-pen-${cleanId}" value="${propPen}"></td></tr>`;
+                // Riga Trimestre
+                tbodyTri.innerHTML += `<tr>
+                    <td><strong>${student}</strong></td>
+                    <td style="text-align:center; font-weight:bold; color:#475569;">${visualMedTri}</td>
+                    <td style="text-align:center;">
+                        <input type="text" class="input-scrutinio" id="prop-tri-${cleanId}" value="${propTri}" placeholder="-">
+                    </td>
+                </tr>`;
+
+                // Riga Pentamestre
+                tbodyPen.innerHTML += `<tr>
+                    <td><strong>${student}</strong></td>
+                    <td style="text-align:center; font-weight:bold; color:#475569;">${visualMedPen}</td>
+                    <td style="text-align:center;">
+                        <input type="text" class="input-scrutinio" style="border-color:#0284C7; background:#F0F9FF;" id="prop-pen-${cleanId}" value="${propPen}" placeholder="-">
+                    </td>
+                </tr>`;
             });
         }
 
@@ -1205,16 +1089,31 @@
                     annoData.scrutiniPentamestre[currentClass][currentMateria][student] = document.getElementById(`prop-pen-${cleanId}`).value.trim();
                 }
             });
-            saveMemory(); alert("Salvato!"); renderScrutiniTabelloni();
+            saveMemory();
+            alert(`Salvataggio proposte scrutinio (${tipoPeriodo}) effettuato!`);
+            renderScrutiniTabelloni();
         }
 
+        // --- AGENDA ---
         function renderAgenda() {
             document.getElementById("agenda-data").valueAsDate = new Date();
+            document.getElementById("agenda-testo").value = "";
             const tbody = document.getElementById("agenda-body-tavola");
             tbody.innerHTML = "";
             let annoData = dbAnni[currentAnno];
-            (annoData.agenda[currentClass] || []).forEach((item, index) => {
-                tbody.innerHTML += `<tr><td><strong>${item.data.split('-').reverse().join('/')}</strong></td><td>${item.tipo}</td><td>${item.testo}</td><td><button onclick="deleteAgendaItem(${index})">Elimina</button></td></tr>`;
+            let impegni = annoData.agenda[currentClass] || [];
+            if(impegni.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#94A3B8;">Agenda vuota.</td></tr>`;
+                return;
+            }
+            impegni.forEach((item, index) => {
+                let badgeColore = item.tipo === 'Compito' ? '#E0F2FE; color:#0369A1;' : (item.tipo === 'Nota' ? '#FEF3C7; color:#B45309;' : '#F3E8FF; color:#6B21A8;');
+                tbody.innerHTML += `<tr>
+                    <td><strong>${item.data.split('-').reverse().join('/')}</strong></td>
+                    <td><span style="padding:4px 8px; border-radius:4px; font-weight:600; font-size:12px; background:${badgeColore}">${item.tipo}</span></td>
+                    <td>${item.testo}</td>
+                    <td style="text-align:center;"><button style="background:none; border:none; color:var(--red-fail); cursor:pointer;" onclick="deleteAgendaItem(${index})">Elimina</button></td>
+                </tr>`;
             });
         }
 
@@ -1225,36 +1124,18 @@
             if(!data || !testo) return;
             let annoData = dbAnni[currentAnno];
             annoData.agenda[currentClass].push({ data: data, tipo: tipo, testo: testo });
-            saveMemory(); renderAgenda();
+            annoData.agenda[currentClass].sort((a,b) => new Date(b.data) - new Date(a.data));
+            saveMemory();
+            renderAgenda();
         }
 
         function deleteAgendaItem(index) {
             let annoData = dbAnni[currentAnno];
-            annoData.agenda[currentClass].splice(index, 1);
-            saveMemory(); renderAgenda();
-        }
-
-        function eseguiAvanzamentoAnno() {
-            let parti = currentAnno.split("/");
-            let prossimoAnno = (parseInt(parti[0])+1) + "/" + (parseInt(parti[1])+1);
-            if(confirm(`Avanzare all'anno ${prossimoAnno}?`)) {
-                initAnnoSeMancante(prossimoAnno);
-                currentAnno = prossimoAnno;
-                document.getElementById("select-cambio-anno").value = currentAnno;
-                saveMemory(); aggiornaInterfacciaAnno(); showView('dashboard-view');
+            if(confirm("Rimuovere?")) {
+                annoData.agenda[currentClass].splice(index, 1);
+                saveMemory();
+                renderAgenda();
             }
-        }
-
-        function aggiungiNuovaClasseManuale() {
-            let nome = document.getElementById("nuova-classe-nome").value.trim().toUpperCase();
-            if(!nome) return;
-            let annoData = dbAnni[currentAnno];
-            annoData.classiDisponibili.push(nome);
-            annoData.materiePerClasse[nome] = ["EDUCAZIONE CIVICA"];
-            annoData.students[nome] = ["Alunno Esempio"];
-            annoData.libriAdozione[nome] = [...catalogoLibriDefault];
-            annoData.agenda[nome] = [];
-            saveMemory(); aggiornaInterfacciaAnno(); showView('dashboard-view');
         }
     </script>
 </body>
