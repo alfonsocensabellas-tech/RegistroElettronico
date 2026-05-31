@@ -127,23 +127,26 @@
 </head>
 <body>
 
+    <!-- SCHERMATA LOGIN -->
     <div id="login-view">
         <div class="login-box">
             <h2>ClasseViva Docenti</h2>
-            <input type="text" id="username" placeholder="Username" value="admin">
-            <input type="password" id="password" placeholder="Password" value="admin">
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
             <button class="btn-primary" onclick="login()">ACCEDI</button>
-            <p id="login-error" style="color:var(--red-fail); display:none; margin-top:10px; font-size:14px;">Credenziali errate.</p>
+            <p id="login-error" style="color:var(--red-fail); display:none; margin-top:10px; font-size:14px;">Credenziali errate. Riprovare.</p>
         </div>
     </div>
 
+    <!-- SCHERMATA PRINCIPALE -->
     <div id="app-view" class="hidden">
         <header>
-            <div id="user-info">Prof. Alfonso Censabella (<span id="label-anno-attivo">2025/2026</span>)</div>
+            <div id="user-info">Prof. Alfonso Censabella (<span id="label-anno-attivo">---</span>)</div>
             <button class="logout-btn" onclick="logout()">Esci</button>
         </header>
         
         <main>
+            <!-- MENU PRINCIPALE -->
             <div id="dashboard-view">
                 <h2>Menu Principale</h2>
                 <div class="menu-grid">
@@ -166,12 +169,14 @@
                 </div>
             </div>
 
+            <!-- LE MIE CLASSI (SCELTA) -->
             <div id="classes-view" class="hidden">
                 <button class="back-btn" onclick="showView('dashboard-view')">🡠 Torna al menu</button>
                 <h2>Le mie classi assegnate (<span class="placeholder-anno-testo"></span>)</h2>
                 <div class="menu-grid" id="container-elenco-classi"></div>
             </div>
 
+            <!-- AGENDA GENERALE -->
             <div id="agenda-view" class="hidden">
                 <button class="back-btn" onclick="showView('dashboard-view')">🡠 Torna al menu</button>
                 <h2>📅 Agenda Generale Impegni e Scadenze</h2>
@@ -184,18 +189,24 @@
                             <input type="date" id="age-data">
                         </div>
                         <div class="form-group" style="margin-bottom:0;">
+                            <label>Classe Interessata</label>
+                            <select id="age-classe-select" onchange="onAgendaClasseChange()">
+                                <option value="Tutte">Tutte le mie classi</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
                             <label>Tipo Impegno</label>
                             <select id="age-tipo">
-                                <option value="📝 Compito in classe">📝 Compito in classe</option>
+                                <option value="📝 Compito Scritto">📝 Compito Scritto</option>
                                 <option value="🗣️ Verifica Orale">🗣️ Verifica Orale</option>
                                 <option value="👥 Consiglio di Classe">👥 Consiglio di Classe</option>
                                 <option value="🔔 Scadenza / Altro">🔔 Scadenza / Altro</option>
                             </select>
                         </div>
                         <div class="form-group" style="margin-bottom:0;">
-                            <label>Classe Interessata</label>
-                            <select id="age-classe-select">
-                                <option value="Tutte">Tutte le mie classi</option>
+                            <label>Materia</label>
+                            <select id="age-materia-select">
+                                <option value="Generale/Agenda">Generale / Agenda</option>
                             </select>
                         </div>
                         <div class="form-group" style="margin-bottom:0; flex-grow: 1;">
@@ -210,9 +221,9 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 15%;">Data</th>
-                            <th style="width: 15%;">Classe</th>
-                            <th style="width: 20%;">Tipo</th>
+                            <th style="width: 12%;">Data</th>
+                            <th style="width: 12%;">Classe</th>
+                            <th style="width: 25%;">Tipo / Materia</th>
                             <th>Descrizione</th>
                             <th style="width: 10%; text-align:center;">Rimuovi</th>
                         </tr>
@@ -221,6 +232,7 @@
                 </table>
             </div>
 
+            <!-- TUTTE LE CLASSI DELL'ISTITUTO -->
             <div id="tutte-classi-view" class="hidden">
                 <button class="back-btn" onclick="showView('dashboard-view')">🡠 Torna al menu</button>
                 <h2>🏫 Firme Libere e Supplenze su Tutto l'Istituto</h2>
@@ -285,6 +297,7 @@
                 </table>
             </div>
 
+            <!-- IMPOSTAZIONI -->
             <div id="settings-view" class="hidden">
                 <button class="back-btn" onclick="showView('dashboard-view')">🡠 Torna al menu</button>
                 <h2>⚙️ Impostazioni: Gestione Classi, Anno e Sicurezza Dati</h2>
@@ -334,6 +347,7 @@
                 </div>
             </div>
 
+            <!-- DETTAGLIO CLASSE -->
             <div id="class-detail-view" class="hidden">
                 <button class="back-btn" onclick="showView('classes-view')">🡠 Torna alle classi</button>
                 
@@ -351,8 +365,19 @@
                     <button class="tab-btn" id="btn-tab-voti" onclick="switchTab('tab-voti')">Voti</button>
                 </div>
 
+                <!-- TAB APPELLO MODIFICATO PER CAMBIARE GIORNO PER GIORNO -->
                 <div id="tab-appello" class="tab-content active">
-                    <h3>Appello Odierno</h3>
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px; background: #F8FAFC; padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); flex-wrap: wrap;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label style="font-weight: bold; margin-bottom: 4px;">📅 Data dell'Appello:</label>
+                            <input type="date" id="appello-data" onchange="renderAppello()">
+                        </div>
+                        <div style="color: #64748B; font-size: 13px; flex-grow: 1; padding-top: 15px;">
+                            * Modificando questo calendario puoi registrare l'appello o consultare lo storico delle presenze di qualunque giorno scolastico.
+                        </div>
+                    </div>
+
+                    <h3>Registrazione Presenze Alunni</h3>
                     <table>
                         <thead>
                             <tr>
@@ -362,9 +387,10 @@
                         </thead>
                         <tbody id="appello-body"></tbody>
                     </table>
-                    <button class="btn-primary" style="width: auto;" onclick="saveAppello()">Salva Appello</button>
+                    <button class="btn-primary" style="width: auto;" onclick="saveAppello()">Salva Appello del Giorno</button>
                 </div>
 
+                <!-- TAB FIRMA -->
                 <div id="tab-firma" class="tab-content">
                     <h3>Inserisci Nuova Firma di Lezione</h3>
                     <div style="background:#F8FAFC; padding:20px; border-radius:8px; margin-bottom: 25px; border: 1px solid var(--border-color);">
@@ -421,6 +447,7 @@
                     </table>
                 </div>
 
+                <!-- TAB VOTI -->
                 <div id="tab-voti" class="tab-content">
                     <h3 id="titolo-voti-materia">Registro Valutazioni</h3>
                     
@@ -479,13 +506,13 @@
         </main>
     </div>
 
+    <!-- === LOGICA JAVASCRIPT === -->
     <script>
         const TUTTE_LE_CLASSI = [];
         ["1","2","3","4","5"].forEach(a => {
             ["A","B","C","D","E","F","G","H","I","L","M","N","O"].forEach(s => TUTTE_LE_CLASSI.push(a+s));
         });
 
-        // POOL AMPLIATO DI NOMI E COGNOMI PER EVITARE REPLICHE ASSIDUE
         const NOMI = ["Andrea", "Luca", "Giulia", "Martina", "Francesco", "Alessandro", "Sofia", "Lorenzo", "Chiara", "Aurora", "Matteo", "Leonardo", "Ginevra", "Alice", "Giorgia", "Tommaso", "Gabriele", "Emma", "Riccardo", "Beatrice", "Edoardo", "Sara", "Federico", "Anna", "Giovanni", "Elena", "Filippo", "Gaia", "Samuele", "Noemi", "Marco", "Ludovica", "Christian", "Matilde", "Antonio", "Davide", "Manuel", "Simone", "Vittoria", "Viola"];
         const COGNOMI = ["Rossi", "Russo", "Ferrari", "Esposito", "Bianchi", "Romano", "Colombo", "Ricci", "Marino", "Greco", "Bruno", "Gallo", "Conti", "De Luca", "Costa", "Giordano", "Mancini", "Rizzo", "Lombardi", "Moretti", "Barbieri", "Fontana", "Santoro", "Mariani", "Magnani", "Rinaldi", "Caruso", "Ferrara", "Galli", "Martini", "Leone", "Longo", "Gentile", "Martinelli", "Vitale", "Serra", "Coppola", "Marchetti", "Parigi", "Villa", "Conte", "Ferri", "Fabbri", "Carbone", "Marini", "Benedetti", "Barone", "Caputo", "Monti", "Silvestri", "Grassi", "Pellegrini"];
 
@@ -495,7 +522,7 @@
             if(isTriennio && numAlunni > 23) numAlunni = 23;
 
             let alunni = [];
-            let cognomiDisponibili = [...COGNOMI]; // Copia locale per pescare senza rimpiazzo immediato
+            let cognomiDisponibili = [...COGNOMI];
 
             for(let i=0; i<numAlunni; i++) {
                 if(cognomiDisponibili.length === 0) cognomiDisponibili = [...COGNOMI];
@@ -505,7 +532,7 @@
                 let nomeScelto = NOMI[Math.floor(Math.random() * NOMI.length)];
                 let nomeCompleto = cognomeScelto + " " + nomeScelto;
                 
-                if (alunni.some(al => al.nome === nomeCompleto)) { i--; continue; } // Evita cloni totali esatti
+                if (alunni.some(al => al.nome === nomeCompleto)) { i--; continue; }
 
                 alunni.push({ id: classeStr + "_" + Date.now() + "_" + i + "_" + Math.floor(Math.random()*1000), nome: nomeCompleto });
             }
@@ -534,13 +561,14 @@
         } else {
             DB = JSON.parse(localStorage.getItem('cv_db'));
             if (!DB.agenda) DB.agenda = [];
+            if (!DB.firmeLibere) DB.firmeLibere = [];
+            if (!DB.annoAttivo) DB.annoAttivo = "2025/2026";
             DB.classi.forEach(cl => { if (!DB.alunni[cl.id]) DB.alunni[cl.id] = generaAlunni(cl.id); });
             ordinaClassi();
         }
 
         function salvaNelTempo() { localStorage.setItem('cv_db', JSON.stringify(DB)); }
 
-        // ALGORITMO DI ORDINAMENTO DELLE CLASSI (1-5, A-O)
         function ordinaClassi() {
             if(!DB.classi) return;
             DB.classi.sort((a, b) => {
@@ -556,13 +584,25 @@
         let currentClasseId = ""; let currentMateria = "";
 
         function login() {
-            if(document.getElementById('username').value !== "" && document.getElementById('password').value !== "") {
+            const u = document.getElementById('username').value.trim();
+            const p = document.getElementById('password').value.trim();
+            
+            if(u === "AlfonsoCensabella" && p === "registro elettronico") {
+                document.getElementById('login-error').style.display = 'none';
                 document.getElementById('login-view').classList.add('hidden');
                 document.getElementById('app-view').classList.remove('hidden');
                 inizializzaApp();
+            } else {
+                document.getElementById('login-error').style.display = 'block';
             }
         }
-        function logout() { document.getElementById('app-view').classList.add('hidden'); document.getElementById('login-view').classList.remove('hidden'); }
+        
+        function logout() { 
+            document.getElementById('app-view').classList.add('hidden'); 
+            document.getElementById('login-view').classList.remove('hidden'); 
+            document.getElementById('username').value = "";
+            document.getElementById('password').value = "";
+        }
         
         function showView(vId) {
             ['dashboard-view', 'classes-view', 'tutte-classi-view', 'settings-view', 'class-detail-view', 'agenda-view'].forEach(v => {
@@ -595,6 +635,9 @@
             currentMateria = classeObj.materie[0];
             document.getElementById('firma-materia-readonly').value = currentMateria;
             document.getElementById('firma-data').valueAsDate = new Date();
+            
+            // Imposta la data predefinita dell'appello ad oggi
+            document.getElementById('appello-data').valueAsDate = new Date();
 
             toggleFormVoti('singolo');
             switchTab('tab-appello');
@@ -619,13 +662,16 @@
         }
 
         // ===============================================
-        // 📋 APPELLO CON RITARDI/USCITE ORARIE
+        // 📋 APPELLO GIORNO PER GIORNO (AGGIORNATO)
         // ===============================================
         function renderAppello() {
             const body = document.getElementById('appello-body');
             body.innerHTML = "";
             const alunni = DB.alunni[currentClasseId] || [];
-            const chiave = `${currentClasseId}_${new Date().toISOString().split('T')[0]}`;
+            
+            // Recupera la data selezionata dal nuovo campo
+            const dataSelezionata = document.getElementById('appello-data').value || new Date().toISOString().split('T')[0];
+            const chiave = `${currentClasseId}_${dataSelezionata}`;
             const statoSalvati = DB.appelli[chiave] || {};
 
             alunni.forEach((al, index) => {
@@ -646,7 +692,7 @@
                             
                             <select id="appello-ora-${al.id}" style="width:110px; margin-left:10px; ${['R','U'].includes(stato)?'':'display:none;'}">
                                 <option value="">-- Quale Ora? --</option>
-                                ${[1,2,3,4,5,6,7,8,9,10].map(h => `<option value="${h}^" ${ora==h+'^'?'selected':''}>${h}^ ora</option>`).join('')}
+                                ${[1,2,3,4,5,6,7,8,9,10].map(h => `<option value="${h^}" ${ora==h+'^'?'selected':''}>${h}^ ora</option>`).join('')}
                             </select>
                         </td>
                     </tr>
@@ -666,7 +712,10 @@
         }
 
         function saveAppello() {
-            const chiave = `${currentClasseId}_${new Date().toISOString().split('T')[0]}`;
+            const dataSelezionata = document.getElementById('appello-data').value;
+            if(!dataSelezionata) return alert("Seleziona una data valida sul calendario per salvare l'appello!");
+            
+            const chiave = `${currentClasseId}_${dataSelezionata}`;
             DB.appelli[chiave] = {};
             let erroreOra = false;
 
@@ -681,7 +730,8 @@
                 alert("Attenzione: Hai inserito dei ritardi o uscite senza specificare il numero dell'ora!");
                 return;
             }
-            salvaNelTempo(); alert("Appello e scansione oraria salvati con successo!");
+            salvaNelTempo(); 
+            alert(`Appello salvato correttamente per il giorno ${dataSelezionata.split('-').reverse().join('/')}!`);
         }
 
         // ===============================================
@@ -694,7 +744,7 @@
             filtrate.reverse().forEach(f => {
                 let badge = f.supplenza ? `<span class="badge-supplenza">SUPPLENZA</span>` : "";
                 let indicatoriOre = `<br><small style="color:#64748B;">Svolta alla <strong>${f.oraLezione || '1^'} ora</strong> per un totale di <strong>${f.numOre || '1'} ore</strong></small>`;
-                body.innerHTML += `<tr><td><code>${f.data}</code></td><td><span style="font-weight:600; color:var(--primary-dark);">${f.materia}</span> ${badge} ${indicatoriOre}</td><td>${f.argomento}</td></tr>`;
+                body.innerHTML += `<tr><td><code>${f.data.split('-').reverse().join('/')}</code></td><td><span style="font-weight:600; color:var(--primary-dark);">${f.materia}</span> ${badge} ${indicatoriOre}</td><td>${f.argomento}</td></tr>`;
             });
         }
 
@@ -714,7 +764,7 @@
         }
 
         // ===============================================
-        // ⚡ REGISTRO VALUTAZIONI (SINGOLO & FLASH)
+        // ⚡ REGISTRO VALUTAZIONI
         // ===============================================
         function toggleFormVoti(tipo) {
             if(tipo === 'flash') {
@@ -804,7 +854,7 @@
         function cancellaVoto(id) { DB.voti = DB.voti.filter(v => v.id !== id); salvaNelTempo(); renderVoti(); }
 
         // ===============================================
-        // 📅 AGENDA GENERALE COMPLETA ED OPERATIVA
+        // 📅 AGENDA GENERALE POTENZIATA (DINAMICA)
         // ===============================================
         function openAgendaView() {
             showView('agenda-view');
@@ -814,40 +864,58 @@
             const sel = document.getElementById('age-classe-select');
             sel.innerHTML = '<option value="Tutte">Tutte le mie classi</option>';
             DB.classi.forEach(cl => { sel.innerHTML += `<option value="${cl.id}">Classe ${cl.id}</option>`; });
+            
+            onAgendaClasseChange();
             renderAgenda();
+        }
+
+        function onAgendaClasseChange() {
+            const classeSelezionata = document.getElementById('age-classe-select').value;
+            const matSel = document.getElementById('age-materia-select');
+            matSel.innerHTML = '<option value="Generale/Agenda">Generale / Agenda</option>';
+
+            if(classeSelezionata !== "Tutte") {
+                const cObj = DB.classi.find(c => c.id === classeSelezionata);
+                if(cObj && cObj.materie) {
+                    cObj.materie.forEach(m => {
+                        matSel.innerHTML += `<option value="${m}">${m}</option>`;
+                    });
+                }
+            }
         }
 
         function addAgendaEvent() {
             const data = document.getElementById('age-data').value;
             const tipo = document.getElementById('age-tipo').value;
             const classe = document.getElementById('age-classe-select').value;
+            const materia = document.getElementById('age-materia-select').value;
             const titolo = document.getElementById('age-titolo').value.trim();
 
             if(!data || !titolo) return alert("Compila la data e il titolo della scadenza!");
 
-            DB.agenda.push({ id: "E_" + Date.now(), data: data, tipo: tipo, classe: classe, titolo: titolo });
+            DB.agenda.push({ id: "E_" + Date.now(), data: data, tipo: tipo, classe: classe, materia: materia, titolo: titolo });
             document.getElementById('age-titolo').value = "";
             salvaNelTempo(); renderAgenda();
         }
 
         function renderAgenda() {
             const body = document.getElementById('agenda-body'); body.innerHTML = "";
-            
-            // Ordinamento per data crescente (impegni imminenti per primi)
             DB.agenda.sort((a,b) => new Date(a.data) - new Date(b.data));
 
             if(DB.agenda.length === 0) {
-                body.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748B; padding:20px;">Nessun impegno pianificato nell'agenda di istituto.</td></tr>`;
+                body.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748B; padding:20px;">Nessun impegno pianificato nell'agenda.</td></tr>`;
                 return;
             }
 
             DB.agenda.forEach(ev => {
                 let badgeClasse = ev.classe === "Tutte" ? `<span style="background:#E2E8F0; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold;">TUTTE</span>` : `<span style="background:#FFF5F5; border:1px solid #FECACA; color:var(--primary-dark); padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold;">${ev.classe}</span>`;
+                let stringaMateria = (ev.materia && ev.materia !== "Generale/Agenda") ? `<br><small style="color:var(--primary-dark); font-weight:600;">📚 Materia: ${ev.materia}</small>` : '';
+                
                 body.innerHTML += `
                     <tr>
                         <td><code>${ev.data.split('-').reverse().join('/')}</code></td>
                         <td>${badgeClasse}</td>
-                        <td><strong>${ev.tipo}</strong></td>
+                        <td><strong>${ev.tipo}</strong>${stringaMateria}</td>
                         <td>${ev.titolo}</td>
                         <td style="text-align:center;"><button class="btn-danger" style="padding:4px 8px;" onclick="cancellaEventoAgenda('${ev.id}')">🗑</button></td>
                     </tr>
@@ -888,7 +956,7 @@
             (DB.firmeLibere || []).slice().reverse().forEach(f => {
                 let badge = f.supplenza ? `<span class="badge-supplenza">SUPPLENZA</span>` : `<span style="background:#E2E8F0; padding:4px 8px; border-radius:4px; font-size:12px;">LEZ. REGOLARE</span>`;
                 let infoOrario = `<br><small style="color:#64748B;">Svolta alla <strong>${f.oraLezione || '1^'} ora</strong> (${f.numOre || 1}h totali)</small>`;
-                body.innerHTML += `<tr><td><code>${f.data}</code></td><td><strong>${f.classe}</strong></td><td><span style="font-weight:bold;">${f.materia}</span>${infoOrario}</td><td>${f.argomento}</td><td>${badge}</td></tr>`;
+                body.innerHTML += `<tr><td><code>${f.data.split('-').reverse().join('/')}</code></td><td><strong>${f.classe}</strong></td><td><span style="font-weight:bold;">${f.materia}</span>${infoOrario}</td><td>${f.argomento}</td><td>${badge}</td></tr>`;
             });
         }
 
@@ -974,7 +1042,7 @@
         }
 
         function confermaPassaggioAnno() {
-            if(!confirm("Confermi l'avanzamento d'anno? I voti attuali verranno azzerati.")) return;
+            if(!confirm("Confermi l'avanzamento d'anno? I voti attuali verranno azzerati e il nuovo anno sarà impostato stabilmente.")) return;
             let anni = DB.annoAttivo.split('/'); let nuovoAnnoStr = `${parseInt(anni[0])+1}/${parseInt(anni[1])+1}`;
             let nuoveClassi = []; let nuoviAlunni = {};
 
@@ -994,7 +1062,7 @@
             DB.voti = []; DB.appelli = {}; DB.firme = []; DB.agenda = [];
             
             ordinaClassi(); salvaNelTempo(); inizializzaApp(); showView('dashboard-view');
-            alert(`Registro aggiornato correttamente all'A.S. ${nuovoAnnoStr}`);
+            alert(`Registro aggiornato stabilmente all'A.S. ${nuovoAnnoStr}`);
         }
     </script>
 </body>
