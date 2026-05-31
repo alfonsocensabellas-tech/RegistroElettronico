@@ -52,7 +52,7 @@
             margin-top: 15px; transition: background 0.2s;
         }
         .btn-primary:hover { background-color: var(--primary-dark); }
-        .btn-secondary { background-color: #64748B; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-secondary { background-color: #64748B; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; }
         .btn-secondary:hover { background-color: #475569; }
         .btn-danger { background-color: var(--red-fail); color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;}
 
@@ -127,18 +127,16 @@
 </head>
 <body>
 
-    <!-- SCHERMATA LOGIN -->
     <div id="login-view">
         <div class="login-box">
             <h2>ClasseViva Docenti</h2>
-            <input type="text" id="username" placeholder="Username (es. admin)">
-            <input type="password" id="password" placeholder="Password (es. admin)">
+            <input type="text" id="username" placeholder="Username" value="admin">
+            <input type="password" id="password" placeholder="Password" value="admin">
             <button class="btn-primary" onclick="login()">ACCEDI</button>
             <p id="login-error" style="color:var(--red-fail); display:none; margin-top:10px; font-size:14px;">Credenziali errate.</p>
         </div>
     </div>
 
-    <!-- SCHERMATA PRINCIPALE -->
     <div id="app-view" class="hidden">
         <header>
             <div id="user-info">Prof. Alfonso Censabella (<span id="label-anno-attivo">2025/2026</span>)</div>
@@ -146,7 +144,6 @@
         </header>
         
         <main>
-            <!-- MENU PRINCIPALE -->
             <div id="dashboard-view">
                 <h2>Menu Principale</h2>
                 <div class="menu-grid">
@@ -169,14 +166,12 @@
                 </div>
             </div>
 
-            <!-- LE MIE CLASSI (SCELTA) -->
             <div id="classes-view" class="hidden">
                 <button class="back-btn" onclick="showView('dashboard-view')">🡠 Torna al menu</button>
                 <h2>Le mie classi assegnate (<span class="placeholder-anno-testo"></span>)</h2>
                 <div class="menu-grid" id="container-elenco-classi"></div>
             </div>
 
-            <!-- TUTTE LE CLASSI DELL'ISTITUTO (SUPPLENZE) -->
             <div id="tutte-classi-view" class="hidden">
                 <button class="back-btn" onclick="showView('dashboard-view')">🡠 Torna al menu</button>
                 <h2>🏫 Firme Libere e Supplenze su Tutto l'Istituto</h2>
@@ -193,7 +188,7 @@
                         </div>
                         <div class="form-group" style="margin-bottom:0; flex-grow: 1;">
                             <label>Materia Insegnata</label>
-                            <input type="text" id="tc-materia" placeholder="Es. Matematica, Scienze, Lettere...">
+                            <input type="text" id="tc-materia" placeholder="Es. Lettere, Latino, Storia...">
                         </div>
                     </div>
                     
@@ -224,12 +219,10 @@
                 </table>
             </div>
 
-            <!-- IMPOSTAZIONI: GESTIONE CLASSI E PASSAGGIO ANNO -->
             <div id="settings-view" class="hidden">
                 <button class="back-btn" onclick="showView('dashboard-view')">🡠 Torna al menu</button>
                 <h2>⚙️ Impostazioni: Gestione Classi e Anno</h2>
                 
-                <!-- AGGIUNGI / RIMUOVI CLASSI -->
                 <div class="settings-card">
                     <h3>➕ Aggiungi una nuova classe al tuo orario</h3>
                     <div style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 20px;">
@@ -239,7 +232,7 @@
                         </div>
                         <div style="flex-grow:1;">
                             <label style="display:block; font-weight:600; margin-bottom:5px; font-size:14px;">Materie Insegnate (Separate da virgola):</label>
-                            <input type="text" id="set-materie" placeholder="Es. Matematica, Fisica" style="width:100%;">
+                            <input type="text" id="set-materie" placeholder="Es. Latino, Greco" style="width:100%;">
                         </div>
                         <button class="btn-primary" style="width:auto; margin:0;" onclick="aggiungiNuovaClasse()">Aggiungi Classe</button>
                     </div>
@@ -249,7 +242,6 @@
                     <div id="set-lista-classi"></div>
                 </div>
 
-                <!-- PASSAGGIO ANNO SCOLASTICO -->
                 <div class="settings-card" style="background: #FFF8F8; border-color: #FECACA;">
                     <h3 style="color: var(--primary-dark);">🎓 Passaggio all'Anno Scolastico Successivo</h3>
                     <p style="font-size:14px; margin-top:0;">Attualmente sei nell'A.S. <strong><span id="set-anno-corrente"></span></strong>.</p>
@@ -257,7 +249,7 @@
                     
                     <div id="panel-passaggio-anno" class="hidden" style="margin-top:20px; background:white; padding:20px; border-radius:8px; border:1px solid var(--border-color);">
                         <h4 style="margin-top:0;">Scegli quali classi portare al prossimo anno</h4>
-                        <p style="font-size:13px; color:#64748B;">Seleziona le classi che continuerai a seguire. Le classi di 5° verranno rimosse, le altre scatteranno all'anno successivo (es. 1A -> 2A). Le classi non selezionate verranno sganciate dal tuo account (es. materie solo del biennio).</p>
+                        <p style="font-size:13px; color:#64748B;">Seleziona le classi che continuerai a seguire. Le classi di 5° verranno rimosse automaticamente al termine della procedura, le altre avanzeranno all'anno successivo (es. 2C -> 3C). Le classi disattivate verranno rimosse dal tuo account.</p>
                         
                         <div id="list-passaggio-classi" style="margin-bottom: 20px;"></div>
                         
@@ -267,7 +259,6 @@
                 </div>
             </div>
 
-            <!-- DETTAGLIO CLASSE -->
             <div id="class-detail-view" class="hidden">
                 <button class="back-btn" onclick="showView('classes-view')">🡠 Torna alle classi</button>
                 
@@ -285,7 +276,6 @@
                     <button class="tab-btn" id="btn-tab-voti" onclick="switchTab('tab-voti')">Voti</button>
                 </div>
 
-                <!-- TAB APPELLO -->
                 <div id="tab-appello" class="tab-content active">
                     <h3>Appello Odierno</h3>
                     <table>
@@ -300,7 +290,6 @@
                     <button class="btn-primary" style="width: auto;" onclick="saveAppello()">Salva Appello</button>
                 </div>
 
-                <!-- TAB FIRMA -->
                 <div id="tab-firma" class="tab-content">
                     <h3>Inserisci Nuova Firma di Lezione</h3>
                     <div style="background:#F8FAFC; padding:20px; border-radius:8px; margin-bottom: 25px; border: 1px solid var(--border-color);">
@@ -340,7 +329,6 @@
                     </table>
                 </div>
 
-                <!-- TAB VOTI -->
                 <div id="tab-voti" class="tab-content">
                     <h3 id="titolo-voti-materia">Registro Valutazioni</h3>
                     
@@ -379,52 +367,77 @@
         </main>
     </div>
 
-    <!-- === LOGICA JAVASCRIPT === -->
     <script>
-        // GENERATORE DATI E NOMI
+        // STRUTTURA ISTITUTO COMPLETA (Da 1A a 5O)
         const TUTTE_LE_CLASSI = [];
         ["1","2","3","4","5"].forEach(a => {
             ["A","B","C","D","E","F","G","H","I","L","M","N","O"].forEach(s => TUTTE_LE_CLASSI.push(a+s));
         });
 
+        // GENERATORE NOMI REALI
         const NOMI = ["Andrea", "Luca", "Giulia", "Martina", "Francesco", "Alessandro", "Sofia", "Lorenzo", "Chiara", "Aurora", "Matteo", "Leonardo", "Ginevra", "Alice", "Giorgia"];
         const COGNOMI = ["Rossi", "Russo", "Ferrari", "Esposito", "Bianchi", "Romano", "Colombo", "Ricci", "Marino", "Greco", "Bruno", "Gallo", "Conti", "De Luca", "Costa"];
 
         function generaAlunni(classeStr) {
-            // Regola richiesta: 3, 4, 5 max 23 alunni. Prime e seconde libere (es 20-27)
             const isTriennio = classeStr.startsWith('3') || classeStr.startsWith('4') || classeStr.startsWith('5');
             let numAlunni = isTriennio ? (Math.floor(Math.random() * 5) + 18) : (Math.floor(Math.random() * 8) + 20); 
-            if(isTriennio && numAlunni > 23) numAlunni = 23; // Garanzia assoluta
+            if(isTriennio && numAlunni > 23) numAlunni = 23; // Rispetto tassativo limite di 23 alunni per le terze, quarte e quinte
 
             let alunni = [];
             for(let i=0; i<numAlunni; i++) {
                 let nomeCompleto = COGNOMI[Math.floor(Math.random()*COGNOMI.length)] + " " + NOMI[Math.floor(Math.random()*NOMI.length)];
                 alunni.push({ id: classeStr + "_" + Date.now() + "_" + i, nome: nomeCompleto });
             }
-            // Ordina alfabeticamente
             alunni.sort((a,b) => a.nome.localeCompare(b.nome));
             return alunni;
         }
 
-        const DATI_INIZIALI = {
-            classi: [
-                { id: "1A", nome: "Classe 1A", materie: ["Italiano", "Storia"] },
-                { id: "2A", nome: "Classe 2A", materie: ["Italiano", "Storia"] },
-                { id: "3B", nome: "Classe 3B", materie: ["Filosofia", "Storia"] }
-            ],
-            alunni: {
-                "1A": generaAlunni("1A"),
-                "2A": generaAlunni("2A"),
-                "3B": generaAlunni("3B") // Verrà generata con max 23 alunni in automatico
-            },
-            appelli: {}, firme: [], voti: [], firmeLibere: [],
-            annoAttivo: "2025/2026"
-        };
+        // Configurazione Reale Definitiva delle Classi del Docente
+        const STRUTTURA_CLASSI_UTENTE = [
+            { id: "2C", nome: "Classe 2C", materie: ["Lingua e Lett. Latine"] },
+            { id: "2O", nome: "Classe 2O", materie: ["Storia", "Geografia"] },
+            { id: "3H", nome: "Classe 3H", materie: ["Lingua e Lettere Italiane"] },
+            { id: "4C", nome: "Classe 4C", materie: ["Lingua e Lettere Italiane"] },
+            { id: "5A", nome: "Classe 5A", materie: ["Lingua e Lett. Latine"] }
+        ];
 
-        let DB = JSON.parse(localStorage.getItem('cv_db_v2')) || DATI_INIZIALI;
+        // ==========================================
+        // 🔐 GESTIONE E RECUPERO DATI PRE-ESISTENTI
+        // ==========================================
+        let memoriaStorica = localStorage.getItem('cv_db') || localStorage.getItem('cv_db_v2');
+        let DB;
 
+        if (memoriaStorica) {
+            DB = JSON.parse(memoriaStorica);
+            if (!DB.firmeLibere) DB.firmeLibere = [];
+            if (!DB.annoAttivo) DB.annoAttivo = "2025/2026";
+            
+            // CORREZIONE E RIPARAZIONE AUTOMATICA:
+            // Se nella memoria è rimasta traccia del vecchio pasticcio (1A, 2A, 3B), lo bonifichiamo all'istante
+            if (DB.classi && DB.classi.some(c => ["1A", "2A", "3B"].includes(c.id))) {
+                DB.classi = JSON.parse(JSON.stringify(STRUTTURA_CLASSI_UTENTE));
+                localStorage.setItem('cv_db', JSON.stringify(DB));
+            }
+        } else {
+            // Primo avviso assoluto (Memoria pulita)
+            DB = {
+                classi: JSON.parse(JSON.stringify(STRUTTURA_CLASSI_UTENTE)),
+                alunni: {},
+                appelli: {}, firme: [], voti: [], firmeLibere: [],
+                annoAttivo: "2025/2026"
+            };
+        }
+
+        // Controllo di sicurezza: se ci sono le tue classi reali ma mancano i loro alunni, generiamo i nomi
+        DB.classi.forEach(cl => {
+            if (!DB.alunni[cl.id] || DB.alunni[cl.id].length === 0) {
+                DB.alunni[cl.id] = generaAlunni(cl.id);
+            }
+        });
+
+        // Salva in modo coerente nel LocalStorage
         function salvaNelTempo() {
-            localStorage.setItem('cv_db_v2', JSON.stringify(DB));
+            localStorage.setItem('cv_db', JSON.stringify(DB));
         }
 
         let currentClasseId = "";
@@ -455,7 +468,6 @@
             document.getElementById('label-anno-attivo').innerText = DB.annoAttivo;
             document.querySelectorAll('.placeholder-anno-testo').forEach(e => e.innerText = DB.annoAttivo);
 
-            // Menu Classi
             const container = document.getElementById('container-elenco-classi');
             container.innerHTML = "";
             DB.classi.forEach(cl => {
@@ -504,7 +516,7 @@
             if(tabId === 'tab-voti') renderVoti();
         }
 
-        // APPELLO (Con Numero di Registro)
+        // APPELLO
         function renderAppello() {
             const body = document.getElementById('appello-body');
             body.innerHTML = "";
@@ -535,10 +547,10 @@
                 DB.appelli[chiave][al.id] = document.getElementById(`appello-select-${al.id}`).value;
             });
             salvaNelTempo();
-            alert("Appello salvato!");
+            alert("Appello salvato con successo!");
         }
 
-        // FIRME E SUPPLENZE (Tab Classe)
+        // FIRME CLASSE
         function renderFirme() {
             const body = document.getElementById('firme-body');
             body.innerHTML = "";
@@ -560,7 +572,7 @@
             const arg = document.getElementById('firma-argomento').value;
             const isSupplenza = document.getElementById('firma-supplenza').checked;
 
-            if(!data || !arg.trim()) return alert("Compila tutti i campi!");
+            if(!data || !arg.trim()) return alert("Compila l'argomento della lezione!");
             
             DB.firme.push({ classeId: currentClasseId, data: data, materia: currentMateria, argomento: arg, supplenza: isSupplenza });
             document.getElementById('firma-argomento').value = "";
@@ -569,7 +581,7 @@
             salvaNelTempo(); renderFirme();
         }
 
-        // VOTI
+        // VALUTAZIONI
         function renderVoti() {
             document.getElementById('titolo-voti-materia').innerText = `Registro Valutazioni - ${currentMateria}`;
             const selAlunno = document.getElementById('voto-alunno');
@@ -603,7 +615,7 @@
 
         function addVotoSingolo() {
             const val = parseFloat(document.getElementById('voto-valore').value);
-            if(!val || val<1 || val>10) return alert("Voto non valido!");
+            if(!val || val<1 || val>10) return alert("Inserisci un voto valido da 1 a 10!");
             DB.voti.push({
                 id: "V_" + Date.now(),
                 alunnoId: document.getElementById('voto-alunno').value, classeId: currentClasseId, materia: currentMateria,
@@ -618,7 +630,7 @@
             salvaNelTempo(); renderVoti();
         }
 
-        // === TUTTE LE CLASSI (ISTITUTO) ===
+        // AREA SUPPLENZE / FIRME LIBERE TUTTO ISTITUTO
         function openTutteClassiView() {
             showView('tutte-classi-view');
             const sel = document.getElementById('tc-classe');
@@ -635,7 +647,7 @@
             const arg = document.getElementById('tc-argomento').value;
             const isSupplenza = document.getElementById('tc-supplenza').checked;
 
-            if(!mat.trim() || !arg.trim()) return alert("Inserisci la materia e l'argomento!");
+            if(!mat.trim() || !arg.trim()) return alert("Compila i campi Materia e Argomento!");
 
             DB.firmeLibere = DB.firmeLibere || [];
             DB.firmeLibere.push({ data, classe: cl, materia: mat, argomento: arg, supplenza: isSupplenza });
@@ -662,13 +674,12 @@
             });
         }
 
-        // === IMPOSTAZIONI E GESTIONE CLASSI ===
+        // CONFIGURAZIONE E IMPOSTAZIONI
         function openSettingsView() {
             showView('settings-view');
             document.getElementById('set-anno-corrente').innerText = DB.annoAttivo;
             document.getElementById('panel-passaggio-anno').classList.add('hidden');
             
-            // Popola Dropdown nuove classi (escludendo quelle già presenti)
             const selNuova = document.getElementById('set-nuova-classe');
             selNuova.innerHTML = "";
             const classiAttualiIds = DB.classi.map(c => c.id);
@@ -676,7 +687,6 @@
                 selNuova.innerHTML += `<option value="${c}">Classe ${c}</option>`;
             });
 
-            // Lista classi correnti da rimuovere
             const lista = document.getElementById('set-lista-classi');
             lista.innerHTML = "";
             DB.classi.forEach(cl => {
@@ -692,59 +702,54 @@
         function aggiungiNuovaClasse() {
             const clId = document.getElementById('set-nuova-classe').value;
             const matStr = document.getElementById('set-materie').value;
-            if(!clId || !matStr.trim()) return alert("Seleziona la classe e scrivi le materie!");
+            if(!clId || !matStr.trim()) return alert("Specifica le materie!");
 
             const materieArr = matStr.split(',').map(m => m.trim());
             
-            // Crea classe e genera alunni
             DB.classi.push({ id: clId, nome: `Classe ${clId}`, materie: materieArr });
             DB.alunni[clId] = generaAlunni(clId);
 
             salvaNelTempo();
             inizializzaApp();
             openSettingsView();
-            alert(`Classe ${clId} aggiunta e studenti generati con successo!`);
+            alert(`Classe ${clId} caricata nel registro.`);
         }
 
         function rimuoviClasse(id) {
-            if(confirm(`Sei sicuro di voler rimuovere la classe ${id} dal tuo registro?`)) {
+            if(confirm(`Eliminare la classe ${id}? L'operazione non è reversibile.`)) {
                 DB.classi = DB.classi.filter(c => c.id !== id);
-                // Pulizia dati facoltativa, ma meglio mantenerli in caso di errore
                 salvaNelTempo();
                 inizializzaApp();
                 openSettingsView();
             }
         }
 
-        // === PASSAGGIO ANNO ===
+        // CAMBIO ANNO SCOLASTICO CONTROLLATO
         function avviaPassaggioAnno() {
             document.getElementById('panel-passaggio-anno').classList.remove('hidden');
             const lista = document.getElementById('list-passaggio-classi');
             lista.innerHTML = "";
 
             if(DB.classi.length === 0) {
-                lista.innerHTML = "<p>Nessuna classe da promuovere.</p>";
+                lista.innerHTML = "<p>Nessuna classe attiva in elenco.</p>";
                 return;
             }
 
             DB.classi.forEach(cl => {
                 let annoNum = parseInt(cl.id.charAt(0));
                 let sez = cl.id.substring(1);
-                
-                let descr = "";
                 let divClasse = "class-list-item";
                 
                 if(annoNum === 5) {
-                    descr = `<span style="color:var(--red-fail); font-weight:bold;">Sostiene Maturità e uscirà dall'elenco.</span>`;
-                    lista.innerHTML += `<div class="${divClasse}"><div><strong>${cl.id}</strong> -> ${descr}</div></div>`;
+                    lista.innerHTML += `<div class="${divClasse}"><div><strong>${cl.id}</strong> -> <span style="color:var(--red-fail); font-weight:bold;">Esce dal ciclo (Maturità / Classi di 5°)</span></div></div>`;
                 } else {
                     let nextId = (annoNum + 1) + sez;
                     lista.innerHTML += `
                         <div class="${divClasse}" style="background:#F0FDF4; border:1px solid #BBF7D0;">
-                            <div><strong>${cl.id}</strong> diventerà <strong>${nextId}</strong></div>
+                            <div><strong>${cl.id}</strong> diventerà la futura <strong>${nextId}</strong></div>
                             <div class="checkbox-wrapper" style="margin:0;">
                                 <input type="checkbox" id="pass-${cl.id}" checked>
-                                <label for="pass-${cl.id}" style="cursor:pointer; color:#166534;">Mantieni nel mio orario</label>
+                                <label for="pass-${cl.id}" style="cursor:pointer; color:#166534;">Continua a seguire questa classe</label>
                             </div>
                         </div>
                     `;
@@ -753,9 +758,8 @@
         }
 
         function confermaPassaggioAnno() {
-            if(!confirm("ATTENZIONE: Questa operazione archivierà l'anno corrente, svuoterà i voti e promuoverà le classi. Sei sicuro?")) return;
+            if(!confirm("Confermi l'avanzamento d'anno? I voti attuali verranno azzerati e le classi selezionate verranno promosse.")) return;
 
-            // Incrementa l'anno (es. 2025/2026 -> 2026/2027)
             let anni = DB.annoAttivo.split('/');
             let nuovoAnnoStr = `${parseInt(anni[0])+1}/${parseInt(anni[1])+1}`;
 
@@ -771,14 +775,11 @@
                     if(chk && chk.checked) {
                         let nextId = (annoNum + 1) + sez;
                         nuoveClassi.push({ id: nextId, nome: `Classe ${nextId}`, materie: cl.materie });
-                        
-                        // Riporta gli studenti al nuovo ID classe
                         nuoviAlunni[nextId] = DB.alunni[cl.id] || [];
                     }
                 }
             });
 
-            // Resetta stato per il nuovo anno
             DB.annoAttivo = nuovoAnnoStr;
             DB.classi = nuoveClassi;
             DB.alunni = nuoviAlunni;
@@ -789,9 +790,8 @@
             salvaNelTempo();
             inizializzaApp();
             showView('dashboard-view');
-            alert(`Avanzamento completato! Benvenuto nell'A.S. ${nuovoAnnoStr}`);
+            alert(`Registro aggiornato correttamente all'A.S. ${nuovoAnnoStr}`);
         }
-
     </script>
 </body>
 </html>
