@@ -127,7 +127,6 @@
 </head>
 <body>
 
-    <!-- SCHERMATA LOGIN -->
     <div id="login-view">
         <div class="login-box">
             <h2>ClasseViva Docenti</h2>
@@ -138,7 +137,6 @@
         </div>
     </div>
 
-    <!-- SCHERMATA PRINCIPALE -->
     <div id="app-view" class="hidden">
         <header>
             <div id="user-info">Prof. Alfonso Censabella (<span id="label-anno-attivo">2025/2026</span>)</div>
@@ -146,7 +144,6 @@
         </header>
         
         <main>
-            <!-- MENU PRINCIPALE -->
             <div id="dashboard-view">
                 <h2>Menu Principale</h2>
                 <div class="menu-grid">
@@ -158,9 +155,9 @@
                         <h3>🏫 Tutte le Classi</h3>
                         <p>Firme Libere e Supplenze d'Istituto</p>
                     </div>
-                    <div class="menu-card" onclick="alert('Funzione in via di sviluppo!')">
+                    <div class="menu-card" onclick="openAgendaView()">
                         <h3>📅 Agenda Generale</h3>
-                        <p>Calendario unificato impegni</p>
+                        <p>Scadenze, Compiti e Impegni</p>
                     </div>
                     <div class="menu-card settings-card" onclick="openSettingsView()">
                         <h3>⚙️ Impostazioni e Backup</h3>
@@ -169,14 +166,61 @@
                 </div>
             </div>
 
-            <!-- LE MIE CLASSI (SCELTA) -->
             <div id="classes-view" class="hidden">
                 <button class="back-btn" onclick="showView('dashboard-view')">🡠 Torna al menu</button>
                 <h2>Le mie classi assegnate (<span class="placeholder-anno-testo"></span>)</h2>
                 <div class="menu-grid" id="container-elenco-classi"></div>
             </div>
 
-            <!-- TUTTE LE CLASSI DELL'ISTITUTO -->
+            <div id="agenda-view" class="hidden">
+                <button class="back-btn" onclick="showView('dashboard-view')">🡠 Torna al menu</button>
+                <h2>📅 Agenda Generale Impegni e Scadenze</h2>
+                
+                <div style="background:#F8FAFC; padding:20px; border-radius:8px; border:1px solid var(--border-color); margin-bottom: 25px;">
+                    <h3 style="margin-top:0; color:var(--primary-dark)">➕ Aggiungi un nuovo impegno in Agenda</h3>
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 15px;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Data</label>
+                            <input type="date" id="age-data">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Tipo Impegno</label>
+                            <select id="age-tipo">
+                                <option value="📝 Compito in classe">📝 Compito in classe</option>
+                                <option value="🗣️ Verifica Orale">🗣️ Verifica Orale</option>
+                                <option value="👥 Consiglio di Classe">👥 Consiglio di Classe</option>
+                                <option value="🔔 Scadenza / Altro">🔔 Scadenza / Altro</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Classe Interessata</label>
+                            <select id="age-classe-select">
+                                <option value="Tutte">Tutte le mie classi</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0; flex-grow: 1;">
+                            <label>Titolo / Descrizione</label>
+                            <input type="text" id="age-titolo" placeholder="Es. Verifica capitolo 4, consegna tesine..." style="width:100%;">
+                        </div>
+                    </div>
+                    <button class="btn-primary" style="width: auto; margin:0;" onclick="addAgendaEvent()">Inserisci in Agenda</button>
+                </div>
+
+                <h3>Elenco Cronologico Impegni e Scadenze</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">Data</th>
+                            <th style="width: 15%;">Classe</th>
+                            <th style="width: 20%;">Tipo</th>
+                            <th>Descrizione</th>
+                            <th style="width: 10%; text-align:center;">Rimuovi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="agenda-body"></tbody>
+                </table>
+            </div>
+
             <div id="tutte-classi-view" class="hidden">
                 <button class="back-btn" onclick="showView('dashboard-view')">🡠 Torna al menu</button>
                 <h2>🏫 Firme Libere e Supplenze su Tutto l'Istituto</h2>
@@ -241,12 +285,10 @@
                 </table>
             </div>
 
-            <!-- IMPOSTAZIONI -->
             <div id="settings-view" class="hidden">
                 <button class="back-btn" onclick="showView('dashboard-view')">🡠 Torna al menu</button>
                 <h2>⚙️ Impostazioni: Gestione Classi, Anno e Sicurezza Dati</h2>
                 
-                <!-- NUOVO BLOCCO SICUREZZA E BACKUP -->
                 <div class="settings-card" style="background: #F0FDF4; border-color: #BBF7D0;">
                     <h3 style="color: #166534; margin-top: 0;">💾 Salvataggio & Backup Sicuro (Consigliato)</h3>
                     <p style="font-size: 14px; margin-top: 5px; color: #1e293b;">
@@ -292,7 +334,6 @@
                 </div>
             </div>
 
-            <!-- DETTAGLIO CLASSE -->
             <div id="class-detail-view" class="hidden">
                 <button class="back-btn" onclick="showView('classes-view')">🡠 Torna alle classi</button>
                 
@@ -310,7 +351,6 @@
                     <button class="tab-btn" id="btn-tab-voti" onclick="switchTab('tab-voti')">Voti</button>
                 </div>
 
-                <!-- TAB APPELLO -->
                 <div id="tab-appello" class="tab-content active">
                     <h3>Appello Odierno</h3>
                     <table>
@@ -325,7 +365,6 @@
                     <button class="btn-primary" style="width: auto;" onclick="saveAppello()">Salva Appello</button>
                 </div>
 
-                <!-- TAB FIRMA -->
                 <div id="tab-firma" class="tab-content">
                     <h3>Inserisci Nuova Firma di Lezione</h3>
                     <div style="background:#F8FAFC; padding:20px; border-radius:8px; margin-bottom: 25px; border: 1px solid var(--border-color);">
@@ -382,11 +421,9 @@
                     </table>
                 </div>
 
-                <!-- TAB VOTI -->
                 <div id="tab-voti" class="tab-content">
                     <h3 id="titolo-voti-materia">Registro Valutazioni</h3>
                     
-                    <!-- SOTTOFORM VOTO SINGOLO -->
                     <div id="form-voto-singolo" class="form-group" style="background:#F8FAFC; padding:20px; border-radius:8px; border:1px solid var(--border-color); display: flex; flex-direction: column; gap:10px;">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
                             <h4 style="margin:0; color:#475569;">Aggiungi Valutazione Singola</h4>
@@ -408,7 +445,6 @@
                         </div>
                     </div>
 
-                    <!-- SOTTOFORM VOTI FLASH POTENZIATO -->
                     <div id="form-voti-flash" class="form-group hidden" style="background:#FFF9E6; padding:20px; border-radius:8px; border:1px solid #FCD34D; display: flex; flex-direction: column; gap:10px;">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
                             <h4 style="margin:0; color:#B45309;">⚡ Inserimento Rapido Voti Flash (Tutta la classe)</h4>
@@ -421,9 +457,7 @@
                         </div>
                         
                         <p style="font-size:12px; margin:0; color:#92400E;">* Inserisci i voti solo per gli alunni che hanno svolto la prova. Gli altri rimarranno vuoti.</p>
-                        <div id="vf-griglia-alunni" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:8px; max-height:230px; overflow-y:auto; background:white; padding:12px; border-radius:6px; border:1px solid #CBD5E1;">
-                            <!-- Generato da JS -->
-                        </div>
+                        <div id="vf-griglia-alunni" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:8px; max-height:230px; overflow-y:auto; background:white; padding:12px; border-radius:6px; border:1px solid #CBD5E1;"></div>
                         <button class="btn-primary" style="background:#D97706; width: max-content; padding:10px 25px; margin-top:5px;" onclick="salvaVotiFlashCollettivi()">Registra tutti i voti flash</button>
                     </div>
 
@@ -445,15 +479,15 @@
         </main>
     </div>
 
-    <!-- === LOGICA JAVASCRIPT === -->
     <script>
         const TUTTE_LE_CLASSI = [];
         ["1","2","3","4","5"].forEach(a => {
             ["A","B","C","D","E","F","G","H","I","L","M","N","O"].forEach(s => TUTTE_LE_CLASSI.push(a+s));
         });
 
-        const NOMI = ["Andrea", "Luca", "Giulia", "Martina", "Francesco", "Alessandro", "Sofia", "Lorenzo", "Chiara", "Aurora", "Matteo", "Leonardo", "Ginevra", "Alice", "Giorgia"];
-        const COGNOMI = ["Rossi", "Russo", "Ferrari", "Esposito", "Bianchi", "Romano", "Colombo", "Ricci", "Marino", "Greco", "Bruno", "Gallo", "Conti", "De Luca", "Costa"];
+        // POOL AMPLIATO DI NOMI E COGNOMI PER EVITARE REPLICHE ASSIDUE
+        const NOMI = ["Andrea", "Luca", "Giulia", "Martina", "Francesco", "Alessandro", "Sofia", "Lorenzo", "Chiara", "Aurora", "Matteo", "Leonardo", "Ginevra", "Alice", "Giorgia", "Tommaso", "Gabriele", "Emma", "Riccardo", "Beatrice", "Edoardo", "Sara", "Federico", "Anna", "Giovanni", "Elena", "Filippo", "Gaia", "Samuele", "Noemi", "Marco", "Ludovica", "Christian", "Matilde", "Antonio", "Davide", "Manuel", "Simone", "Vittoria", "Viola"];
+        const COGNOMI = ["Rossi", "Russo", "Ferrari", "Esposito", "Bianchi", "Romano", "Colombo", "Ricci", "Marino", "Greco", "Bruno", "Gallo", "Conti", "De Luca", "Costa", "Giordano", "Mancini", "Rizzo", "Lombardi", "Moretti", "Barbieri", "Fontana", "Santoro", "Mariani", "Magnani", "Rinaldi", "Caruso", "Ferrara", "Galli", "Martini", "Leone", "Longo", "Gentile", "Martinelli", "Vitale", "Serra", "Coppola", "Marchetti", "Parigi", "Villa", "Conte", "Ferri", "Fabbri", "Carbone", "Marini", "Benedetti", "Barone", "Caputo", "Monti", "Silvestri", "Grassi", "Pellegrini"];
 
         function generaAlunni(classeStr) {
             const isTriennio = classeStr.startsWith('3') || classeStr.startsWith('4') || classeStr.startsWith('5');
@@ -461,9 +495,19 @@
             if(isTriennio && numAlunni > 23) numAlunni = 23;
 
             let alunni = [];
+            let cognomiDisponibili = [...COGNOMI]; // Copia locale per pescare senza rimpiazzo immediato
+
             for(let i=0; i<numAlunni; i++) {
-                let nomeCompleto = COGNOMI[Math.floor(Math.random()*COGNOMI.length)] + " " + NOMI[Math.floor(Math.random()*NOMI.length)];
-                alunni.push({ id: classeStr + "_" + Date.now() + "_" + i, nome: nomeCompleto });
+                if(cognomiDisponibili.length === 0) cognomiDisponibili = [...COGNOMI];
+                
+                let idxCognome = Math.floor(Math.random() * cognomiDisponibili.length);
+                let cognomeScelto = cognomiDisponibili.splice(idxCognome, 1)[0];
+                let nomeScelto = NOMI[Math.floor(Math.random() * NOMI.length)];
+                let nomeCompleto = cognomeScelto + " " + nomeScelto;
+                
+                if (alunni.some(al => al.nome === nomeCompleto)) { i--; continue; } // Evita cloni totali esatti
+
+                alunni.push({ id: classeStr + "_" + Date.now() + "_" + i + "_" + Math.floor(Math.random()*1000), nome: nomeCompleto });
             }
             alunni.sort((a,b) => a.nome.localeCompare(b.nome));
             return alunni;
@@ -481,17 +525,33 @@
         if (!localStorage.getItem('cv_db')) {
             DB = {
                 classi: JSON.parse(JSON.stringify(STRUTTURA_CLASSI_UTENTE)),
-                alunni: {}, appelli: {}, firme: [], voti: [], firmeLibere: [],
+                alunni: {}, appelli: {}, firme: [], voti: [], firmeLibere: [], agenda: [],
                 annoAttivo: "2025/2026"
             };
             DB.classi.forEach(cl => { DB.alunni[cl.id] = generaAlunni(cl.id); });
+            ordinaClassi();
             localStorage.setItem('cv_db', JSON.stringify(DB));
         } else {
             DB = JSON.parse(localStorage.getItem('cv_db'));
+            if (!DB.agenda) DB.agenda = [];
             DB.classi.forEach(cl => { if (!DB.alunni[cl.id]) DB.alunni[cl.id] = generaAlunni(cl.id); });
+            ordinaClassi();
         }
 
         function salvaNelTempo() { localStorage.setItem('cv_db', JSON.stringify(DB)); }
+
+        // ALGORITMO DI ORDINAMENTO DELLE CLASSI (1-5, A-O)
+        function ordinaClassi() {
+            if(!DB.classi) return;
+            DB.classi.sort((a, b) => {
+                let numA = parseInt(a.id.match(/\d+/)[0]);
+                let numB = parseInt(b.id.match(/\d+/)[0]);
+                if (numA !== numB) return numA - numB;
+                let secA = a.id.replace(/\d+/, "");
+                let secB = b.id.replace(/\d+/, "");
+                return secA.localeCompare(secB);
+            });
+        }
 
         let currentClasseId = ""; let currentMateria = "";
 
@@ -503,12 +563,17 @@
             }
         }
         function logout() { document.getElementById('app-view').classList.add('hidden'); document.getElementById('login-view').classList.remove('hidden'); }
+        
         function showView(vId) {
-            ['dashboard-view', 'classes-view', 'tutte-classi-view', 'settings-view', 'class-detail-view'].forEach(v => document.getElementById(v).classList.add('hidden'));
+            ['dashboard-view', 'classes-view', 'tutte-classi-view', 'settings-view', 'class-detail-view', 'agenda-view'].forEach(v => {
+                const el = document.getElementById(v);
+                if(el) el.classList.add('hidden');
+            });
             document.getElementById(vId).classList.remove('hidden');
         }
 
         function inizializzaApp() {
+            ordinaClassi();
             document.getElementById('label-anno-attivo').innerText = DB.annoAttivo;
             document.querySelectorAll('.placeholder-anno-testo').forEach(e => e.innerText = DB.annoAttivo);
             const container = document.getElementById('container-elenco-classi');
@@ -608,23 +673,19 @@
             (DB.alunni[currentClasseId]||[]).forEach(al => {
                 const stato = document.getElementById(`appello-select-${al.id}`).value;
                 const ora = document.getElementById(`appello-ora-${al.id}`).value;
-                
                 if(['R','U'].includes(stato) && !ora) erroreOra = true;
-
                 DB.appelli[chiave][al.id] = { stato: stato, ora: ora };
             });
 
             if(erroreOra) {
-                alert("Attenzione: Hai inserito dei ritardi o uscite senza specificare il numero dell'ora! Controlla prima di salvare.");
+                alert("Attenzione: Hai inserito dei ritardi o uscite senza specificare il numero dell'ora!");
                 return;
             }
-
-            salvaNelTempo();
-            alert("Appello e scansione oraria salvati con successo!");
+            salvaNelTempo(); alert("Appello e scansione oraria salvati con successo!");
         }
 
         // ===============================================
-        // ✍️ FIRME LEZIONI CON NUMERO E DETTAGLIO ORE
+        // ✍️ FIRME LEZIONI
         // ===============================================
         function renderFirme() {
             const body = document.getElementById('firme-body');
@@ -633,13 +694,7 @@
             filtrate.reverse().forEach(f => {
                 let badge = f.supplenza ? `<span class="badge-supplenza">SUPPLENZA</span>` : "";
                 let indicatoriOre = `<br><small style="color:#64748B;">Svolta alla <strong>${f.oraLezione || '1^'} ora</strong> per un totale di <strong>${f.numOre || '1'} ore</strong></small>`;
-                body.innerHTML += `
-                    <tr>
-                        <td><code>${f.data}</code></td>
-                        <td><span style="font-weight:600; color:var(--primary-dark);">${f.materia}</span> ${badge} ${indicatoriOre}</td>
-                        <td>${f.argomento}</td>
-                    </tr>
-                `;
+                body.innerHTML += `<tr><td><code>${f.data}</code></td><td><span style="font-weight:600; color:var(--primary-dark);">${f.materia}</span> ${badge} ${indicatoriOre}</td><td>${f.argomento}</td></tr>`;
             });
         }
 
@@ -652,13 +707,9 @@
 
             if(!data || !arg.trim()) return alert("Compila l'argomento della lezione!");
             
-            DB.firme.push({ 
-                classeId: currentClasseId, data: data, materia: currentMateria, argomento: arg, supplenza: isSupplenza,
-                numOre: numOre, oraLezione: oraLezione
-            });
+            DB.firme.push({ classeId: currentClasseId, data: data, materia: currentMateria, argomento: arg, supplenza: isSupplenza, numOre: numOre, oraLezione: oraLezione });
             document.getElementById('firma-argomento').value = "";
             document.getElementById('firma-supplenza').checked = false;
-            
             salvaNelTempo(); renderFirme();
         }
 
@@ -669,11 +720,9 @@
             if(tipo === 'flash') {
                 document.getElementById('form-voto-singolo').classList.add('hidden');
                 document.getElementById('form-voti-flash').classList.remove('hidden');
-                
                 const griglia = document.getElementById('vf-griglia-alunni');
                 griglia.innerHTML = "";
-                const alunni = DB.alunni[currentClasseId] || [];
-                alunni.forEach(al => {
+                (DB.alunni[currentClasseId] || []).forEach(al => {
                     griglia.innerHTML += `
                         <div style="display:flex; justify-content:space-between; align-items:center; background:#FFFDF2; padding:6px 10px; border-radius:6px; border:1px solid #FCD34D;">
                             <span style="font-size:13px; font-weight:600; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; max-width:180px;">${al.nome}</span>
@@ -692,16 +741,12 @@
             const selAlunno = document.getElementById('voto-alunno');
             selAlunno.innerHTML = "";
             const alunni = DB.alunni[currentClasseId] || [];
-            alunni.forEach((al, index) => {
-                selAlunno.innerHTML += `<option value="${al.id}">${index+1}. ${al.nome}</option>`;
-            });
+            alunni.forEach((al, index) => { selAlunno.innerHTML += `<option value="${al.id}">${index+1}. ${al.nome}</option>`; });
 
-            const body = document.getElementById('voti-body');
-            body.innerHTML = "";
+            const body = document.getElementById('voti-body'); body.innerHTML = "";
 
             alunni.forEach((al, index) => {
                 const getVoti = (per) => DB.voti.filter(v => v.alunnoId === al.id && v.materia === currentMateria && v.periodo === per);
-                
                 const formatBox = (arr) => arr.map(v => {
                     let commentoEsteso = v.commento ? `title="Nota: ${v.commento}" style="background:#FEF3C7; border:1px solid #D97706; cursor:help;"` : "";
                     return `<div class="voto-box" ${commentoEsteso}><span class="${v.valore>=6?'voto-verde':'voto-rosso'}">${v.valore}</span><span class="btn-delete-voto" onclick="cancellaVoto('${v.id}')">×</span></div>`;
@@ -727,14 +772,8 @@
             const commento = document.getElementById('voto-commento-singolo').value.trim();
             if(!val || val<1 || val>10) return alert("Inserisci un voto valido da 1 a 10!");
             
-            DB.voti.push({
-                id: "V_" + Date.now(),
-                alunnoId: document.getElementById('voto-alunno').value, classeId: currentClasseId, materia: currentMateria,
-                valore: val, tipo: document.getElementById('voto-tipo').value, periodo: document.getElementById('voto-periodo').value,
-                commento: commento
-            });
-            document.getElementById('voto-valore').value = "";
-            document.getElementById('voto-commento-singolo').value = "";
+            DB.voti.push({ id: "V_" + Date.now(), alunnoId: document.getElementById('voto-alunno').value, classeId: currentClasseId, materia: currentMateria, valore: val, tipo: document.getElementById('voto-tipo').value, periodo: document.getElementById('voto-periodo').value, commento: commento });
+            document.getElementById('voto-valore').value = ""; document.getElementById('voto-commento-singolo').value = "";
             salvaNelTempo(); renderVoti();
         }
 
@@ -743,7 +782,6 @@
             const periodo = document.getElementById('vf-periodo').value;
             const commentoGenerale = document.getElementById('vf-commento-collettivo').value.trim();
             const alunni = DB.alunni[currentClasseId] || [];
-            
             let votiSalvati = 0;
 
             alunni.forEach((al, index) => {
@@ -751,125 +789,133 @@
                 if (inputVoto && inputVoto.value !== "") {
                     const valore = parseFloat(inputVoto.value);
                     if (valore >= 1 && valore <= 10) {
-                        DB.voti.push({
-                            id: "V_FLASH_" + Date.now() + "_" + index,
-                            alunnoId: al.id, classeId: currentClasseId, materia: currentMateria,
-                            valore: valore, tipo: tipo, periodo: periodo,
-                            commento: commentoGenerale || "Voto Rapido Flash"
-                        });
+                        DB.voti.push({ id: "V_FLASH_" + Date.now() + "_" + index, alunnoId: al.id, classeId: currentClasseId, materia: currentMateria, valore: valore, tipo: tipo, periodo: periodo, commento: commentoGenerale || "Voto Rapido Flash" });
                         votiSalvati++;
                     }
                 }
             });
 
-            if(votiSalvati === 0) {
-                alert("Non hai inserito nessun voto numerico nei campi!");
-                return;
-            }
-
+            if(votiSalvati === 0) return alert("Non hai inserito nessun voto numerico nei campi!");
             document.getElementById('vf-commento-collettivo').value = "";
-            salvaNelTempo();
-            toggleFormVoti('singolo');
-            renderVoti();
+            salvaNelTempo(); toggleFormVoti('singolo'); renderVoti();
             alert(`Registrati correttamente ${votiSalvati} voti con nota collettiva applicata!`);
         }
 
-        function cancellaVoto(id) {
-            DB.voti = DB.voti.filter(v => v.id !== id);
-            salvaNelTempo(); renderVoti();
+        function cancellaVoto(id) { DB.voti = DB.voti.filter(v => v.id !== id); salvaNelTempo(); renderVoti(); }
+
+        // ===============================================
+        // 📅 AGENDA GENERALE COMPLETA ED OPERATIVA
+        // ===============================================
+        function openAgendaView() {
+            showView('agenda-view');
+            document.getElementById('age-data').valueAsDate = new Date();
+            document.getElementById('age-titolo').value = "";
+            
+            const sel = document.getElementById('age-classe-select');
+            sel.innerHTML = '<option value="Tutte">Tutte le mie classi</option>';
+            DB.classi.forEach(cl => { sel.innerHTML += `<option value="${cl.id}">Classe ${cl.id}</option>`; });
+            renderAgenda();
         }
+
+        function addAgendaEvent() {
+            const data = document.getElementById('age-data').value;
+            const tipo = document.getElementById('age-tipo').value;
+            const classe = document.getElementById('age-classe-select').value;
+            const titolo = document.getElementById('age-titolo').value.trim();
+
+            if(!data || !titolo) return alert("Compila la data e il titolo della scadenza!");
+
+            DB.agenda.push({ id: "E_" + Date.now(), data: data, tipo: tipo, classe: classe, titolo: titolo });
+            document.getElementById('age-titolo').value = "";
+            salvaNelTempo(); renderAgenda();
+        }
+
+        function renderAgenda() {
+            const body = document.getElementById('agenda-body'); body.innerHTML = "";
+            
+            // Ordinamento per data crescente (impegni imminenti per primi)
+            DB.agenda.sort((a,b) => new Date(a.data) - new Date(b.data));
+
+            if(DB.agenda.length === 0) {
+                body.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748B; padding:20px;">Nessun impegno pianificato nell'agenda di istituto.</td></tr>`;
+                return;
+            }
+
+            DB.agenda.forEach(ev => {
+                let badgeClasse = ev.classe === "Tutte" ? `<span style="background:#E2E8F0; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold;">TUTTE</span>` : `<span style="background:#FFF5F5; border:1px solid #FECACA; color:var(--primary-dark); padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold;">${ev.classe}</span>`;
+                body.innerHTML += `
+                    <tr>
+                        <td><code>${ev.data.split('-').reverse().join('/')}</code></td>
+                        <td>${badgeClasse}</td>
+                        <td><strong>${ev.tipo}</strong></td>
+                        <td>${ev.titolo}</td>
+                        <td style="text-align:center;"><button class="btn-danger" style="padding:4px 8px;" onclick="cancellaEventoAgenda('${ev.id}')">🗑</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function cancellaEventoAgenda(id) { DB.agenda = DB.agenda.filter(ev => ev.id !== id); salvaNelTempo(); renderAgenda(); }
 
         // ===============================================
         // 🏫 FIRME D'ISTITUTO / SUPPLENZE GENERALI
         // ===============================================
         function openTutteClassiView() {
             showView('tutte-classi-view');
-            const sel = document.getElementById('tc-classe');
-            sel.innerHTML = "";
+            const sel = document.getElementById('tc-classe'); sel.innerHTML = "";
             TUTTE_LE_CLASSI.forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
             document.getElementById('tc-data').valueAsDate = new Date();
             renderFirmeLibere();
         }
 
         function addFirmaLibera() {
-            const cl = document.getElementById('tc-classe').value;
-            const data = document.getElementById('tc-data').value;
-            const mat = document.getElementById('tc-materia').value;
-            const arg = document.getElementById('tc-argomento').value;
-            const isSupplenza = document.getElementById('tc-supplenza').checked;
-            const numOre = document.getElementById('tc-num-ore').value;
+            const cl = document.getElementById('tc-classe').value; const data = document.getElementById('tc-data').value;
+            const mat = document.getElementById('tc-materia').value; const arg = document.getElementById('tc-argomento').value;
+            const isSupplenza = document.getElementById('tc-supplenza').checked; const numOre = document.getElementById('tc-num-ore').value;
             const oraLezione = document.getElementById('tc-ora-lezione').value;
 
             if(!mat.trim() || !arg.trim()) return alert("Compila i campi Materia e Argomento!");
-
             DB.firmeLibere = DB.firmeLibere || [];
-            DB.firmeLibere.push({ 
-                data, classe: cl, materia: mat, argomento: arg, supplenza: isSupplenza,
-                numOre: numOre, oraLezione: oraLezione 
-            });
+            DB.firmeLibere.push({ data, classe: cl, materia: mat, argomento: arg, supplenza: isSupplenza, numOre: numOre, oraLezione: oraLezione });
             
-            document.getElementById('tc-materia').value = "";
-            document.getElementById('tc-argomento').value = "";
+            document.getElementById('tc-materia').value = ""; document.getElementById('tc-argomento').value = "";
             document.getElementById('tc-supplenza').checked = false;
             salvaNelTempo(); renderFirmeLibere();
         }
 
         function renderFirmeLibere() {
-            const body = document.getElementById('tc-firme-body');
-            body.innerHTML = "";
+            const body = document.getElementById('tc-firme-body'); body.innerHTML = "";
             (DB.firmeLibere || []).slice().reverse().forEach(f => {
                 let badge = f.supplenza ? `<span class="badge-supplenza">SUPPLENZA</span>` : `<span style="background:#E2E8F0; padding:4px 8px; border-radius:4px; font-size:12px;">LEZ. REGOLARE</span>`;
                 let infoOrario = `<br><small style="color:#64748B;">Svolta alla <strong>${f.oraLezione || '1^'} ora</strong> (${f.numOre || 1}h totali)</small>`;
-                body.innerHTML += `
-                    <tr>
-                        <td><code>${f.data}</code></td>
-                        <td><strong>${f.classe}</strong></td>
-                        <td><span style="font-weight:bold;">${f.materia}</span>${infoOrario}</td>
-                        <td>${f.argomento}</td>
-                        <td>${badge}</td>
-                    </tr>
-                `;
+                body.innerHTML += `<tr><td><code>${f.data}</code></td><td><strong>${f.classe}</strong></td><td><span style="font-weight:bold;">${f.materia}</span>${infoOrario}</td><td>${f.argomento}</td><td>${badge}</td></tr>`;
             });
         }
 
         // ===============================================
-        // 💾 NUOVE FUNZIONI DI EXPORT / IMPORT BACKUP
+        // 💾 EXPORT / IMPORT BACKUP
         // ===============================================
         function esportaBackup() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(DB));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
+            const downloadAnchor = document.createElement('a'); downloadAnchor.setAttribute("href", dataStr);
             downloadAnchor.setAttribute("download", `BACKUP_REGISTRO_${DB.annoAttivo.replace('/','-')}.json`);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
+            document.body.appendChild(downloadAnchor); downloadAnchor.click(); downloadAnchor.remove();
         }
 
         function importaBackup(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            if(!confirm("Attenzione: caricando questo file sovrascriverai i dati attualmente presenti in questo browser. Vuoi continuare?")) {
-                event.target.value = "";
-                return;
-            }
+            const file = event.target.files[0]; if (!file) return;
+            if(!confirm("Attenzione: caricando questo file sovrascriverai i dati correnti. Continuare?")) { event.target.value = ""; return; }
 
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const importato = JSON.parse(e.target.result);
                     if (importato.classi && importato.alunni && importato.voti) {
-                        DB = importato;
-                        salvaNelTempo();
-                        inizializzaApp();
-                        openSettingsView();
+                        DB = importato; if(!DB.agenda) DB.agenda = [];
+                        ordinaClassi(); salvaNelTempo(); inizializzaApp(); openSettingsView();
                         alert("🎉 Backup ripristinato ed applicato con successo!");
-                    } else {
-                        alert("Errore: Il file selezionato non è un backup valido di questo registro.");
-                    }
-                } catch (err) {
-                    alert("Errore critico durante la lettura del file di backup.");
-                }
+                    } else { alert("Errore: File non valido."); }
+                } catch (err) { alert("Errore durante la lettura del file."); }
                 event.target.value = "";
             };
             reader.readAsText(file);
@@ -883,85 +929,57 @@
             document.getElementById('set-anno-corrente').innerText = DB.annoAttivo;
             document.getElementById('panel-passaggio-anno').classList.add('hidden');
             
-            const selNuova = document.getElementById('set-nuova-classe');
-            selNuova.innerHTML = "";
+            const selNuova = document.getElementById('set-nuova-classe'); selNuova.innerHTML = "";
             const classiAttualiIds = DB.classi.map(c => c.id);
-            TUTTE_LE_CLASSI.filter(c => !classiAttualiIds.includes(c)).forEach(c => {
-                selNuova.innerHTML += `<option value="${c}">Classe ${c}</option>`;
-            });
+            TUTTE_LE_CLASSI.filter(c => !classiAttualiIds.includes(c)).forEach(c => { selNuova.innerHTML += `<option value="${c}">Classe ${c}</option>`; });
 
-            const lista = document.getElementById('set-lista-classi');
-            lista.innerHTML = "";
+            const lista = document.getElementById('set-lista-classi'); lista.innerHTML = "";
             DB.classi.forEach(cl => {
-                lista.innerHTML += `
-                    <div class="class-list-item">
-                        <div><strong>${cl.nome}</strong> - Materie: ${cl.materie.join(', ')}</div>
-                        <button class="btn-danger" onclick="rimuoviClasse('${cl.id}')">🗑 Rimuovi</button>
-                    </div>
-                `;
+                lista.innerHTML += `<div class="class-list-item"><div><strong>${cl.nome}</strong> - Materie: ${cl.materie.join(', ')}</div><button class="btn-danger" onclick="rimuoviClasse('${cl.id}')">🗑 Rimuovi</button></div>`;
             });
         }
 
         function aggiungiNuovaClasse() {
-            const clId = document.getElementById('set-nuova-classe').value;
-            const matStr = document.getElementById('set-materie').value;
+            const clId = document.getElementById('set-nuova-classe').value; const matStr = document.getElementById('set-materie').value;
             if(!clId || !matStr.trim()) return alert("Specifica le materie!");
 
             const materieArr = matStr.split(',').map(m => m.trim());
             DB.classi.push({ id: clId, nome: `Classe ${clId}`, materie: materieArr });
             DB.alunni[clId] = generaAlunni(clId);
-
-            salvaNelTempo(); inizializzaApp(); openSettingsView();
-            alert(`Classe ${clId} caricata nel registro.`);
+            
+            ordinaClassi(); salvaNelTempo(); inizializzaApp(); openSettingsView();
+            alert(`Classe ${clId} caricata e ordinata nel registro.`);
         }
 
         function rimuoviClasse(id) {
             if(confirm(`Eliminare la classe ${id}? L'operazione non è reversibile.`)) {
-                DB.classi = DB.classi.filter(c => c.id !== id);
-                salvaNelTempo(); inizializzaApp(); openSettingsView();
+                DB.classi = DB.classi.filter(c => c.id !== id); salvaNelTempo(); inizializzaApp(); openSettingsView();
             }
         }
 
         function avviaPassaggioAnno() {
             document.getElementById('panel-passaggio-anno').classList.remove('hidden');
-            const lista = document.getElementById('list-passaggio-classi');
-            lista.innerHTML = "";
-
+            const lista = document.getElementById('list-passaggio-classi'); lista.innerHTML = "";
             if(DB.classi.length === 0) { lista.innerHTML = "<p>Nessuna classe attiva in elenco.</p>"; return; }
 
             DB.classi.forEach(cl => {
-                let annoNum = parseInt(cl.id.charAt(0));
-                let sez = cl.id.substring(1);
-                
+                let annoNum = parseInt(cl.id.charAt(0)); let sez = cl.id.substring(1);
                 if(annoNum === 5) {
                     lista.innerHTML += `<div class="class-list-item"><div><strong>${cl.id}</strong> -> <span style="color:var(--red-fail); font-weight:bold;">Esce dal ciclo (Maturità)</span></div></div>`;
                 } else {
                     let nextId = (annoNum + 1) + sez;
-                    lista.innerHTML += `
-                        <div class="class-list-item" style="background:#F0FDF4; border:1px solid #BBF7D0; margin-bottom:4px;">
-                            <div><strong>${cl.id}</strong> diventerà la futura <strong>${nextId}</strong></div>
-                            <div class="checkbox-wrapper" style="margin:0;">
-                                <input type="checkbox" id="pass-${cl.id}" checked>
-                                <label for="pass-${cl.id}" style="cursor:pointer; color:#166534;">Continua a seguire</label>
-                            </div>
-                        </div>
-                    `;
+                    lista.innerHTML += `<div class="class-list-item" style="background:#F0FDF4; border:1px solid #BBF7D0; margin-bottom:4px;"><div><strong>${cl.id}</strong> diventerà la futura <strong>${nextId}</strong></div><div class="checkbox-wrapper" style="margin:0;"><input type="checkbox" id="pass-${cl.id}" checked><label for="pass-${cl.id}" style="cursor:pointer; color:#166534;">Continua a seguire</label></div></div>`;
                 }
             });
         }
 
         function confermaPassaggioAnno() {
             if(!confirm("Confermi l'avanzamento d'anno? I voti attuali verranno azzerati.")) return;
-
-            let anni = DB.annoAttivo.split('/');
-            let nuovoAnnoStr = `${parseInt(anni[0])+1}/${parseInt(anni[1])+1}`;
-
+            let anni = DB.annoAttivo.split('/'); let nuovoAnnoStr = `${parseInt(anni[0])+1}/${parseInt(anni[1])+1}`;
             let nuoveClassi = []; let nuoviAlunni = {};
 
             DB.classi.forEach(cl => {
-                let annoNum = parseInt(cl.id.charAt(0));
-                let sez = cl.id.substring(1);
-                
+                let annoNum = parseInt(cl.id.charAt(0)); let sez = cl.id.substring(1);
                 if(annoNum < 5) {
                     let chk = document.getElementById(`pass-${cl.id}`);
                     if(chk && chk.checked) {
@@ -973,9 +991,9 @@
             });
 
             DB.annoAttivo = nuovoAnnoStr; DB.classi = nuoveClassi; DB.alunni = nuoviAlunni;
-            DB.voti = []; DB.appelli = {}; DB.firme = [];
-
-            salvaNelTempo(); inizializzaApp(); showView('dashboard-view');
+            DB.voti = []; DB.appelli = {}; DB.firme = []; DB.agenda = [];
+            
+            ordinaClassi(); salvaNelTempo(); inizializzaApp(); showView('dashboard-view');
             alert(`Registro aggiornato correttamente all'A.S. ${nuovoAnnoStr}`);
         }
     </script>
