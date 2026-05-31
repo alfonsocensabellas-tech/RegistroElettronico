@@ -107,7 +107,7 @@
         /* === VOTI BADGES === */
         .voto-verde { color: var(--green-pass); font-weight: 700; }
         .voto-rosso { color: var(--red-fail); font-weight: 700; }
-        .voto-box { display: inline-flex; align-items: center; gap: 5px; background: #F8FAFC; padding: 5px 10px; border-radius: 6px; margin-right: 6px; margin-bottom: 6px; border: 1px solid var(--border-color); font-size: 14px; }
+        .voto-box { display: inline-flex; align-items: center; gap: 5px; background: #F8FAFC; padding: 5px 10px; border-radius: 6px; margin-right: 6px; margin-bottom: 6px; border: 1px solid var(--border-color); font-size: 14px; transition: all 0.2s; }
         .voto-box small { color: #64748B; font-weight: 600; }
         .btn-delete-voto { color: var(--red-fail); cursor: pointer; font-weight: bold; margin-left: 5px; font-size: 12px; border-radius: 50%; }
         .badge-media { padding: 6px 12px; border-radius: 20px; font-weight: 700; display: inline-block; font-size: 13px; }
@@ -127,6 +127,7 @@
 </head>
 <body>
 
+    <!-- SCHERMATA LOGIN -->
     <div id="login-view">
         <div class="login-box">
             <h2>ClasseViva Docenti</h2>
@@ -137,6 +138,7 @@
         </div>
     </div>
 
+    <!-- SCHERMATA PRINCIPALE -->
     <div id="app-view" class="hidden">
         <header>
             <div id="user-info">Prof. Alfonso Censabella (<span id="label-anno-attivo">2025/2026</span>)</div>
@@ -144,6 +146,7 @@
         </header>
         
         <main>
+            <!-- MENU PRINCIPALE -->
             <div id="dashboard-view">
                 <h2>Menu Principale</h2>
                 <div class="menu-grid">
@@ -160,18 +163,20 @@
                         <p>Calendario unificato impegni</p>
                     </div>
                     <div class="menu-card settings-card" onclick="openSettingsView()">
-                        <h3>⚙️ Impostazioni e Anno</h3>
-                        <p>Aggiungi/Rimuovi Classi, Avanzamento Anno</p>
+                        <h3>⚙️ Impostazioni e Backup</h3>
+                        <p>Classi, Avanzamento Anno, Esporta Dati</p>
                     </div>
                 </div>
             </div>
 
+            <!-- LE MIE CLASSI (SCELTA) -->
             <div id="classes-view" class="hidden">
                 <button class="back-btn" onclick="showView('dashboard-view')">🡠 Torna al menu</button>
                 <h2>Le mie classi assegnate (<span class="placeholder-anno-testo"></span>)</h2>
                 <div class="menu-grid" id="container-elenco-classi"></div>
             </div>
 
+            <!-- TUTTE LE CLASSI DELL'ISTITUTO -->
             <div id="tutte-classi-view" class="hidden">
                 <button class="back-btn" onclick="showView('dashboard-view')">🡠 Torna al menu</button>
                 <h2>🏫 Firme Libere e Supplenze su Tutto l'Istituto</h2>
@@ -179,12 +184,29 @@
                 <div style="background:#F8FAFC; padding:20px; border-radius:8px; border:1px solid var(--border-color); margin-bottom: 25px;">
                     <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 15px;">
                         <div class="form-group" style="margin-bottom:0;">
-                            <label>Classe (Tutto l'istituto)</label>
-                            <select id="tc-classe" style="width: 150px;"></select>
+                            <label>Classe (Istituto)</label>
+                            <select id="tc-classe" style="width: 110px;"></select>
                         </div>
                         <div class="form-group" style="margin-bottom:0;">
                             <label>Data</label>
                             <input type="date" id="tc-data">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>N. Ore svolte</label>
+                            <select id="tc-num-ore">
+                                <option value="1">1 ora</option>
+                                <option value="2">2 ore</option>
+                                <option value="3">3 ore</option>
+                                <option value="4">4 ore</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Alla quale ora?</label>
+                            <select id="tc-ora-lezione">
+                                <option value="1^">1^ ora</option><option value="2^">2^ ora</option><option value="3^">3^ ora</option>
+                                <option value="4^">4^ ora</option><option value="5^">5^ ora</option><option value="6^">6^ ora</option>
+                                <option value="7^">7^ ora</option><option value="8^">8^ ora</option><option value="9^">9^ ora</option><option value="10^">10^ ora</option>
+                            </select>
                         </div>
                         <div class="form-group" style="margin-bottom:0; flex-grow: 1;">
                             <label>Materia Insegnata</label>
@@ -210,7 +232,7 @@
                         <tr>
                             <th>Data</th>
                             <th>Classe</th>
-                            <th>Materia</th>
+                            <th>Materia / Dettagli Ora</th>
                             <th>Argomento</th>
                             <th>Tipo</th>
                         </tr>
@@ -219,10 +241,27 @@
                 </table>
             </div>
 
+            <!-- IMPOSTAZIONI -->
             <div id="settings-view" class="hidden">
                 <button class="back-btn" onclick="showView('dashboard-view')">🡠 Torna al menu</button>
-                <h2>⚙️ Impostazioni: Gestione Classi e Anno</h2>
+                <h2>⚙️ Impostazioni: Gestione Classi, Anno e Sicurezza Dati</h2>
                 
+                <!-- NUOVO BLOCCO SICUREZZA E BACKUP -->
+                <div class="settings-card" style="background: #F0FDF4; border-color: #BBF7D0;">
+                    <h3 style="color: #166534; margin-top: 0;">💾 Salvataggio & Backup Sicuro (Consigliato)</h3>
+                    <p style="font-size: 14px; margin-top: 5px; color: #1e293b;">
+                        Scarica un file di sicurezza sul tuo PC per non rischiare di perdere i dati se cancelli la cronologia o per spostarli su un altro computer.
+                    </p>
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                        <button class="btn-primary" style="background: #16a34a; width: auto; margin: 0;" onclick="esportaBackup()">📥 Scarica File di Backup</button>
+                        
+                        <div style="background: white; border: 1px solid #CBD5E1; padding: 6px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 10px;">
+                            <label style="font-weight: 600; font-size: 14px; cursor: pointer; margin: 0;">📤 Ripristina da file:</label>
+                            <input type="file" id="import-file" accept=".json" onchange="importaBackup(event)" style="font-size: 12px; max-width: 200px;">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="settings-card">
                     <h3>➕ Aggiungi una nuova classe al tuo orario</h3>
                     <div style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 20px;">
@@ -232,13 +271,11 @@
                         </div>
                         <div style="flex-grow:1;">
                             <label style="display:block; font-weight:600; margin-bottom:5px; font-size:14px;">Materie Insegnate (Separate da virgola):</label>
-                            <input type="text" id="set-materie" placeholder="Es. Latino, Greco" style="width:100%;">
+                            <input type="text" id="set-materie" placeholder="Es. Latino, Geografia" style="width:100%;">
                         </div>
                         <button class="btn-primary" style="width:auto; margin:0;" onclick="aggiungiNuovaClasse()">Aggiungi Classe</button>
                     </div>
-                    <p style="font-size:13px; color:#64748B;">* Aggiungendo una classe verranno generati automaticamente nomi realistici per gli alunni (max 23 alunni per le classi 3, 4, 5).</p>
-
-                    <h4 style="margin-top: 30px; border-bottom: 1px solid #E2E8F0; padding-bottom: 10px;">Le tue classi attuali (Premi 🗑 per rimuovere)</h4>
+                    <h4 style="margin-top: 30px; border-bottom: 1px solid #E2E8F0; padding-bottom: 10px;">Le tue classi attuali</h4>
                     <div id="set-lista-classi"></div>
                 </div>
 
@@ -246,19 +283,16 @@
                     <h3 style="color: var(--primary-dark);">🎓 Passaggio all'Anno Scolastico Successivo</h3>
                     <p style="font-size:14px; margin-top:0;">Attualmente sei nell'A.S. <strong><span id="set-anno-corrente"></span></strong>.</p>
                     <button class="btn-primary" style="background:#B91C1C; width:auto;" onclick="avviaPassaggioAnno()">Inizia procedura di avanzamento anno</button>
-                    
                     <div id="panel-passaggio-anno" class="hidden" style="margin-top:20px; background:white; padding:20px; border-radius:8px; border:1px solid var(--border-color);">
                         <h4 style="margin-top:0;">Scegli quali classi portare al prossimo anno</h4>
-                        <p style="font-size:13px; color:#64748B;">Seleziona le classi che continuerai a seguire. Le classi di 5° verranno rimosse automaticamente al termine della procedura, le altre avanzeranno all'anno successivo (es. 2C -> 3C). Le classi disattivate verranno rimosse dal tuo account.</p>
-                        
                         <div id="list-passaggio-classi" style="margin-bottom: 20px;"></div>
-                        
                         <button class="btn-primary" style="background:#16A34A; width:auto;" onclick="confermaPassaggioAnno()">Conferma e Passa al nuovo Anno</button>
                         <button class="btn-secondary" onclick="document.getElementById('panel-passaggio-anno').classList.add('hidden')">Annulla</button>
                     </div>
                 </div>
             </div>
 
+            <!-- DETTAGLIO CLASSE -->
             <div id="class-detail-view" class="hidden">
                 <button class="back-btn" onclick="showView('classes-view')">🡠 Torna alle classi</button>
                 
@@ -272,17 +306,18 @@
 
                 <div class="tabs">
                     <button class="tab-btn active" id="btn-tab-appello" onclick="switchTab('tab-appello')">Appello</button>
-                    <button class="tab-btn" id="btn-tab-firma" onclick="switchTab('tab-firma')">Firma</button>
+                    <button class="tab-btn" id="btn-tab-firma" onclick="switchTab('tab-firma')">Firma Lezione</button>
                     <button class="tab-btn" id="btn-tab-voti" onclick="switchTab('tab-voti')">Voti</button>
                 </div>
 
+                <!-- TAB APPELLO -->
                 <div id="tab-appello" class="tab-content active">
                     <h3>Appello Odierno</h3>
                     <table>
                         <thead>
                             <tr>
                                 <th>Alunno</th>
-                                <th>Stato presenza</th>
+                                <th>Stato presenza / Specifica Ora</th>
                             </tr>
                         </thead>
                         <tbody id="appello-body"></tbody>
@@ -290,15 +325,33 @@
                     <button class="btn-primary" style="width: auto;" onclick="saveAppello()">Salva Appello</button>
                 </div>
 
+                <!-- TAB FIRMA -->
                 <div id="tab-firma" class="tab-content">
                     <h3>Inserisci Nuova Firma di Lezione</h3>
                     <div style="background:#F8FAFC; padding:20px; border-radius:8px; margin-bottom: 25px; border: 1px solid var(--border-color);">
-                        <div style="display:flex; gap:20px; flex-wrap:wrap;">
-                            <div class="form-group">
+                        <div style="display:flex; gap:15px; flex-wrap:wrap; margin-bottom:15px;">
+                            <div class="form-group" style="margin-bottom:0;">
                                 <label>Data</label>
                                 <input type="date" id="firma-data">
                             </div>
-                            <div class="form-group" style="flex-grow:1;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label>N. Ore svolte</label>
+                                <select id="firma-num-ore">
+                                    <option value="1">1 ora</option>
+                                    <option value="2">2 ore</option>
+                                    <option value="3">3 ore</option>
+                                    <option value="4">4 ore</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label>Alla quale ora?</label>
+                                <select id="firma-ora-lezione">
+                                    <option value="1^">1^ ora</option><option value="2^">2^ ora</option><option value="3^">3^ ora</option>
+                                    <option value="4^">4^ ora</option><option value="5^">5^ ora</option><option value="6^">6^ ora</option>
+                                    <option value="7^">7^ ora</option><option value="8^">8^ ora</option><option value="9^">9^ ora</option><option value="10^">10^ ora</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="flex-grow:1; margin-bottom:0;">
                                 <label>Materia</label>
                                 <input type="text" id="firma-materia-readonly" readonly style="background:#E2E8F0; font-weight:bold; width:100%;">
                             </div>
@@ -321,7 +374,7 @@
                         <thead>
                             <tr>
                                 <th style="width: 15%;">Data</th>
-                                <th style="width: 25%;">Materia</th>
+                                <th style="width: 25%;">Materia / Ore</th>
                                 <th>Argomento Lezione</th>
                             </tr>
                         </thead>
@@ -329,11 +382,16 @@
                     </table>
                 </div>
 
+                <!-- TAB VOTI -->
                 <div id="tab-voti" class="tab-content">
                     <h3 id="titolo-voti-materia">Registro Valutazioni</h3>
                     
-                    <div class="form-group" style="background:#F8FAFC; padding:20px; border-radius:8px; border:1px solid var(--border-color); display: flex; flex-direction: column; gap:10px;">
-                        <h4 style="margin:0; color:#475569;">Aggiungi Valutazione</h4>
+                    <!-- SOTTOFORM VOTO SINGOLO -->
+                    <div id="form-voto-singolo" class="form-group" style="background:#F8FAFC; padding:20px; border-radius:8px; border:1px solid var(--border-color); display: flex; flex-direction: column; gap:10px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <h4 style="margin:0; color:#475569;">Aggiungi Valutazione Singola</h4>
+                            <button class="btn-secondary" style="background:#D97706; color:white; font-weight:bold;" onclick="toggleFormVoti('flash')">⚡ Passa a Inserimento Flash</button>
+                        </div>
                         <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
                             <select id="voto-alunno"></select>
                             <input type="number" id="voto-valore" step="0.25" min="1" max="10" placeholder="Voto" style="width:70px;">
@@ -345,8 +403,28 @@
                                 <option value="Trimestre">Trimestre</option>
                                 <option value="Pentamestre">Pentamestre</option>
                             </select>
+                            <input type="text" id="voto-commento-singolo" placeholder="Nota/Commento personale (opzionale)" style="flex-grow:1;">
                             <button class="btn-primary" style="width: auto; margin-top: 0; padding: 10px 20px;" onclick="addVotoSingolo()">Inserisci</button>
                         </div>
+                    </div>
+
+                    <!-- SOTTOFORM VOTI FLASH POTENZIATO -->
+                    <div id="form-voti-flash" class="form-group hidden" style="background:#FFF9E6; padding:20px; border-radius:8px; border:1px solid #FCD34D; display: flex; flex-direction: column; gap:10px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <h4 style="margin:0; color:#B45309;">⚡ Inserimento Rapido Voti Flash (Tutta la classe)</h4>
+                            <button class="btn-secondary" style="background:#64748B;" onclick="toggleFormVoti('singolo')">Torna a Voto Singolo</button>
+                        </div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 5px;">
+                            <select id="vf-tipo"><option value="Scritto">Scritto</option><option value="Orale">Orale</option></select>
+                            <select id="vf-periodo"><option value="Trimestre">Trimestre</option><option value="Pentamestre">Pentamestre</option></select>
+                            <input type="text" id="vf-commento-collettivo" placeholder="💬 Scrivi qui un commento valido per TUTTA LA CLASSE (es. Verifica Geometria, Compito in classe)..." style="flex-grow:1;">
+                        </div>
+                        
+                        <p style="font-size:12px; margin:0; color:#92400E;">* Inserisci i voti solo per gli alunni che hanno svolto la prova. Gli altri rimarranno vuoti.</p>
+                        <div id="vf-griglia-alunni" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:8px; max-height:230px; overflow-y:auto; background:white; padding:12px; border-radius:6px; border:1px solid #CBD5E1;">
+                            <!-- Generato da JS -->
+                        </div>
+                        <button class="btn-primary" style="background:#D97706; width: max-content; padding:10px 25px; margin-top:5px;" onclick="salvaVotiFlashCollettivi()">Registra tutti i voti flash</button>
                     </div>
 
                     <table>
@@ -367,21 +445,20 @@
         </main>
     </div>
 
+    <!-- === LOGICA JAVASCRIPT === -->
     <script>
-        // STRUTTURA ISTITUTO COMPLETA (Da 1A a 5O)
         const TUTTE_LE_CLASSI = [];
         ["1","2","3","4","5"].forEach(a => {
             ["A","B","C","D","E","F","G","H","I","L","M","N","O"].forEach(s => TUTTE_LE_CLASSI.push(a+s));
         });
 
-        // GENERATORE NOMI REALI
         const NOMI = ["Andrea", "Luca", "Giulia", "Martina", "Francesco", "Alessandro", "Sofia", "Lorenzo", "Chiara", "Aurora", "Matteo", "Leonardo", "Ginevra", "Alice", "Giorgia"];
         const COGNOMI = ["Rossi", "Russo", "Ferrari", "Esposito", "Bianchi", "Romano", "Colombo", "Ricci", "Marino", "Greco", "Bruno", "Gallo", "Conti", "De Luca", "Costa"];
 
         function generaAlunni(classeStr) {
             const isTriennio = classeStr.startsWith('3') || classeStr.startsWith('4') || classeStr.startsWith('5');
             let numAlunni = isTriennio ? (Math.floor(Math.random() * 5) + 18) : (Math.floor(Math.random() * 8) + 20); 
-            if(isTriennio && numAlunni > 23) numAlunni = 23; // Rispetto tassativo limite di 23 alunni per le terze, quarte e quinte
+            if(isTriennio && numAlunni > 23) numAlunni = 23;
 
             let alunni = [];
             for(let i=0; i<numAlunni; i++) {
@@ -392,7 +469,6 @@
             return alunni;
         }
 
-        // Configurazione Reale Definitiva delle Classi del Docente
         const STRUTTURA_CLASSI_UTENTE = [
             { id: "2C", nome: "Classe 2C", materie: ["Lingua e Lett. Latine"] },
             { id: "2O", nome: "Classe 2O", materie: ["Storia", "Geografia"] },
@@ -401,64 +477,32 @@
             { id: "5A", nome: "Classe 5A", materie: ["Lingua e Lett. Latine"] }
         ];
 
-        // ==========================================
-        // 🔐 GESTIONE E RECUPERO DATI PRE-ESISTENTI
-        // ==========================================
-        let memoriaStorica = localStorage.getItem('cv_db') || localStorage.getItem('cv_db_v2');
         let DB;
-
-        if (memoriaStorica) {
-            DB = JSON.parse(memoriaStorica);
-            if (!DB.firmeLibere) DB.firmeLibere = [];
-            if (!DB.annoAttivo) DB.annoAttivo = "2025/2026";
-            
-            // CORREZIONE E RIPARAZIONE AUTOMATICA:
-            // Se nella memoria è rimasta traccia del vecchio pasticcio (1A, 2A, 3B), lo bonifichiamo all'istante
-            if (DB.classi && DB.classi.some(c => ["1A", "2A", "3B"].includes(c.id))) {
-                DB.classi = JSON.parse(JSON.stringify(STRUTTURA_CLASSI_UTENTE));
-                localStorage.setItem('cv_db', JSON.stringify(DB));
-            }
-        } else {
-            // Primo avviso assoluto (Memoria pulita)
+        if (!localStorage.getItem('cv_db')) {
             DB = {
                 classi: JSON.parse(JSON.stringify(STRUTTURA_CLASSI_UTENTE)),
-                alunni: {},
-                appelli: {}, firme: [], voti: [], firmeLibere: [],
+                alunni: {}, appelli: {}, firme: [], voti: [], firmeLibere: [],
                 annoAttivo: "2025/2026"
             };
-        }
-
-        // Controllo di sicurezza: se ci sono le tue classi reali ma mancano i loro alunni, generiamo i nomi
-        DB.classi.forEach(cl => {
-            if (!DB.alunni[cl.id] || DB.alunni[cl.id].length === 0) {
-                DB.alunni[cl.id] = generaAlunni(cl.id);
-            }
-        });
-
-        // Salva in modo coerente nel LocalStorage
-        function salvaNelTempo() {
+            DB.classi.forEach(cl => { DB.alunni[cl.id] = generaAlunni(cl.id); });
             localStorage.setItem('cv_db', JSON.stringify(DB));
+        } else {
+            DB = JSON.parse(localStorage.getItem('cv_db'));
+            DB.classi.forEach(cl => { if (!DB.alunni[cl.id]) DB.alunni[cl.id] = generaAlunni(cl.id); });
         }
 
-        let currentClasseId = "";
-        let currentMateria = "";
+        function salvaNelTempo() { localStorage.setItem('cv_db', JSON.stringify(DB)); }
 
-        // LOGIN
+        let currentClasseId = ""; let currentMateria = "";
+
         function login() {
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
-            if(user !== "" && pass !== "") {
+            if(document.getElementById('username').value !== "" && document.getElementById('password').value !== "") {
                 document.getElementById('login-view').classList.add('hidden');
                 document.getElementById('app-view').classList.remove('hidden');
                 inizializzaApp();
             }
         }
-
-        function logout() {
-            document.getElementById('app-view').classList.add('hidden');
-            document.getElementById('login-view').classList.remove('hidden');
-        }
-
+        function logout() { document.getElementById('app-view').classList.add('hidden'); document.getElementById('login-view').classList.remove('hidden'); }
         function showView(vId) {
             ['dashboard-view', 'classes-view', 'tutte-classi-view', 'settings-view', 'class-detail-view'].forEach(v => document.getElementById(v).classList.add('hidden'));
             document.getElementById(vId).classList.remove('hidden');
@@ -467,20 +511,13 @@
         function inizializzaApp() {
             document.getElementById('label-anno-attivo').innerText = DB.annoAttivo;
             document.querySelectorAll('.placeholder-anno-testo').forEach(e => e.innerText = DB.annoAttivo);
-
             const container = document.getElementById('container-elenco-classi');
             container.innerHTML = "";
             DB.classi.forEach(cl => {
-                container.innerHTML += `
-                    <div class="menu-card" onclick="apriDettaglioClasse('${cl.id}')">
-                        <h3>🏫 ${cl.nome}</h3>
-                        <p>${cl.materie.join(', ')}</p>
-                    </div>
-                `;
+                container.innerHTML += `<div class="menu-card" onclick="apriDettaglioClasse('${cl.id}')"><h3>🏫 ${cl.nome}</h3><p>${cl.materie.join(', ')}</p></div>`;
             });
         }
 
-        // DETTAGLIO CLASSE
         function apriDettaglioClasse(classeId) {
             currentClasseId = classeId;
             const classeObj = DB.classi.find(c => c.id === classeId);
@@ -494,6 +531,7 @@
             document.getElementById('firma-materia-readonly').value = currentMateria;
             document.getElementById('firma-data').valueAsDate = new Date();
 
+            toggleFormVoti('singolo');
             switchTab('tab-appello');
             showView('class-detail-view');
         }
@@ -507,7 +545,6 @@
         function switchTab(tabId) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            
             document.getElementById('btn-'+tabId).classList.add('active');
             document.getElementById(tabId).classList.add('active');
 
@@ -516,7 +553,9 @@
             if(tabId === 'tab-voti') renderVoti();
         }
 
-        // APPELLO
+        // ===============================================
+        // 📋 APPELLO CON RITARDI/USCITE ORARIE
+        // ===============================================
         function renderAppello() {
             const body = document.getElementById('appello-body');
             body.innerHTML = "";
@@ -525,14 +564,24 @@
             const statoSalvati = DB.appelli[chiave] || {};
 
             alunni.forEach((al, index) => {
-                const stato = statoSalvati[al.id] || "P";
+                const record = statoSalvati[al.id] || "P";
+                let stato = (typeof record === 'object') ? record.stato : record;
+                let ora = (typeof record === 'object') ? (record.ora || "") : "";
+
                 body.innerHTML += `
                     <tr>
                         <td><span class="num-registro">${index + 1}.</span><strong>${al.nome}</strong></td>
                         <td>
-                            <select id="appello-select-${al.id}">
+                            <select id="appello-select-${al.id}" onchange="gestisciVisualizzazioneOra('${al.id}')">
                                 <option value="P" ${stato==='P'?'selected':''}>Presente</option>
                                 <option value="A" ${stato==='A'?'selected':''}>Assente</option>
+                                <option value="R" ${stato==='R'?'selected':''}>Ritardo ingresso</option>
+                                <option value="U" ${stato==='U'?'selected':''}>Uscita anticipata</option>
+                            </select>
+                            
+                            <select id="appello-ora-${al.id}" style="width:110px; margin-left:10px; ${['R','U'].includes(stato)?'':'display:none;'}">
+                                <option value="">-- Quale Ora? --</option>
+                                ${[1,2,3,4,5,6,7,8,9,10].map(h => `<option value="${h}^" ${ora==h+'^'?'selected':''}>${h}^ ora</option>`).join('')}
                             </select>
                         </td>
                     </tr>
@@ -540,27 +589,54 @@
             });
         }
 
+        function gestisciVisualizzazioneOra(alId) {
+            const stato = document.getElementById(`appello-select-${alId}`).value;
+            const selettoreOra = document.getElementById(`appello-ora-${alId}`);
+            if(['R', 'U'].includes(stato)) {
+                selettoreOra.style.display = "inline-block";
+            } else {
+                selettoreOra.style.display = "none";
+                selettoreOra.value = "";
+            }
+        }
+
         function saveAppello() {
             const chiave = `${currentClasseId}_${new Date().toISOString().split('T')[0]}`;
             DB.appelli[chiave] = {};
+            let erroreOra = false;
+
             (DB.alunni[currentClasseId]||[]).forEach(al => {
-                DB.appelli[chiave][al.id] = document.getElementById(`appello-select-${al.id}`).value;
+                const stato = document.getElementById(`appello-select-${al.id}`).value;
+                const ora = document.getElementById(`appello-ora-${al.id}`).value;
+                
+                if(['R','U'].includes(stato) && !ora) erroreOra = true;
+
+                DB.appelli[chiave][al.id] = { stato: stato, ora: ora };
             });
+
+            if(erroreOra) {
+                alert("Attenzione: Hai inserito dei ritardi o uscite senza specificare il numero dell'ora! Controlla prima di salvare.");
+                return;
+            }
+
             salvaNelTempo();
-            alert("Appello salvato con successo!");
+            alert("Appello e scansione oraria salvati con successo!");
         }
 
-        // FIRME CLASSE
+        // ===============================================
+        // ✍️ FIRME LEZIONI CON NUMERO E DETTAGLIO ORE
+        // ===============================================
         function renderFirme() {
             const body = document.getElementById('firme-body');
             body.innerHTML = "";
             const filtrate = DB.firme.filter(f => f.classeId === currentClasseId);
             filtrate.reverse().forEach(f => {
                 let badge = f.supplenza ? `<span class="badge-supplenza">SUPPLENZA</span>` : "";
+                let indicatoriOre = `<br><small style="color:#64748B;">Svolta alla <strong>${f.oraLezione || '1^'} ora</strong> per un totale di <strong>${f.numOre || '1'} ore</strong></small>`;
                 body.innerHTML += `
                     <tr>
                         <td><code>${f.data}</code></td>
-                        <td><span style="font-weight:600; color:var(--primary-dark);">${f.materia}</span> ${badge}</td>
+                        <td><span style="font-weight:600; color:var(--primary-dark);">${f.materia}</span> ${badge} ${indicatoriOre}</td>
                         <td>${f.argomento}</td>
                     </tr>
                 `;
@@ -571,17 +647,46 @@
             const data = document.getElementById('firma-data').value;
             const arg = document.getElementById('firma-argomento').value;
             const isSupplenza = document.getElementById('firma-supplenza').checked;
+            const numOre = document.getElementById('firma-num-ore').value;
+            const oraLezione = document.getElementById('firma-ora-lezione').value;
 
             if(!data || !arg.trim()) return alert("Compila l'argomento della lezione!");
             
-            DB.firme.push({ classeId: currentClasseId, data: data, materia: currentMateria, argomento: arg, supplenza: isSupplenza });
+            DB.firme.push({ 
+                classeId: currentClasseId, data: data, materia: currentMateria, argomento: arg, supplenza: isSupplenza,
+                numOre: numOre, oraLezione: oraLezione
+            });
             document.getElementById('firma-argomento').value = "";
             document.getElementById('firma-supplenza').checked = false;
             
             salvaNelTempo(); renderFirme();
         }
 
-        // VALUTAZIONI
+        // ===============================================
+        // ⚡ REGISTRO VALUTAZIONI (SINGOLO & FLASH)
+        // ===============================================
+        function toggleFormVoti(tipo) {
+            if(tipo === 'flash') {
+                document.getElementById('form-voto-singolo').classList.add('hidden');
+                document.getElementById('form-voti-flash').classList.remove('hidden');
+                
+                const griglia = document.getElementById('vf-griglia-alunni');
+                griglia.innerHTML = "";
+                const alunni = DB.alunni[currentClasseId] || [];
+                alunni.forEach(al => {
+                    griglia.innerHTML += `
+                        <div style="display:flex; justify-content:space-between; align-items:center; background:#FFFDF2; padding:6px 10px; border-radius:6px; border:1px solid #FCD34D;">
+                            <span style="font-size:13px; font-weight:600; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; max-width:180px;">${al.nome}</span>
+                            <input type="number" id="vf-voto-${al.id}" step="0.25" min="1" max="10" placeholder="Voto" style="width:65px; padding:4px;">
+                        </div>
+                    `;
+                });
+            } else {
+                document.getElementById('form-voti-flash').classList.add('hidden');
+                document.getElementById('form-voto-singolo').classList.remove('hidden');
+            }
+        }
+
         function renderVoti() {
             document.getElementById('titolo-voti-materia').innerText = `Registro Valutazioni - ${currentMateria}`;
             const selAlunno = document.getElementById('voto-alunno');
@@ -596,9 +701,13 @@
 
             alunni.forEach((al, index) => {
                 const getVoti = (per) => DB.voti.filter(v => v.alunnoId === al.id && v.materia === currentMateria && v.periodo === per);
-                const formatBox = (arr) => arr.map(v => `<div class="voto-box"><span class="${v.valore>=6?'voto-verde':'voto-rosso'}">${v.valore}</span><span class="btn-delete-voto" onclick="cancellaVoto('${v.id}')">×</span></div>`).join('');
+                
+                const formatBox = (arr) => arr.map(v => {
+                    let commentoEsteso = v.commento ? `title="Nota: ${v.commento}" style="background:#FEF3C7; border:1px solid #D97706; cursor:help;"` : "";
+                    return `<div class="voto-box" ${commentoEsteso}><span class="${v.valore>=6?'voto-verde':'voto-rosso'}">${v.valore}</span><span class="btn-delete-voto" onclick="cancellaVoto('${v.id}')">×</span></div>`;
+                }).join('');
+                
                 const media = (arr) => arr.length ? (arr.reduce((a,b)=>a+b.valore,0)/arr.length).toFixed(2) : "-";
-
                 let mTri = media(getVoti('Trimestre')), mPen = media(getVoti('Pentamestre'));
                 
                 body.innerHTML += `
@@ -615,14 +724,54 @@
 
         function addVotoSingolo() {
             const val = parseFloat(document.getElementById('voto-valore').value);
+            const commento = document.getElementById('voto-commento-singolo').value.trim();
             if(!val || val<1 || val>10) return alert("Inserisci un voto valido da 1 a 10!");
+            
             DB.voti.push({
                 id: "V_" + Date.now(),
                 alunnoId: document.getElementById('voto-alunno').value, classeId: currentClasseId, materia: currentMateria,
-                valore: val, tipo: document.getElementById('voto-tipo').value, periodo: document.getElementById('voto-periodo').value
+                valore: val, tipo: document.getElementById('voto-tipo').value, periodo: document.getElementById('voto-periodo').value,
+                commento: commento
             });
             document.getElementById('voto-valore').value = "";
+            document.getElementById('voto-commento-singolo').value = "";
             salvaNelTempo(); renderVoti();
+        }
+
+        function salvaVotiFlashCollettivi() {
+            const tipo = document.getElementById('vf-tipo').value;
+            const periodo = document.getElementById('vf-periodo').value;
+            const commentoGenerale = document.getElementById('vf-commento-collettivo').value.trim();
+            const alunni = DB.alunni[currentClasseId] || [];
+            
+            let votiSalvati = 0;
+
+            alunni.forEach((al, index) => {
+                const inputVoto = document.getElementById(`vf-voto-${al.id}`);
+                if (inputVoto && inputVoto.value !== "") {
+                    const valore = parseFloat(inputVoto.value);
+                    if (valore >= 1 && valore <= 10) {
+                        DB.voti.push({
+                            id: "V_FLASH_" + Date.now() + "_" + index,
+                            alunnoId: al.id, classeId: currentClasseId, materia: currentMateria,
+                            valore: valore, tipo: tipo, periodo: periodo,
+                            commento: commentoGenerale || "Voto Rapido Flash"
+                        });
+                        votiSalvati++;
+                    }
+                }
+            });
+
+            if(votiSalvati === 0) {
+                alert("Non hai inserito nessun voto numerico nei campi!");
+                return;
+            }
+
+            document.getElementById('vf-commento-collettivo').value = "";
+            salvaNelTempo();
+            toggleFormVoti('singolo');
+            renderVoti();
+            alert(`Registrati correttamente ${votiSalvati} voti con nota collettiva applicata!`);
         }
 
         function cancellaVoto(id) {
@@ -630,7 +779,9 @@
             salvaNelTempo(); renderVoti();
         }
 
-        // AREA SUPPLENZE / FIRME LIBERE TUTTO ISTITUTO
+        // ===============================================
+        // 🏫 FIRME D'ISTITUTO / SUPPLENZE GENERALI
+        // ===============================================
         function openTutteClassiView() {
             showView('tutte-classi-view');
             const sel = document.getElementById('tc-classe');
@@ -646,12 +797,18 @@
             const mat = document.getElementById('tc-materia').value;
             const arg = document.getElementById('tc-argomento').value;
             const isSupplenza = document.getElementById('tc-supplenza').checked;
+            const numOre = document.getElementById('tc-num-ore').value;
+            const oraLezione = document.getElementById('tc-ora-lezione').value;
 
             if(!mat.trim() || !arg.trim()) return alert("Compila i campi Materia e Argomento!");
 
             DB.firmeLibere = DB.firmeLibere || [];
-            DB.firmeLibere.push({ data, classe: cl, materia: mat, argomento: arg, supplenza: isSupplenza });
+            DB.firmeLibere.push({ 
+                data, classe: cl, materia: mat, argomento: arg, supplenza: isSupplenza,
+                numOre: numOre, oraLezione: oraLezione 
+            });
             
+            document.getElementById('tc-materia').value = "";
             document.getElementById('tc-argomento').value = "";
             document.getElementById('tc-supplenza').checked = false;
             salvaNelTempo(); renderFirmeLibere();
@@ -662,11 +819,12 @@
             body.innerHTML = "";
             (DB.firmeLibere || []).slice().reverse().forEach(f => {
                 let badge = f.supplenza ? `<span class="badge-supplenza">SUPPLENZA</span>` : `<span style="background:#E2E8F0; padding:4px 8px; border-radius:4px; font-size:12px;">LEZ. REGOLARE</span>`;
+                let infoOrario = `<br><small style="color:#64748B;">Svolta alla <strong>${f.oraLezione || '1^'} ora</strong> (${f.numOre || 1}h totali)</small>`;
                 body.innerHTML += `
                     <tr>
                         <td><code>${f.data}</code></td>
                         <td><strong>${f.classe}</strong></td>
-                        <td>${f.materia}</td>
+                        <td><span style="font-weight:bold;">${f.materia}</span>${infoOrario}</td>
                         <td>${f.argomento}</td>
                         <td>${badge}</td>
                     </tr>
@@ -674,7 +832,52 @@
             });
         }
 
-        // CONFIGURAZIONE E IMPOSTAZIONI
+        // ===============================================
+        // 💾 NUOVE FUNZIONI DI EXPORT / IMPORT BACKUP
+        // ===============================================
+        function esportaBackup() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(DB));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `BACKUP_REGISTRO_${DB.annoAttivo.replace('/','-')}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function importaBackup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if(!confirm("Attenzione: caricando questo file sovrascriverai i dati attualmente presenti in questo browser. Vuoi continuare?")) {
+                event.target.value = "";
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importato = JSON.parse(e.target.result);
+                    if (importato.classi && importato.alunni && importato.voti) {
+                        DB = importato;
+                        salvaNelTempo();
+                        inizializzaApp();
+                        openSettingsView();
+                        alert("🎉 Backup ripristinato ed applicato con successo!");
+                    } else {
+                        alert("Errore: Il file selezionato non è un backup valido di questo registro.");
+                    }
+                } catch (err) {
+                    alert("Errore critico durante la lettura del file di backup.");
+                }
+                event.target.value = "";
+            };
+            reader.readAsText(file);
+        }
+
+        // ===============================================
+        // ⚙️ GESTIONE STRUTTURA ED IMPOSTAZIONI
+        // ===============================================
         function openSettingsView() {
             showView('settings-view');
             document.getElementById('set-anno-corrente').innerText = DB.annoAttivo;
@@ -705,51 +908,41 @@
             if(!clId || !matStr.trim()) return alert("Specifica le materie!");
 
             const materieArr = matStr.split(',').map(m => m.trim());
-            
             DB.classi.push({ id: clId, nome: `Classe ${clId}`, materie: materieArr });
             DB.alunni[clId] = generaAlunni(clId);
 
-            salvaNelTempo();
-            inizializzaApp();
-            openSettingsView();
+            salvaNelTempo(); inizializzaApp(); openSettingsView();
             alert(`Classe ${clId} caricata nel registro.`);
         }
 
         function rimuoviClasse(id) {
             if(confirm(`Eliminare la classe ${id}? L'operazione non è reversibile.`)) {
                 DB.classi = DB.classi.filter(c => c.id !== id);
-                salvaNelTempo();
-                inizializzaApp();
-                openSettingsView();
+                salvaNelTempo(); inizializzaApp(); openSettingsView();
             }
         }
 
-        // CAMBIO ANNO SCOLASTICO CONTROLLATO
         function avviaPassaggioAnno() {
             document.getElementById('panel-passaggio-anno').classList.remove('hidden');
             const lista = document.getElementById('list-passaggio-classi');
             lista.innerHTML = "";
 
-            if(DB.classi.length === 0) {
-                lista.innerHTML = "<p>Nessuna classe attiva in elenco.</p>";
-                return;
-            }
+            if(DB.classi.length === 0) { lista.innerHTML = "<p>Nessuna classe attiva in elenco.</p>"; return; }
 
             DB.classi.forEach(cl => {
                 let annoNum = parseInt(cl.id.charAt(0));
                 let sez = cl.id.substring(1);
-                let divClasse = "class-list-item";
                 
                 if(annoNum === 5) {
-                    lista.innerHTML += `<div class="${divClasse}"><div><strong>${cl.id}</strong> -> <span style="color:var(--red-fail); font-weight:bold;">Esce dal ciclo (Maturità / Classi di 5°)</span></div></div>`;
+                    lista.innerHTML += `<div class="class-list-item"><div><strong>${cl.id}</strong> -> <span style="color:var(--red-fail); font-weight:bold;">Esce dal ciclo (Maturità)</span></div></div>`;
                 } else {
                     let nextId = (annoNum + 1) + sez;
                     lista.innerHTML += `
-                        <div class="${divClasse}" style="background:#F0FDF4; border:1px solid #BBF7D0;">
+                        <div class="class-list-item" style="background:#F0FDF4; border:1px solid #BBF7D0; margin-bottom:4px;">
                             <div><strong>${cl.id}</strong> diventerà la futura <strong>${nextId}</strong></div>
                             <div class="checkbox-wrapper" style="margin:0;">
                                 <input type="checkbox" id="pass-${cl.id}" checked>
-                                <label for="pass-${cl.id}" style="cursor:pointer; color:#166534;">Continua a seguire questa classe</label>
+                                <label for="pass-${cl.id}" style="cursor:pointer; color:#166534;">Continua a seguire</label>
                             </div>
                         </div>
                     `;
@@ -758,13 +951,12 @@
         }
 
         function confermaPassaggioAnno() {
-            if(!confirm("Confermi l'avanzamento d'anno? I voti attuali verranno azzerati e le classi selezionate verranno promosse.")) return;
+            if(!confirm("Confermi l'avanzamento d'anno? I voti attuali verranno azzerati.")) return;
 
             let anni = DB.annoAttivo.split('/');
             let nuovoAnnoStr = `${parseInt(anni[0])+1}/${parseInt(anni[1])+1}`;
 
-            let nuoveClassi = [];
-            let nuoviAlunni = {};
+            let nuoveClassi = []; let nuoviAlunni = {};
 
             DB.classi.forEach(cl => {
                 let annoNum = parseInt(cl.id.charAt(0));
@@ -780,16 +972,10 @@
                 }
             });
 
-            DB.annoAttivo = nuovoAnnoStr;
-            DB.classi = nuoveClassi;
-            DB.alunni = nuoviAlunni;
-            DB.voti = [];
-            DB.appelli = {};
-            DB.firme = [];
+            DB.annoAttivo = nuovoAnnoStr; DB.classi = nuoveClassi; DB.alunni = nuoviAlunni;
+            DB.voti = []; DB.appelli = {}; DB.firme = [];
 
-            salvaNelTempo();
-            inizializzaApp();
-            showView('dashboard-view');
+            salvaNelTempo(); inizializzaApp(); showView('dashboard-view');
             alert(`Registro aggiornato correttamente all'A.S. ${nuovoAnnoStr}`);
         }
     </script>
