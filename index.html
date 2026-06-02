@@ -108,6 +108,26 @@
         .filter-pill:hover { background: #F1F5F9; }
         .filter-pill.active { background: var(--primary-red); color: white; border-color: var(--primary-red); }
 
+        /* === STRUTTURA CALENDARIO === */
+        .calendar-container { background: white; border: 1px solid var(--border-color); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); margin-bottom: 20px; }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--light-grey); border-bottom: 1px solid var(--border-color); }
+        .calendar-grid { display: grid; width: 100%; border-collapse: collapse; }
+        .calendar-grid-header { display: grid; grid-template-columns: repeat(7, 1fr); background: #EDF2F7; text-align: center; font-weight: 600; font-size: 13px; color: #475569; padding: 10px 0; border-bottom: 1px solid var(--border-color); }
+        .calendar-days { display: grid; grid-template-columns: repeat(7, 1fr); }
+        .calendar-day-cell { min-height: 100px; padding: 8px; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); background: white; position: relative; }
+        .calendar-day-cell:nth-child(7n) { border-right: none; }
+        .calendar-day-cell.other-month { background: #F8FAFC; color: #94A3B8; }
+        .calendar-day-cell.today-cell { background: #FFF5F5; border: 2px solid var(--primary-red); z-index: 1; }
+        .calendar-day-num { font-weight: 700; font-size: 14px; margin-bottom: 5px; display: inline-block; }
+        .calendar-events-wrap { display: flex; flex-direction: column; gap: 4px; }
+        .calendar-event-badge { font-size: 11px; padding: 3px 6px; border-radius: 4px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; color: white; }
+        
+        /* Modalità Lista/Giorno/Settimana */
+        .calendar-view-panel { display: flex; flex-direction: column; gap: 10px; padding: 15px; }
+        .calendar-row-item { display: flex; border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 8px; overflow: hidden; background: white; }
+        .calendar-row-date { width: 120px; background: #F1F5F9; display: flex; flex-direction: column; justify-content: center; align-items: center; font-weight: bold; border-right: 1px solid var(--border-color); font-size: 14px; padding: 10px; }
+        .calendar-row-content { padding: 12px; flex-grow: 1; }
+
         /* === TABELLE MODERNE === */
         table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
         th, td { padding: 14px 16px; border-bottom: 1px solid var(--border-color); text-align: left; }
@@ -141,6 +161,14 @@
         .class-list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--border-color); }
         .class-list-item:last-child { border-bottom: none; }
         .num-registro { color: #94A3B8; font-weight: normal; font-size: 13px; width: 25px; display: inline-block; text-align: right; margin-right: 8px; }
+
+        /* === ORARIO TABELLA === */
+        .timetable-table { width: 100%; border: 1px solid var(--border-color); margin-top: 15px; }
+        .timetable-table th { background: var(--dark-grey); color: white; text-align: center; }
+        .timetable-table td { text-align: center; height: 50px; border: 1px solid var(--border-color); width: 15%; padding: 5px; }
+        .timetable-select { width: 100%; border: none; background: transparent; font-weight: bold; color: var(--primary-dark); text-align: center; cursor: pointer; }
+        .timetable-cell-active { background: #EFF6FF; border: 1px solid #BFDBFE !important; border-radius: 4px; font-weight: bold; color: #1E40AF; cursor: pointer; transition: all 0.2s; font-size: 13px; padding: 8px; }
+        .timetable-cell-active:hover { background: #DBEAFE; transform: scale(1.02); }
     </style>
 </head>
 <body>
@@ -173,23 +201,43 @@
         <main>
             <div id="dashboard-view">
                 <h2>Menu Principale</h2>
-                <div class="menu-grid">
+                <div class="menu-grid" style="margin-bottom: 30px;">
                     <div class="menu-card" onclick="showView('classes-view')">
                         <h3>📚 Le mie classi</h3>
-                        <p>Appello, Voti, Scrutini</p>
+                        <p>Appello, Voti, Scrutini, Alunni</p>
                     </div>
                     <div class="menu-card card-supplenza" onclick="openTutteClassiView()">
                         <h3>🏫 Tutte le Classi</h3>
                         <p>Firme Libere e Supplenze d'Istituto</p>
                     </div>
                     <div class="menu-card" onclick="openAgendaView()">
-                        <h3>📅 Agenda Generale</h3>
-                        <p>Filtri Avanzati e Scadenze</p>
+                        <h3>📅 Agenda Calendario</h3>
+                        <p>Mese, Settimana, Giorno</p>
                     </div>
                     <div class="menu-card settings-card" onclick="openSettingsView()">
-                        <h3>⚙️ Impostazioni e Backup</h3>
-                        <p>Classi, Coordinatori, Esporta Dati</p>
+                        <h3>⚙️ Impostazioni e Orario</h3>
+                        <p>Configura Classi, Backup, Orario</p>
                     </div>
+                </div>
+
+                <!-- SEZIONE ORARIO VISUALIZZABILE IN DASHBOARD -->
+                <div class="settings-card" style="background: white;">
+                    <h3 style="margin-top: 0; color: var(--dark-grey);">📅 Il mio Orario delle Lezioni Settimanale</h3>
+                    <p style="font-size: 13px; color: #64748B; margin-top: 0;">Clicca su una delle tue classi inserite in orario per accedere direttamente al suo registro di classe.</p>
+                    <table class="timetable-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%;">Ora</th>
+                                <th>Lunedì</th>
+                                <th>Martedì</th>
+                                <th>Mercoledì</th>
+                                <th>Giovedì</th>
+                                <th>Venerdì</th>
+                                <th>Sabato</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashboard-timetable-body"></tbody>
+                    </table>
                 </div>
             </div>
 
@@ -239,15 +287,15 @@
                     <button class="btn-primary" style="width: auto; margin:0;" onclick="addAgendaEvent()">Inserisci in Agenda</button>
                 </div>
 
-                <h3>Filtri e Ricerca Rapida</h3>
+                <h3>Filtri e Viste Calendario</h3>
                 <div class="agenda-filters">
                     <div style="display:flex; flex-direction:column; gap:4px;">
-                        <label style="font-size:12px; font-weight:700; color:#64748B;">PERIODO TEMPORALE</label>
+                        <label style="font-size:12px; font-weight:700; color:#64748B;">MODALITÀ CALENDARIO</label>
                         <div class="filter-pill-container">
-                            <button class="filter-pill active" id="pill-all" onclick="setAgendaFiltroData('all')">Mostra Tutto</button>
-                            <button class="filter-pill" id="pill-oggi" onclick="setAgendaFiltroData('oggi')">Oggi Reale/Scelto</button>
-                            <button class="filter-pill" id="pill-settimana" onclick="setAgendaFiltroData('settimana')">Questa Settimana</button>
-                            <button class="filter-pill" id="pill-mese" onclick="setAgendaFiltroData('mese')">Questo Mese</button>
+                            <button class="filter-pill active" id="pill-cal-mese" onclick="setAgendaModoVisualizzazione('mese')">Mese</button>
+                            <button class="filter-pill" id="pill-cal-settimana" onclick="setAgendaModoVisualizzazione('settimana')">Settimana</button>
+                            <button class="filter-pill" id="pill-cal-giorno" onclick="setAgendaModoVisualizzazione('giorno')">Giorno</button>
+                            <button class="filter-pill" id="pill-cal-lista" onclick="setAgendaModoVisualizzazione('lista')">Lista Completa</button>
                         </div>
                     </div>
                     
@@ -262,18 +310,15 @@
                     </div>
                 </div>
 
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 12%;">Data</th>
-                            <th style="width: 12%;">Classe</th>
-                            <th style="width: 25%;">Tipo / Materia</th>
-                            <th>Descrizione</th>
-                            <th style="width: 10%; text-align:center;">Rimuovi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="agenda-body"></tbody>
-                </table>
+                <!-- CONTENITORE DINAMICO CALENDARIO VISTA -->
+                <div id="visual-calendar-box" class="calendar-container">
+                    <div class="calendar-header">
+                        <button class="btn-secondary" style="padding: 5px 12px;" onclick="navigaCalendario(-1)">🡠 Precedente</button>
+                        <h3 id="calendar-period-title" style="margin:0; color:var(--primary-dark);">Mese</h3>
+                        <button class="btn-secondary" style="padding: 5px 12px;" onclick="navigaCalendario(1)">Successivo 🡦</button>
+                    </div>
+                    <div id="calendar-render-target"></div>
+                </div>
             </div>
 
             <div id="tutte-classi-view" class="hidden">
@@ -359,6 +404,27 @@
                     </div>
                 </div>
 
+                <!-- SETUP COMPILAZIONE DELL'ORARIO SCOLASTICO DEL DOCENTE -->
+                <div class="settings-card">
+                    <h3>📅 Configura il tuo Orario Scolastico Settimanale</h3>
+                    <p style="font-size:13px; color:#64748B; margin-top:0;">Seleziona le tue classi all'interno della griglia oraria. Verrà visualizzato in home page per un accesso rapido.</p>
+                    <table class="timetable-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%;">Ora</th>
+                                <th>Lunedì</th>
+                                <th>Martedì</th>
+                                <th>Mercoledì</th>
+                                <th>Giovedì</th>
+                                <th>Venerdì</th>
+                                <th>Sabato</th>
+                            </tr>
+                        </thead>
+                        <tbody id="settings-timetable-body"></tbody>
+                    </table>
+                    <button class="btn-primary" style="width: auto; background: var(--dark-grey); margin-top: 10px;" onclick="salvaOrarioDocente()">Salva Configurazione Orario</button>
+                </div>
+
                 <!-- NOMINA COORDINATORI DI CLASSE -->
                 <div class="settings-card" style="background: #FFFBEB; border-color: #FCD34D;">
                     <h3 style="color: #B45309; margin-top: 0;">👑 Nomina Coordinatore di Classe</h3>
@@ -399,7 +465,10 @@
             </div>
 
             <div id="class-detail-view" class="hidden">
-                <button class="back-btn" onclick="showView('classes-view')">🡠 Torna alle classi</button>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                    <button class="back-btn" onclick="showView('classes-view')" style="margin-bottom: 0;">🡠 Torna alle classi</button>
+                    <button class="btn-secondary" style="background: #4338CA;" onclick="vaiAdAgendaClasseSpecificata()">📅 Apri Agenda di Questa Classe</button>
+                </div>
                 
                 <div id="info-classe-header-box"></div>
 
@@ -416,6 +485,7 @@
                     <button class="tab-btn" id="btn-tab-firma" onclick="switchTab('tab-firma')">Firma Lezione</button>
                     <button class="tab-btn" id="btn-tab-voti" onclick="switchTab('tab-voti')">Voti</button>
                     <button class="tab-btn" id="btn-tab-scrutini" onclick="switchTab('tab-scrutini')">📋 Scrutini</button>
+                    <button class="tab-btn" id="btn-tab-gestione-alunni" onclick="switchTab('tab-gestione-alunni')">👥 Gestione Alunni</button>
                 </div>
 
                 <!-- TAB APPELLO -->
@@ -555,7 +625,7 @@
                     </table>
                 </div>
 
-                <!-- TAB SCRUTINI (NUOVA) -->
+                <!-- TAB SCRUTINI -->
                 <div id="tab-scrutini" class="tab-content">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px; flex-wrap: wrap; gap:10px;">
                         <div>
@@ -586,6 +656,30 @@
                     <button class="btn-primary" style="width: auto; background:#1E293B;" onclick="salvaTabelloneScrutini()">💾 Salva Voti e Giudizi Scrutinio</button>
                 </div>
 
+                <!-- NUOVA TAB GESTIONE ALUNNI DELLA CLASSE -->
+                <div id="tab-gestione-alunni" class="tab-content">
+                    <h3>👥 Anagrafica Alunni della Classe</h3>
+                    
+                    <div style="background:#F8FAFC; padding:15px; border-radius:8px; border:1px solid var(--border-color); display:flex; gap:15px; align-items:flex-end; margin-bottom:20px; flex-wrap:wrap;">
+                        <div style="flex-grow:1;">
+                            <label style="display:block; font-weight:600; font-size:13px; margin-bottom:5px;">Cognome e Nome Nuovo Alunno:</label>
+                            <input type="text" id="nuovo-alunno-nome" placeholder="Es: Rossi Mario" style="width:100%; box-sizing:border-box;">
+                        </div>
+                        <button class="btn-primary" style="width:auto; margin:0;" onclick="aggiungiAlunnoInClasse()">Aggiungi Alunno</button>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 10%;">N° Reg.</th>
+                                <th>Cognome e Nome</th>
+                                <th style="width: 15%; text-align:center;">Rimuovi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gestione-alunni-body"></tbody>
+                    </table>
+                </div>
+
             </div>
         </main>
     </div>
@@ -596,70 +690,36 @@
             ["A","B","C","D","E","F","G","H","I","L","M","N","O"].forEach(s => TUTTE_LE_CLASSI.push(a+s));
         });
 
-        const NOMI = ["Andrea", "Luca", "Giulia", "Martina", "Francesco", "Alessandro", "Sofia", "Lorenzo", "Chiara", "Aurora", "Matteo", "Leonardo", "Ginevra", "Alice", "Giorgia", "Tommaso", "Gabriele", "Emma", "Riccardo", "Beatrice", "Edoardo", "Sara", "Federico", "Anna", "Giovanni", "Elena", "Filippo", "Gaia", "Samuele", "Noemi", "Marco", "Ludovica", "Christian", "Matilde", "Antonio", "Davide", "Manuel", "Simone", "Vittoria", "Viola"];
-        const COGNOMI = ["Rossi", "Russo", "Ferrari", "Esposito", "Bianchi", "Romano", "Colombo", "Ricci", "Marino", "Greco", "Bruno", "Gallo", "Conti", "De Luca", "Costa", "Giordano", "Mancini", "Rizzo", "Lombardi", "Moretti", "Barbieri", "Fontana", "Santoro", "Mariani", "Magnani", "Rinaldi", "Caruso", "Ferrara", "Galli", "Martini", "Leone", "Longo", "Gentile", "Martinelli", "Vitale", "Serra", "Coppola", "Marchetti", "Parigi", "Villa", "Conte", "Ferri", "Fabbri", "Carbone", "Marini", "Benedetti", "Barone", "Caputo", "Monti", "Silvestri", "Grassi", "Pellegrini"];
-
-        function generaAlunni(classeStr) {
-            const isTriennio = classeStr.startsWith('3') || classeStr.startsWith('4') || classeStr.startsWith('5');
-            let numAlunni = isTriennio ? (Math.floor(Math.random() * 5) + 18) : (Math.floor(Math.random() * 8) + 20); 
-            if(isTriennio && numAlunni > 23) numAlunni = 23;
-
-            let alunni = [];
-            let cognomiDisponibili = [...COGNOMI];
-
-            for(let i=0; i<numAlunni; i++) {
-                if(cognomiDisponibili.length === 0) cognomiDisponibili = [...COGNOMI];
-                
-                let idxCognome = Math.floor(Math.random() * cognomiDisponibili.length);
-                let cognomeScelto = cognomiDisponibili.splice(idxCognome, 1)[0];
-                let nomeScelto = NOMI[Math.floor(Math.random() * NOMI.length)];
-                let nomeCompleto = cognomeScelto + " " + nomeScelto;
-                
-                if (alunni.some(al => al.nome === nomeCompleto)) { i--; continue; }
-
-                alunni.push({ id: classeStr + "_" + Date.now() + "_" + i + "_" + Math.floor(Math.random()*1000), nome: nomeCompleto });
-            }
-            alunni.sort((a,b) => a.nome.localeCompare(b.nome));
-            return alunni;
-        }
-
-        const STRUTTURA_CLASSI_UTENTE = [
-            { id: "2C", nome: "Classe 2C", materie: ["Lingua e Lett. Latine"], coordinatore: false },
-            { id: "2O", nome: "Classe 2O", materie: ["Storia", "Geografia"], coordinatore: false },
-            { id: "3H", nome: "Classe 3H", materie: ["Lingua e Lettere Italiane"], coordinatore: true },
-            { id: "4C", nome: "Classe 4C", materie: ["Lingua e Lettere Italiane"], coordinatore: false },
-            { id: "5A", nome: "Classe 5A", materie: ["Lingua e Lett. Latine"], coordinatore: false }
-        ];
-
         let DB;
-        let filtroDataAttivo = "all";
-        let DATA_DI_LAVORO_SESSIONE = ""; // Data finta / reale di lavoro stabilita dall'utente
+        let filtroDataAttivo = "mese"; // Cambiato default per la nuova struttura calendario
+        let DATA_DI_LAVORO_SESSIONE = ""; 
+        let calendarioDataCorrenteNavigazione = null; // Memorizza il mese/settimana visualizzato nell'agenda
 
+        // DATABASE INIZIALMENTE VUOTO SENZA CLASSI PREDEFINITE
         if (!localStorage.getItem('cv_db')) {
             DB = {
-                classi: JSON.parse(JSON.stringify(STRUTTURA_CLASSI_UTENTE)),
+                classi: [],
                 alunni: {}, appelli: {}, firme: [], voti: [], firmeLibere: [], agenda: [], scrutini: {},
+                orarioDocente: {}, // Contiene l'orario scolastico giorno_ora -> classeId
                 annoAttivo: "2025/2026",
-                lastSessionDate: "2026-09-15" // Default di cortesia iniziale
+                lastSessionDate: "2026-09-15" 
             };
-            DB.classi.forEach(cl => { DB.alunni[cl.id] = generaAlunni(cl.id); });
-            ordinaClassi();
             localStorage.setItem('cv_db', JSON.stringify(DB));
         } else {
             DB = JSON.parse(localStorage.getItem('cv_db'));
             if (!DB.agenda) DB.agenda = [];
             if (!DB.firmeLibere) DB.firmeLibere = [];
             if (!DB.scrutini) DB.scrutini = {};
+            if (!DB.orarioDocente) DB.orarioDocente = {};
             if (!DB.annoAttivo) DB.annoAttivo = "2025/2026";
             if (!DB.lastSessionDate) DB.lastSessionDate = new Date().toISOString().split('T')[0];
             DB.classi.forEach(cl => { 
-                if (!DB.alunni[cl.id]) DB.alunni[cl.id] = generaAlunni(cl.id); 
+                if (!DB.alunni[cl.id]) DB.alunni[cl.id] = []; 
                 if (cl.coordinatore === undefined) cl.coordinatore = false; 
             });
             ordinaClassi();
         }
 
-        // Setup della data visibile nel box di login (l'utente legge l'ultima inserita ma può cambiarla)
         const dRev = DB.lastSessionDate.split('-').reverse().join('/');
         document.getElementById('label-info-last-date').innerText = `📅 DATA ULTIMO ACCESSO: ${dRev} (Modifica se necessario)`;
         document.getElementById('login-session-date').value = DB.lastSessionDate;
@@ -688,14 +748,12 @@
             if(u === "alfonsocensabella" && p === "registro elettronico") {
                 document.getElementById('login-error').style.display = 'none';
                 
-                // Imposta la data globale di sessione di lavoro
                 DATA_DI_LAVORO_SESSIONE = dataScelta;
                 DB.lastSessionDate = dataScelta;
+                calendarioDataCorrenteNavigazione = new Date(dataScelta);
                 salvaNelTempo();
 
-                // Mostra la data ovunque in testata
                 document.getElementById('header-date-display').innerText = dataScelta.split('-').reverse().join('/');
-
                 document.getElementById('login-view').classList.add('hidden');
                 document.getElementById('app-view').classList.remove('hidden');
                 inizializzaApp();
@@ -717,7 +775,6 @@
             document.getElementById('login-view').classList.remove('hidden'); 
             document.getElementById('username').value = "";
             document.getElementById('password').value = "";
-            // Aggiorna etichetta per il prossimo ingresso
             const dRev = DB.lastSessionDate.split('-').reverse().join('/');
             document.getElementById('label-info-last-date').innerText = `📅 DATA ULTIMO ACCESSO: ${dRev} (Modifica se necessario)`;
             document.getElementById('login-session-date').value = DB.lastSessionDate;
@@ -729,28 +786,60 @@
                 if(el) el.classList.add('hidden');
             });
             document.getElementById(vId).classList.remove('hidden');
+            if(vId === 'dashboard-view') renderDashboardOrario();
         }
 
         function inizializzaApp() {
             ordinaClassi();
             document.getElementById('label-anno-attivo').innerText = DB.annoAttivo;
             document.querySelectorAll('.placeholder-anno-testo').forEach(e => e.innerText = DB.annoAttivo);
+            
             const container = document.getElementById('container-elenco-classi');
             container.innerHTML = "";
-            DB.classi.forEach(cl => {
-                let badgeC = cl.coordinatore ? `<span class="badge-coord">👑 Coordinatore</span>` : "";
-                container.innerHTML += `
-                    <div class="menu-card" onclick="apriDettaglioClasse('${cl.id}')">
-                        ${badgeC}
-                        <h3>📚 ${cl.nome}</h3>
-                        <p>${cl.materie.join(', ')}</p>
-                    </div>`;
-            });
+            
+            if(DB.classi.length === 0) {
+                container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #64748B; padding: 20px;">Nessuna classe assegnata. Vai in Impostazioni per aggiungerne una.</p>`;
+            } else {
+                DB.classi.forEach(cl => {
+                    let badgeC = cl.coordinatore ? `<span class="badge-coord">👑 Coordinatore</span>` : "";
+                    container.innerHTML += `
+                        <div class="menu-card" onclick="apriDettaglioClasse('${cl.id}')">
+                            ${badgeC}
+                            <h3>📚 ${cl.nome}</h3>
+                            <p>${cl.materie.join(', ')}</p>
+                        </div>`;
+                });
+            }
+            renderDashboardOrario();
+        }
+
+        // COSTRUISCE LA GRIGLIA DELL'ORARIO SCOLASTICO DEL DOCENTE
+        function renderDashboardOrario() {
+            const giorni = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+            const target = document.getElementById('dashboard-timetable-body');
+            target.innerHTML = "";
+            
+            for(let ora=1; ora<=6; ora++) {
+                let riga = `<tr><td style="font-weight:bold; background:#F8FAFC;">${ora}^ Ora</td>`;
+                giorni.forEach(g => {
+                    let chiave = `${g}_${ora}`;
+                    let classeAssegnata = DB.orarioDocente[chiave] || "";
+                    if(classeAssegnata && DB.classi.some(c => c.id === classeAssegnata)) {
+                        riga += `<td><div class="timetable-cell-active" onclick="apriDettaglioClasse('${classeAssegnata}')">Classe ${classeAssegnata}</div></td>`;
+                    } else {
+                        riga += `<td style="color:#CBD5E1; font-size:12px;">-</td>`;
+                    }
+                });
+                riga += `</tr>`;
+                target.innerHTML += riga;
+            }
         }
 
         function apriDettaglioClasse(classeId) {
             currentClasseId = classeId;
             const classeObj = DB.classi.find(c => c.id === classeId);
+            if(!classeObj) return;
+            
             document.getElementById('class-title').innerText = `Classe: ${classeObj.nome}`;
             
             const bannerBox = document.getElementById('info-classe-header-box');
@@ -764,16 +853,22 @@
             selectMat.innerHTML = "";
             classeObj.materie.forEach(m => selectMat.innerHTML += `<option value="${m}">${m}</option>`);
 
-            currentMateria = classeObj.materie[0];
+            currentMateria = classeObj.materie[0] || "Generale";
             document.getElementById('firma-materia-readonly').value = currentMateria;
             
-            // Sincronizza i calendari interni sulla base della DATA DI SESSIONE stabilita al login
             document.getElementById('firma-data').value = DATA_DI_LAVORO_SESSIONE;
             document.getElementById('appello-data').value = DATA_DI_LAVORO_SESSIONE;
 
             toggleFormVoti('singolo');
             switchTab('tab-appello');
             showView('class-detail-view');
+        }
+
+        // REINDIRIZZAMENTO RAPIDO ALL'AGENDA FILTRATA PER LA SINGOLA CLASSE ATTIVA
+        function vaiAdAgendaClasseSpecificata() {
+            openAgendaView();
+            document.getElementById('filtro-agenda-classe').value = currentClasseId;
+            renderAgenda();
         }
 
         function onMateriaChanged() {
@@ -792,8 +887,10 @@
             if(tabId === 'tab-firma') renderFirme();
             if(tabId === 'tab-voti') renderVoti();
             if(tabId === 'tab-scrutini') renderScrutini();
+            if(tabId === 'tab-gestione-alunni') renderGestioneAlunni();
         }
 
+        // TAB APPELLO AGGIORNATO CON OPZIONE RITARDO BREVE (RB)
         function renderAppello() {
             const body = document.getElementById('appello-body');
             body.innerHTML = "";
@@ -801,6 +898,11 @@
             const dataSelezionata = document.getElementById('appello-data').value || DATA_DI_LAVORO_SESSIONE;
             const chiave = `${currentClasseId}_${dataSelezionata}`;
             const statoSalvati = DB.appelli[chiave] || {};
+
+            if(alunni.length === 0) {
+                body.innerHTML = `<tr><td colspan="2" style="text-align:center; color:#64748B;">Nessun alunno presente in questa classe. Vai nel tab 'Gestione Alunni' per aggiungerli.</td></tr>`;
+                return;
+            }
 
             alunni.forEach((al, index) => {
                 const record = statoSalvati[al.id] || "P";
@@ -814,8 +916,9 @@
                             <select id="appello-select-${al.id}" onchange="gestisciVisualizzazioneOra('${al.id}')">
                                 <option value="P" ${stato==='P'?'selected':''}>Presente</option>
                                 <option value="A" ${stato==='A'?'selected':''}>Assente</option>
-                                <option value="R" ${stato==='R'?'selected':''}>Ritardo ingresso</option>
-                                <option value="U" ${stato==='U'?'selected':''}>Uscita anticipata</option>
+                                <option value="RB" ${stato==='RB'?'selected':''}>Ritardo Breve (RB)</option>
+                                <option value="R" ${stato==='R'?'selected':''}>Ritardo Ingresso (Ora Specifica)</option>
+                                <option value="U" ${stato==='U'?'selected':''}>Uscita Anticipata</option>
                             </select>
                             <select id="appello-ora-${al.id}" style="width:110px; margin-left:10px; ${['R','U'].includes(stato)?'':'display:none;'}">
                                 <option value="">-- Quale Ora? --</option>
@@ -974,7 +1077,6 @@
 
         function cancellaVoto(id) { DB.voti = DB.voti.filter(v => v.id !== id); salvaNelTempo(); renderVoti(); }
 
-        // === GESTIONE NUOVO SISTEMA DI SCRUTINIO ===
         function renderScrutini() {
             document.getElementById('scrutinio-materia-titolo').innerText = currentMateria;
             const periodo = document.getElementById('scrutinio-periodo-selettore').value;
@@ -983,7 +1085,6 @@
             
             const alunni = DB.alunni[currentClasseId] || [];
 
-            // Conta le assenze totali dell'alunno calcolandole dallo storico degli appelli
             const contaAssenzeAlunno = (alunnoId) => {
                 let totaleAssenze = 0;
                 Object.keys(DB.appelli).forEach(chiaveData => {
@@ -999,12 +1100,10 @@
             };
 
             alunni.forEach((al, index) => {
-                // Calcola la media matematica reale dei voti in archivio
                 const votiFiltrati = DB.voti.filter(v => v.alunnoId === al.id && v.materia === currentMateria && v.periodo === periodo);
                 const mediaReale = votiFiltrati.length ? (votiFiltrati.reduce((sum, v) => sum + v.valore, 0) / votiFiltrati.length).toFixed(2) : "-";
                 const numAssenze = contaAssenzeAlunno(al.id);
 
-                // Recupera vecchi salvataggi dal registro di scrutinio persistente
                 const chiaveScrutinio = `${currentClasseId}_${currentMateria}_${periodo}_${al.id}`;
                 const recordScrutinio = DB.scrutini[chiaveScrutinio] || { votoProposto: "", giudizio: "" };
 
@@ -1021,7 +1120,7 @@
                             <input type="number" id="sc-voto-${al.id}" min="1" max="10" step="1" value="${recordScrutinio.votoProposto}" placeholder="Voto" style="width:65px; text-align:center; font-weight:bold; border-color:var(--primary-red);">
                         </td>
                         <td>
-                            <input type="text" id="sc-giudizio-${al.id}" value="${recordScrutinio.giudizio}" placeholder="Es: Livello Ottimo, Impegno costante / Carenze da ricuperare..." style="width:95%;">
+                            <input type="text" id="sc-giudizio-${al.id}" value="${recordScrutinio.giudizio}" placeholder="Es: Livello Ottimo, Impegno costante..." style="width:95%;">
                         </td>
                     </tr>
                 `;
@@ -1037,25 +1136,69 @@
                 const giudizioVal = document.getElementById(`sc-giudizio-${al.id}`).value.trim();
                 const chiaveScrutinio = `${currentClasseId}_${currentMateria}_${periodo}_${al.id}`;
 
-                DB.scrutini[chiaveScrutinio] = {
-                    votoProposto: votoVal,
-                    giudizio: giudizioVal
-                };
+                DB.scrutini[chiaveScrutinio] = { votoProposto: votoVal, giudizio: giudizioVal };
             });
 
             salvaNelTempo();
-            alert(`Tabellone Scrutini (${periodo}) salvato con successo nell'archivio protetto!`);
+            alert(`Tabellone Scrutini (${periodo}) salvato con successo!`);
+        }
+
+        // LOGICA DI GESTIONE ANAGRAFICA ALUNNI INTERNA ALLA CLASSE
+        function renderGestioneAlunni() {
+            const target = document.getElementById('gestione-alunni-body');
+            target.innerHTML = "";
+            const alunni = DB.alunni[currentClasseId] || [];
+
+            if(alunni.length === 0) {
+                target.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#64748B; padding:15px;">Nessun alunno configurato in questa classe. Aggiungine uno sopra.</td></tr>`;
+                return;
+            }
+
+            alunni.forEach((al, idx) => {
+                target.innerHTML += `
+                    <tr>
+                        <td><span class="num-registro">${idx+1}.</span></td>
+                        <td><strong>${al.nome}</strong></td>
+                        <td style="text-align:center;"><button class="btn-danger" onclick="rimuoviAlunnoDaClasse('${al.id}', '${al.nome.replace(/'/g, "\\'")}')">🗑 Rimuovi</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function aggiungiAlunnoInClasse() {
+            const input = document.getElementById('nuovo-alunno-nome');
+            const nomeStr = input.value.trim();
+            if(!nomeStr) return alert("Inserisci il Cognome e il Nome dell'alunno!");
+
+            if(!DB.alunni[currentClasseId]) DB.alunni[currentClasseId] = [];
+            
+            DB.alunni[currentClasseId].push({
+                id: currentClasseId + "_" + Date.now() + "_" + Math.floor(Math.random()*1000),
+                nome: nomeStr
+            });
+
+            DB.alunni[currentClasseId].sort((a,b) => a.nome.localeCompare(b.nome));
+            input.value = "";
+            salvaNelTempo();
+            renderGestioneAlunni();
+        }
+
+        function rimuoviAlunnoDaClasse(alunnoId, nome) {
+            if(confirm(`Sei sicuro di voler rimuovere l'alunno ${nome} della classe? Verranno eliminati anche i suoi voti.`)) {
+                DB.alunni[currentClasseId] = DB.alunni[currentClasseId].filter(a => a.id !== alunnoId);
+                DB.voti = DB.voti.filter(v => v.alunnoId !== alunnoId);
+                salvaNelTempo();
+                renderGestioneAlunni();
+            }
         }
 
 
-        // === GESTIONE AGENDA POTENZIATA ===
+        // === GESTIONE AGENDA FORMATO CALENDARIO MULTI-VISTA ===
         function openAgendaView() {
             showView('agenda-view');
             document.getElementById('age-data').value = DATA_DI_LAVORO_SESSIONE;
             document.getElementById('age-titolo').value = "";
             document.getElementById('search-agenda-input').value = "";
-            filtroDataAttivo = "all";
-            aggiornaPillStato();
             
             const sel = document.getElementById('age-classe-select');
             sel.innerHTML = '<option value="Tutte">Tutte le mie classi</option>';
@@ -1065,7 +1208,8 @@
             filtroClasseSelect.innerHTML = '<option value="Tutte">Mostra tutte le classi</option>';
             DB.classi.forEach(cl => { filtroClasseSelect.innerHTML += `<option value="${cl.id}">Solo classe ${cl.id}</option>`; });
 
-            onAgendaClasseChange(); renderAgenda();
+            onAgendaClasseChange(); 
+            renderAgenda();
         }
 
         function onAgendaClasseChange() {
@@ -1081,17 +1225,24 @@
             }
         }
 
-        function setAgendaFiltroData(tipo) {
+        function setAgendaModoVisualizzazione(tipo) {
             filtroDataAttivo = tipo;
-            aggiornaPillStato();
+            document.querySelectorAll('.agenda-filters .filter-pill').forEach(p => p.classList.remove('active'));
+            document.getElementById(`pill-cal-${tipo}`).classList.add('active');
             renderAgenda();
         }
 
-        function aggiornaPillStato() {
-            ['all', 'oggi', 'settimana', 'mese'].forEach(t => {
-                document.getElementById(`pill-${t}`).classList.remove('active');
-            });
-            document.getElementById(`pill-${filtroDataAttivo}`).classList.add('active');
+        function navigaCalendario(direzione) {
+            if(!calendarioDataCorrenteNavigazione) calendarioDataCorrenteNavigazione = new Date(DATA_DI_LAVORO_SESSIONE);
+            
+            if(filtroDataAttivo === 'mese') {
+                calendarioDataCorrenteNavigazione.setMonth(calendarioDataCorrenteNavigazione.getMonth() + direzione);
+            } else if(filtroDataAttivo === 'settimana') {
+                calendarioDataCorrenteNavigazione.setDate(calendarioDataCorrenteNavigazione.getDate() + (direzione * 7));
+            } else if(filtroDataAttivo === 'giorno') {
+                calendarioDataCorrenteNavigazione.setDate(calendarioDataCorrenteNavigazione.getDate() + direzione);
+            }
+            renderAgenda();
         }
 
         function addAgendaEvent() {
@@ -1108,59 +1259,127 @@
             salvaNelTempo(); renderAgenda();
         }
 
+        // MOTORE DI RENDERING DEI CALENDARI
         function renderAgenda() {
-            const body = document.getElementById('agenda-body'); body.innerHTML = "";
+            const target = document.getElementById('calendar-render-target');
+            const titoloPeriodo = document.getElementById('calendar-period-title');
             const filtroClasse = document.getElementById('filtro-agenda-classe').value;
             const termineRicerca = document.getElementById('search-agenda-input').value.trim().toLowerCase();
             
-            DB.agenda.sort((a,b) => new Date(a.data) - new Date(b.data));
-
-            // Per i filtri temporali usiamo la DATA DI SESSIONE come perno di calcolo "Oggi"
-            const oggi = new Date(DATA_DI_LAVORO_SESSIONE); oggi.setHours(0,0,0,0);
+            if(!calendarioDataCorrenteNavigazione) calendarioDataCorrenteNavigazione = new Date(DATA_DI_LAVORO_SESSIONE);
             
-            const inizioSettimana = new Date(oggi);
-            const giornoCorrente = inizioSettimana.getDay(); 
-            const distanzaLunedì = giornoCorrente === 0 ? -6 : 1 - giornoCorrente;
-            inizioSettimana.setDate(inizioSettimana.getDate() + distanzaLunedì);
-            
-            const fineSettimana = new Date(inizioSettimana);
-            fineSettimana.setDate(fineSettimana.getDate() + 6);
-            fineSettimana.setHours(23,59,59,999);
-
-            let agendeFiltrate = DB.agenda.filter(ev => {
+            // Filtro preliminare degli eventi in base alla ricerca testuale e alla classe selezionata
+            let eventiFiltratiComuni = DB.agenda.filter(ev => {
                 if (filtroClasse !== "Tutte" && ev.classe !== filtroClasse) return false;
                 if (termineRicerca && !ev.titolo.toLowerCase().includes(termineRicerca) && !ev.materia.toLowerCase().includes(termineRicerca)) return false;
-
-                const dataEv = new Date(ev.data); dataEv.setHours(0,0,0,0);
-                if (filtroDataAttivo === "oggi") {
-                    return dataEv.getTime() === oggi.getTime();
-                } else if (filtroDataAttivo === "settimana") {
-                    return dataEv >= inizioSettimana && dataEv <= fineSettimana;
-                } else if (filtroDataAttivo === "mese") {
-                    return dataEv.getMonth() === oggi.getMonth() && dataEv.getFullYear() === oggi.getFullYear();
-                }
                 return true;
             });
 
-            if(agendeFiltrate.length === 0) {
-                body.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748B; padding:20px;">Nessun impegno in agenda per i criteri selezionati.</td></tr>`;
-                return;
-            }
+            const mesiNomi = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
+            const oggiReale = new Date(DATA_DI_LAVORO_SESSIONE); oggiReale.setHours(0,0,0,0);
 
-            agendeFiltrate.forEach(ev => {
-                let badgeClasse = ev.classe === "Tutte" ? `<span style="background:#E2E8F0; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold;">TUTTE</span>` : `<span style="background:#FFF5F5; border:1px solid #FECACA; color:var(--primary-dark); padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold;">${ev.classe}</span>`;
-                let stringaMateria = (ev.materia && ev.materia !== "Generale/Agenda") ? `<br><small style="color:var(--primary-dark); font-weight:600;">📚 Materia: ${ev.materia}</small>` : '';
+            // 1. RENDERING VISTA MENSILE TRADIZIONALE
+            if (filtroDataAttivo === 'mese') {
+                let anno = calendarioDataCorrenteNavigazione.getFullYear();
+                let mese = calendarioDataCorrenteNavigazione.getMonth();
+                titoloPeriodo.innerText = `${mesiNomi[mese]} ${anno}`;
+
+                let primoGiornoMese = new Date(anno, mese, 1);
+                let giornoDellaSettimanaInizio = primoGiornoMese.getDay(); 
+                let offsetIniziale = giornoDellaSettimanaInizio === 0 ? 6 : giornoDellaSettimanaInizio - 1; 
+
+                let dataInizioCal = new Date(primoGiornoMese);
+                dataInizioCal.setDate(dataInizioCal.getDate() - offsetIniziale);
+
+                let htmlGrid = `<div class="calendar-grid"><div class="calendar-grid-header"><div>Lun</div><div>Mar</div><div>Mer</div><div>Gio</div><div>Ven</div><div>Sab</div><div>Dom</div></div><div class="calendar-days">`;
+
+                for (let i = 0; i < 42; i++) {
+                    let cellDate = new Date(dataInizioCal);
+                    cellDate.setDate(cellDate.getDate() + i);
+                    cellDate.setHours(0,0,0,0);
+
+                    let isoDataString = cellDate.toISOString().split('T')[0];
+                    let classeCella = "calendar-day-cell";
+                    if (cellDate.getMonth() !== mese) classeCella += " other-month";
+                    if (cellDate.getTime() === oggiReale.getTime()) classeCella += " today-cell";
+
+                    let eventiGiorno = eventiFiltratiComuni.filter(e => e.data === isoDataString);
+                    let listaBadgeEventi = "";
+                    eventiGiorno.forEach(ev => {
+                        let coloreScelto = ev.tipo.includes("COMPITO") ? "var(--primary-red)" : (ev.tipo.includes("VERIFICA")||ev.tipo.includes("AGENDA") ? "var(--amber-coord)" : "#475569");
+                        listaBadgeEventi += `<div class="calendar-event-badge" style="background:${coloreScelto};" title="[${ev.classe}] ${ev.titolo}" onclick="alert('[${ev.classe}] - ${ev.tipo}\\nMateria: ${ev.materia}\\nDescrizione: ${ev.titolo}')"><b>${ev.classe}:</b> ${ev.titolo}</div>`;
+                    });
+
+                    htmlGrid += `<div class="${classeCella}"><span class="calendar-day-num">${cellDate.getDate()}</span><div class="calendar-events-wrap">${listaBadgeEventi}</div></div>`;
+                }
+                htmlGrid += `</div></div>`;
+                target.innerHTML = htmlGrid;
+
+            // 2. RENDERING VISTA SETTIMANALE DETTAGLIATA
+            } else if (filtroDataAttivo === 'settimana') {
+                let corrente = new Date(calendarioDataCorrenteNavigazione);
+                let g = corrente.getDay();
+                let dist = g === 0 ? -6 : 1 - g;
+                let lunedi = new Date(corrente); lunedi.setDate(lunedi.getDate() + dist);
+                let domenica = new Date(lunedi); domenica.setDate(domenica.getDate() + 6);
+
+                titoloPeriodo.innerText = `Settimana dal ${lunedi.getDate()}/${lunedi.getMonth()+1} al ${domenica.getDate()}/${domenica.getMonth()+1}/${domenica.getFullYear()}`;
+
+                let htmlWrap = `<div class="calendar-view-panel">`;
+                for(let i=0; i<7; i++) {
+                    let giornoCiclo = new Date(lunedi); giornoCiclo.setDate(giornoCiclo.getDate() + i);
+                    let isoData = giornoCiclo.toISOString().split('T')[0];
+                    let eventiDelGiorno = eventiFiltratiComuni.filter(e => e.data === isoData);
+                    
+                    let nomiGiorniIT = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+                    let stileBordoOggi = giornoCiclo.getTime() === oggiReale.getTime() ? `style="border: 2px solid var(--primary-red); background:#FFF5F5;"` : '';
+
+                    htmlWrap += `<div class="calendar-row-item" ${stileBordoOggi}><div class="calendar-row-date"><span>${nomiGiorniIT[giornoCiclo.getDay()]}</span><span style="font-size:20px;">${giornoCiclo.getDate()}</span></div><div class="calendar-row-content">`;
+                    if(eventiDelGiorno.length === 0) {
+                        htmlWrap += `<span style="color:#94A3B8; font-size:13px;">Nessun impegno programmato</span>`;
+                    } else {
+                        eventiDelGiorno.forEach(ev => {
+                            htmlWrap += `<div style="margin-bottom:8px; padding-bottom:5px; border-bottom:1px dashed var(--border-color); display:flex; justify-content:space-between; align-items:center;"><div><strong style="color:var(--primary-red); font-size:13px;">[Classe ${ev.classe}]</strong> <b>${ev.tipo}</b> - ${ev.materia ? '📚 '+ev.materia+' : ' : ''} ${ev.titolo}</div><button class="btn-danger" style="padding:2px 6px; font-size:11px;" onclick="cancellaEventoAgenda('${ev.id}')">🗑</button></div>`;
+                        });
+                    }
+                    htmlWrap += `</div></div>`;
+                }
+                htmlWrap += `</div>`;
+                target.innerHTML = htmlWrap;
+
+            // 3. RENDERING VISTA GIORNALIERA CONCENTRATISSIMA
+            } else if (filtroDataAttivo === 'giorno') {
+                let isoData = calendarioDataCorrenteNavigazione.toISOString().split('T')[0];
+                titoloPeriodo.innerText = `Impegni del Giorno: ${calendarioDataCorrenteNavigazione.getDate()} ${mesiNomi[calendarioDataCorrenteNavigazione.getMonth()]} ${calendarioDataCorrenteNavigazione.getFullYear()}`;
+
+                let eventiDelGiorno = eventiFiltratiComuni.filter(e => e.data === isoData);
+                let htmlWrap = `<div class="calendar-view-panel">`;
+                if(eventiDelGiorno.length === 0) {
+                    htmlWrap += `<div style="text-align:center; color:#64748B; padding:30px;">Nessun impegno in questa data specifica.</div>`;
+                } else {
+                    eventiDelGiorno.forEach(ev => {
+                        htmlWrap += `<div class="calendar-row-item" style="padding:15px; align-items:center; justify-content:space-between; display:flex;"><div><span style="background:var(--primary-dark); color:white; padding:4px 8px; border-radius:4px; font-weight:bold; font-size:12px; margin-right:10px;">${ev.classe}</span><strong>${ev.tipo}</strong> (${ev.materia}): ${ev.titolo}</div><button class="btn-danger" onclick="cancellaEventoAgenda('${ev.id}')">Elimina</button></div>`;
+                    });
+                }
+                htmlWrap += `</div>`;
+                target.innerHTML = htmlWrap;
+
+            // 4. TABELLA LISTA COMPLETA STORICA
+            } else if (filtroDataAttivo === 'lista') {
+                titoloPeriodo.innerText = "Tutti gli impegni inseriti in archivio";
+                let htmlLista = `<div style="padding:15px;"><table><thead><tr><th>Data</th><th>Classe</th><th>Tipo / Materia</th><th>Descrizione</th><th style='text-align:center;'>Azione</th></tr></thead><tbody>`;
                 
-                body.innerHTML += `
-                    <tr>
-                        <td><code>${ev.data.split('-').reverse().join('/')}</code></td>
-                        <td>${badgeClasse}</td>
-                        <td><strong>${ev.tipo}</strong>${stringaMateria}</td>
-                        <td>${ev.titolo}</td>
-                        <td style="text-align:center;"><button class="btn-danger" style="padding:4px 8px;" onclick="cancellaEventoAgenda('${ev.id}')">🗑</button></td>
-                    </tr>
-                `;
-            });
+                eventiFiltratiComuni.sort((a,b)=>new Date(a.data)-new Date(b.data));
+                if(eventiFiltratiComuni.length === 0) {
+                    htmlLista += `<tr><td colspan="5" style="text-align:center; color:#64748B;">Nessun risultato trovato in archivio.</td></tr>`;
+                } else {
+                    eventiFiltratiComuni.forEach(ev => {
+                        htmlLista += `<tr><td><code>${ev.data.split('-').reverse().join('/')}</code></td><td><span style="font-weight:bold; color:var(--primary-dark);">${ev.classe}</span></td><td><b>${ev.tipo}</b><br><small>${ev.materia}</small></td><td>${ev.titolo}</td><td style="text-align:center;"><button class="btn-danger" style="padding:4px 8px;" onclick="cancellaEventoAgenda('${ev.id}')">🗑</button></td></tr>`;
+                    });
+                }
+                htmlLista += `</tbody></table></div>`;
+                target.innerHTML = htmlLista;
+            }
         }
 
         function cancellaEventoAgenda(id) { DB.agenda = DB.agenda.filter(ev => ev.id !== id); salvaNelTempo(); renderAgenda(); }
@@ -1197,7 +1416,6 @@
             });
         }
 
-        // === BACKUP CIFRATO CON CHIAVE DI SICUREZZA ===
         async function esportaBackup() {
             const chiave = prompt("Inserisci una Chiave di Sicurezza (Password) per proteggere il backup:\n*ATTENZIONE: Servirà la stessa chiave per ripristinare i dati!*");
             if (!chiave) return alert("Esportazione annullata. La chiave è obbligatoria per motivi di sicurezza.");
@@ -1249,7 +1467,6 @@
             }
         }
 
-        // === RIPRISTINO BACKUP COMPATIBILE ===
         function importaBackup(event) {
             const file = event.target.files[0]; if (!file) return;
             if(!confirm("Attenzione: caricando questo file sovrascriverai i dati correnti. Continuare?")) { event.target.value = ""; return; }
@@ -1260,7 +1477,7 @@
                     const importato = JSON.parse(e.target.result);
                     
                     if (importato.classi && importato.alunni && importato.voti && !importato.payload) {
-                        DB = importato; if(!DB.agenda) DB.agenda = []; if(!DB.scrutini) DB.scrutini={};
+                        DB = importato; if(!DB.agenda) DB.agenda = []; if(!DB.scrutini) DB.scrutini={}; if(!DB.orarioDocente) DB.orarioDocente={};
                         DB.classi.forEach(cl => { if(cl.coordinatore === undefined) cl.coordinatore = false; });
                         ordinaClassi(); salvaNelTempo(); inizializzaApp(); openSettingsView();
                         alert("🎉 Backup ripristinato con successo!");
@@ -1300,7 +1517,7 @@
                     
                     const decoder = new TextDecoder();
                     DB = JSON.parse(decoder.decode(decryptedBuffer));
-                    if(!DB.agenda) DB.agenda = []; if(!DB.scrutini) DB.scrutini = {};
+                    if(!DB.agenda) DB.agenda = []; if(!DB.scrutini) DB.scrutini = {}; if(!DB.orarioDocente) DB.orarioDocente = {};
                     DB.classi.forEach(cl => { if(cl.coordinatore === undefined) cl.coordinatore = false; });
                     
                     ordinaClassi(); salvaNelTempo(); inizializzaApp(); openSettingsView();
@@ -1342,6 +1559,47 @@
                 let badgeC = cl.coordinatore ? " <span style='color:var(--amber-coord); font-weight:bold;'>(Coordinatore)</span>" : "";
                 lista.innerHTML += `<div class="class-list-item"><div><strong>${cl.nome}</strong>${badgeC} - Materie: ${cl.materie.join(', ')}</div><button class="btn-danger" onclick="rimuoviClasse('${cl.id}')">🗑 Rimuovi</button></div>`;
             });
+
+            renderSettingsOrarioCompilabile();
+        }
+
+        // RENDERING DEI SELETTORI IN IMPOSTAZIONI PER L'ORARIO SCOLASTICO DEL DOCENTE
+        function renderSettingsOrarioCompilabile() {
+            const giorni = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+            const target = document.getElementById('settings-timetable-body');
+            target.innerHTML = "";
+
+            for(let ora=1; ora<=6; ora++) {
+                let riga = `<tr><td style="font-weight:bold; background:#F8FAFC;">${ora}^ Ora</td>`;
+                giorni.forEach(g => {
+                    let chiave = `${g}_${ora}`;
+                    let valoreSalvato = DB.orarioDocente[chiave] || "";
+                    
+                    let opzioniSelect = `<option value="">-- Libero --</option>`;
+                    DB.classi.forEach(cl => {
+                        opzioniSelect += `<option value="${cl.id}" ${valoreSalvato===cl.id?'selected':''}>Classe ${cl.id}</option>`;
+                    });
+
+                    riga += `<td><select id="time-select-${chiave}" class="timetable-select">${opzioniSelect}</select></td>`;
+                });
+                riga += `</tr>`;
+                target.innerHTML += riga;
+            }
+        }
+
+        function salvaOrarioDocente() {
+            const giorni = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+            DB.orarioDocente = {};
+
+            for(let ora=1; ora<=6; ora++) {
+                giorni.forEach(g => {
+                    let chiave = `${g}_${ora}`;
+                    let val = document.getElementById(`time-select-${chiave}`).value;
+                    if(val) DB.orarioDocente[chiave] = val;
+                });
+            }
+            salvaNelTempo();
+            alert("Orario settimanale salvato con successo ed applicato alla Dashboard!");
         }
 
         function toggleCoordinatore(classeId) {
@@ -1360,15 +1618,21 @@
 
             const materieArr = matStr.split(',').map(m => m.trim());
             DB.classi.push({ id: clId, nome: `Classe ${clId}`, materie: materieArr, coordinatore: false });
-            DB.alunni[clId] = generaAlunni(clId);
+            DB.alunni[clId] = []; // Inizialmente vuoto come richiesto
             
             document.getElementById('set-materie').value = "";
             ordinaClassi(); salvaNelTempo(); inizializzaApp(); openSettingsView();
         }
 
         function rimuoviClasse(id) {
-            if(confirm(`Eliminare la classe ${id}? L'operazione non è reversibile.`)) {
-                DB.classi = DB.classi.filter(c => c.id !== id); salvaNelTempo(); inizializzaApp(); openSettingsView();
+            if(confirm(`Eliminare la classe ${id}? L'operazione non è reversibile e rimuoverà orario, alunni e registrazioni.`)) {
+                DB.classi = DB.classi.filter(c => c.id !== id);
+                delete DB.alunni[id];
+                // Pulisce l'orario se conteneva questa classe
+                Object.keys(DB.orarioDocente).forEach(k => {
+                    if(DB.orarioDocente[k] === id) delete DB.orarioDocente[k];
+                });
+                salvaNelTempo(); inizializzaApp(); openSettingsView();
             }
         }
 
@@ -1406,7 +1670,7 @@
             });
 
             DB.annoAttivo = nuovoAnnoStr; DB.classi = nuoveClassi; DB.alunni = nuoviAlunni;
-            DB.voti = []; DB.appelli = {}; DB.firme = []; DB.agenda = []; DB.scrutini = {};
+            DB.voti = []; DB.appelli = {}; DB.firme = []; DB.agenda = []; DB.scrutini = {}; DB.orarioDocente = {};
             
             ordinaClassi(); salvaNelTempo(); inizializzaApp(); showView('dashboard-view');
             alert(`Registro aggiornato all'A.S. ${nuovoAnnoStr}`);
