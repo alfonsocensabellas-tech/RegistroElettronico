@@ -39,19 +39,24 @@
         }
 
         .login-box {
-            background: white; padding: 40px 30px; border-radius: var(--radius);
-            box-shadow: var(--shadow-md); text-align: center; width: 320px;
+            background: white; padding: 35px 30px; border-radius: var(--radius);
+            box-shadow: var(--shadow-md); text-align: center; width: 350px;
             border-top: 6px solid var(--primary-red);
         }
 
-        .login-box h2 { color: var(--primary-red); margin-top: 0; margin-bottom: 25px; font-weight: 700; }
-        .login-box input { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid var(--border-color); border-radius: 6px; font-size: 15px; }
+        .login-box h2 { color: var(--primary-red); margin-top: 0; margin-bottom: 20px; font-weight: 700; }
+        .login-box input, .login-box select { width: 90%; padding: 12px; margin: 8px 0; border: 1px solid var(--border-color); border-radius: 6px; font-size: 15px; }
         .login-box input:focus { outline: none; border-color: var(--primary-red); }
+
+        .session-date-box {
+            background: #F1F5F9; padding: 12px; border-radius: 8px; margin: 15px 0; border: 1px dashed #CBD5E1; text-align: left;
+        }
+        .session-date-box label { display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 5px; }
 
         .btn-primary {
             background-color: var(--primary-red); color: white; border: none; padding: 12px 20px;
             cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 15px; width: 100%;
-            margin-top: 15px; transition: background 0.2s;
+            margin-top: 10px; transition: background 0.2s;
         }
         .btn-primary:hover { background-color: var(--primary-dark); }
         .btn-secondary { background-color: #64748B; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; }
@@ -60,8 +65,8 @@
 
         /* === APP LAYOUT === */
         header { background-color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm); border-bottom: 1px solid var(--border-color); }
-        header #user-info { font-weight: 600; font-size: 16px; display: flex; align-items: center; gap: 8px; }
-        header #user-info::before { content: ""; display: inline-block; width: 10px; height: 10px; background-color: #22C55E; border-radius: 50%; }
+        header #user-info { font-weight: 600; font-size: 16px; display: flex; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .badge-date-top { background: #EDF2F7; padding: 4px 10px; border-radius: 20px; font-size: 13px; color: var(--primary-dark); border: 1px solid #CBD5E1; }
 
         .logout-btn { background: none; border: 1px solid var(--primary-red); color: var(--primary-red); padding: 6px 14px; cursor: pointer; border-radius: 6px; font-weight: 600; transition: all 0.2s; }
         .logout-btn:hover { background: var(--primary-red); color: white; }
@@ -145,6 +150,12 @@
             <h2>ClasseViva Docenti</h2>
             <input type="text" id="username" placeholder="Username" required>
             <input type="password" id="password" placeholder="Password" required>
+            
+            <div class="session-date-box">
+                <label id="label-info-last-date">📅 DATA DI SESSIONE (OGGI):</label>
+                <input type="date" id="login-session-date" required>
+            </div>
+
             <button type="submit" class="btn-primary">ACCEDI</button>
             <p id="login-error" style="color:var(--red-fail); display:none; margin-top:10px; font-size:14px;">Credenziali errate. Riprovare.</p>
         </form>
@@ -152,7 +163,10 @@
 
     <div id="app-view" class="hidden">
         <header>
-            <div id="user-info">Prof. Alfonso Censabella (<span id="label-anno-attivo">---</span>)</div>
+            <div id="user-info">
+                <span>Prof. Alfonso Censabella (<span id="label-anno-attivo">---</span>)</span>
+                <span class="badge-date-top">📅 Data di Lavoro: <strong id="header-date-display">--/--/----</strong></span>
+            </div>
             <button class="logout-btn" onclick="logout()">Esci</button>
         </header>
         
@@ -231,7 +245,7 @@
                         <label style="font-size:12px; font-weight:700; color:#64748B;">PERIODO TEMPORALE</label>
                         <div class="filter-pill-container">
                             <button class="filter-pill active" id="pill-all" onclick="setAgendaFiltroData('all')">Mostra Tutto</button>
-                            <button class="filter-pill" id="pill-oggi" onclick="setAgendaFiltroData('oggi')">Oggi</button>
+                            <button class="filter-pill" id="pill-oggi" onclick="setAgendaFiltroData('oggi')">Oggi Reale/Scelto</button>
                             <button class="filter-pill" id="pill-settimana" onclick="setAgendaFiltroData('settimana')">Questa Settimana</button>
                             <button class="filter-pill" id="pill-mese" onclick="setAgendaFiltroData('mese')">Questo Mese</button>
                         </div>
@@ -401,16 +415,18 @@
                     <button class="tab-btn active" id="btn-tab-appello" onclick="switchTab('tab-appello')">Appello</button>
                     <button class="tab-btn" id="btn-tab-firma" onclick="switchTab('tab-firma')">Firma Lezione</button>
                     <button class="tab-btn" id="btn-tab-voti" onclick="switchTab('tab-voti')">Voti</button>
+                    <button class="tab-btn" id="btn-tab-scrutini" onclick="switchTab('tab-scrutini')">📋 Scrutini</button>
                 </div>
 
+                <!-- TAB APPELLO -->
                 <div id="tab-appello" class="tab-content active">
                     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px; background: #F8FAFC; padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); flex-wrap: wrap;">
                         <div class="form-group" style="margin-bottom:0;">
                             <label style="font-weight: bold; margin-bottom: 4px;">📅 Data dell'Appello:</label>
-                            <input type="date" id="appello-data" onchange="renderAppello()">
+                            <input type="date" id="appello-data" onchange="renderAppello(); notaCambioDataLavoro(this.value)">
                         </div>
                         <div style="color: #64748B; font-size: 13px; flex-grow: 1; padding-top: 15px;">
-                            * Modificando questo calendario puoi registrare l'appello o consultare lo storico delle presenze di qualunque giorno scolastico.
+                            * Modificando questa data, sposterai temporaneamente anche il giorno corrente del registro elettronico per facilitare inserimenti consecutivi.
                         </div>
                     </div>
 
@@ -427,13 +443,14 @@
                     <button class="btn-primary" style="width: auto;" onclick="saveAppello()">Salva Appello del Giorno</button>
                 </div>
 
+                <!-- TAB FIRMA -->
                 <div id="tab-firma" class="tab-content">
                     <h3>Inserisci Nuova Firma di Lezione</h3>
                     <div style="background:#F8FAFC; padding:20px; border-radius:8px; margin-bottom: 25px; border: 1px solid var(--border-color);">
                         <div style="display:flex; gap:15px; flex-wrap:wrap; margin-bottom:15px;">
                             <div class="form-group" style="margin-bottom:0;">
                                 <label>Data</label>
-                                <input type="date" id="firma-data">
+                                <input type="date" id="firma-data" onchange="notaCambioDataLavoro(this.value)">
                             </div>
                             <div class="form-group" style="margin-bottom:0;">
                                 <label>N. Ore svolte</label>
@@ -483,6 +500,7 @@
                     </table>
                 </div>
 
+                <!-- TAB VOTI -->
                 <div id="tab-voti" class="tab-content">
                     <h3 id="titolo-voti-materia">Registro Valutazioni</h3>
                     
@@ -537,6 +555,37 @@
                     </table>
                 </div>
 
+                <!-- TAB SCRUTINI (NUOVA) -->
+                <div id="tab-scrutini" class="tab-content">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px; flex-wrap: wrap; gap:10px;">
+                        <div>
+                            <h3 style="margin:0;">📋 Tabellone di Scrutinio - <span id="scrutinio-materia-titolo">Materia</span></h3>
+                            <p style="margin:5px 0 0 0; font-size:13px; color:#64748B;">Carica automaticamente le medie calcolate e gestisce i voti di scrutinio finale.</p>
+                        </div>
+                        <div style="display:flex; gap:10px; align-items:center;">
+                            <label style="font-weight:700; font-size:14px;">Periodo Scrutinio:</label>
+                            <select id="scrutinio-periodo-selettore" onchange="renderScrutini()" style="padding:6px 12px; font-weight:bold; border:2px solid var(--primary-red);">
+                                <option value="Trimestre">1° Trimestre</option>
+                                <option value="Pentamestre">Scrutinio Finale (Pentamestre)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 22%;">Alunno</th>
+                                <th style="width: 12%; text-align:center;">Media Registro</th>
+                                <th style="width: 12%; text-align:center;">Assenze Totali</th>
+                                <th style="width: 15%; text-align:center;">Voto Proposto</th>
+                                <th>Giudizio Sintetico / Note di Scrutinio</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scrutini-body"></tbody>
+                    </table>
+                    <button class="btn-primary" style="width: auto; background:#1E293B;" onclick="salvaTabelloneScrutini()">💾 Salva Voti e Giudizi Scrutinio</button>
+                </div>
+
             </div>
         </main>
     </div>
@@ -577,19 +626,21 @@
         const STRUTTURA_CLASSI_UTENTE = [
             { id: "2C", nome: "Classe 2C", materie: ["Lingua e Lett. Latine"], coordinatore: false },
             { id: "2O", nome: "Classe 2O", materie: ["Storia", "Geografia"], coordinatore: false },
-            { id: "3H", nome: "Classe 3H", materie: ["Lingua e Lettere Italiane"], coordinatore: true }, // Impostata 3H di default
+            { id: "3H", nome: "Classe 3H", materie: ["Lingua e Lettere Italiane"], coordinatore: true },
             { id: "4C", nome: "Classe 4C", materie: ["Lingua e Lettere Italiane"], coordinatore: false },
             { id: "5A", nome: "Classe 5A", materie: ["Lingua e Lett. Latine"], coordinatore: false }
         ];
 
         let DB;
-        let filtroDataAttivo = "all"; // Stato del filtro data dell'agenda
+        let filtroDataAttivo = "all";
+        let DATA_DI_LAVORO_SESSIONE = ""; // Data finta / reale di lavoro stabilita dall'utente
 
         if (!localStorage.getItem('cv_db')) {
             DB = {
                 classi: JSON.parse(JSON.stringify(STRUTTURA_CLASSI_UTENTE)),
-                alunni: {}, appelli: {}, firme: [], voti: [], firmeLibere: [], agenda: [],
-                annoAttivo: "2025/2026"
+                alunni: {}, appelli: {}, firme: [], voti: [], firmeLibere: [], agenda: [], scrutini: {},
+                annoAttivo: "2025/2026",
+                lastSessionDate: "2026-09-15" // Default di cortesia iniziale
             };
             DB.classi.forEach(cl => { DB.alunni[cl.id] = generaAlunni(cl.id); });
             ordinaClassi();
@@ -598,13 +649,20 @@
             DB = JSON.parse(localStorage.getItem('cv_db'));
             if (!DB.agenda) DB.agenda = [];
             if (!DB.firmeLibere) DB.firmeLibere = [];
+            if (!DB.scrutini) DB.scrutini = {};
             if (!DB.annoAttivo) DB.annoAttivo = "2025/2026";
+            if (!DB.lastSessionDate) DB.lastSessionDate = new Date().toISOString().split('T')[0];
             DB.classi.forEach(cl => { 
                 if (!DB.alunni[cl.id]) DB.alunni[cl.id] = generaAlunni(cl.id); 
                 if (cl.coordinatore === undefined) cl.coordinatore = false; 
             });
             ordinaClassi();
         }
+
+        // Setup della data visibile nel box di login (l'utente legge l'ultima inserita ma può cambiarla)
+        const dRev = DB.lastSessionDate.split('-').reverse().join('/');
+        document.getElementById('label-info-last-date').innerText = `📅 DATA ULTIMO ACCESSO: ${dRev} (Modifica se necessario)`;
+        document.getElementById('login-session-date').value = DB.lastSessionDate;
 
         function salvaNelTempo() { localStorage.setItem('cv_db', JSON.stringify(DB)); }
 
@@ -625,9 +683,19 @@
         function login() {
             const u = document.getElementById('username').value.trim().toLowerCase();
             const p = document.getElementById('password').value.trim();
+            const dataScelta = document.getElementById('login-session-date').value;
             
             if(u === "alfonsocensabella" && p === "registro elettronico") {
                 document.getElementById('login-error').style.display = 'none';
+                
+                // Imposta la data globale di sessione di lavoro
+                DATA_DI_LAVORO_SESSIONE = dataScelta;
+                DB.lastSessionDate = dataScelta;
+                salvaNelTempo();
+
+                // Mostra la data ovunque in testata
+                document.getElementById('header-date-display').innerText = dataScelta.split('-').reverse().join('/');
+
                 document.getElementById('login-view').classList.add('hidden');
                 document.getElementById('app-view').classList.remove('hidden');
                 inizializzaApp();
@@ -635,12 +703,24 @@
                 document.getElementById('login-error').style.display = 'block';
             }
         }
+
+        function notaCambioDataLavoro(nuovaData) {
+            if(!nuovaData) return;
+            DATA_DI_LAVORO_SESSIONE = nuovaData;
+            DB.lastSessionDate = nuovaData;
+            salvaNelTempo();
+            document.getElementById('header-date-display').innerText = nuovaData.split('-').reverse().join('/');
+        }
         
         function logout() { 
             document.getElementById('app-view').classList.add('hidden'); 
             document.getElementById('login-view').classList.remove('hidden'); 
             document.getElementById('username').value = "";
             document.getElementById('password').value = "";
+            // Aggiorna etichetta per il prossimo ingresso
+            const dRev = DB.lastSessionDate.split('-').reverse().join('/');
+            document.getElementById('label-info-last-date').innerText = `📅 DATA ULTIMO ACCESSO: ${dRev} (Modifica se necessario)`;
+            document.getElementById('login-session-date').value = DB.lastSessionDate;
         }
         
         function showView(vId) {
@@ -673,7 +753,6 @@
             const classeObj = DB.classi.find(c => c.id === classeId);
             document.getElementById('class-title').innerText = `Classe: ${classeObj.nome}`;
             
-            // Gestione Banner Coordinatore in cima alla classe
             const bannerBox = document.getElementById('info-classe-header-box');
             if(classeObj.coordinatore) {
                 bannerBox.innerHTML = `<div class="banner-coord-dettaglio">👑 Sei il docente Coordinatore di questa classe (Funzioni verbali e monitoraggio attive).</div>`;
@@ -687,8 +766,10 @@
 
             currentMateria = classeObj.materie[0];
             document.getElementById('firma-materia-readonly').value = currentMateria;
-            document.getElementById('firma-data').valueAsDate = new Date();
-            document.getElementById('appello-data').valueAsDate = new Date();
+            
+            // Sincronizza i calendari interni sulla base della DATA DI SESSIONE stabilita al login
+            document.getElementById('firma-data').value = DATA_DI_LAVORO_SESSIONE;
+            document.getElementById('appello-data').value = DATA_DI_LAVORO_SESSIONE;
 
             toggleFormVoti('singolo');
             switchTab('tab-appello');
@@ -710,13 +791,14 @@
             if(tabId === 'tab-appello') renderAppello();
             if(tabId === 'tab-firma') renderFirme();
             if(tabId === 'tab-voti') renderVoti();
+            if(tabId === 'tab-scrutini') renderScrutini();
         }
 
         function renderAppello() {
             const body = document.getElementById('appello-body');
             body.innerHTML = "";
             const alunni = DB.alunni[currentClasseId] || [];
-            const dataSelezionata = document.getElementById('appello-data').value || new Date().toISOString().split('T')[0];
+            const dataSelezionata = document.getElementById('appello-data').value || DATA_DI_LAVORO_SESSIONE;
             const chiave = `${currentClasseId}_${dataSelezionata}`;
             const statoSalvati = DB.appelli[chiave] || {};
 
@@ -892,10 +974,84 @@
 
         function cancellaVoto(id) { DB.voti = DB.voti.filter(v => v.id !== id); salvaNelTempo(); renderVoti(); }
 
-        // === GESTIONE AGENDA POTENZIATA (FILTRI & STRUMENTI) ===
+        // === GESTIONE NUOVO SISTEMA DI SCRUTINIO ===
+        function renderScrutini() {
+            document.getElementById('scrutinio-materia-titolo').innerText = currentMateria;
+            const periodo = document.getElementById('scrutinio-periodo-selettore').value;
+            const body = document.getElementById('scrutini-body');
+            body.innerHTML = "";
+            
+            const alunni = DB.alunni[currentClasseId] || [];
+
+            // Conta le assenze totali dell'alunno calcolandole dallo storico degli appelli
+            const contaAssenzeAlunno = (alunnoId) => {
+                let totaleAssenze = 0;
+                Object.keys(DB.appelli).forEach(chiaveData => {
+                    if(chiaveData.startsWith(currentClasseId + "_")) {
+                        const recordGiorno = DB.appelli[chiaveData][alunnoId];
+                        if(recordGiorno) {
+                            let s = (typeof recordGiorno === 'object') ? recordGiorno.stato : recordGiorno;
+                            if(s === "A") totaleAssenze++;
+                        }
+                    }
+                });
+                return totaleAssenze;
+            };
+
+            alunni.forEach((al, index) => {
+                // Calcola la media matematica reale dei voti in archivio
+                const votiFiltrati = DB.voti.filter(v => v.alunnoId === al.id && v.materia === currentMateria && v.periodo === periodo);
+                const mediaReale = votiFiltrati.length ? (votiFiltrati.reduce((sum, v) => sum + v.valore, 0) / votiFiltrati.length).toFixed(2) : "-";
+                const numAssenze = contaAssenzeAlunno(al.id);
+
+                // Recupera vecchi salvataggi dal registro di scrutinio persistente
+                const chiaveScrutinio = `${currentClasseId}_${currentMateria}_${periodo}_${al.id}`;
+                const recordScrutinio = DB.scrutini[chiaveScrutinio] || { votoProposto: "", giudizio: "" };
+
+                body.innerHTML += `
+                    <tr>
+                        <td><span class="num-registro">${index + 1}.</span><strong>${al.nome}</strong></td>
+                        <td style="text-align:center;">
+                            <span class="badge-media ${mediaReale === '-' ? '' : (mediaReale >= 6 ? 'pass' : 'fail')}">${mediaReale}</span>
+                        </td>
+                        <td style="text-align:center; font-weight:600; color:${numAssenze > 5 ? 'var(--red-fail)' : '#475569'};">
+                            ${numAssenze} ore/giorni
+                        </td>
+                        <td style="text-align:center;">
+                            <input type="number" id="sc-voto-${al.id}" min="1" max="10" step="1" value="${recordScrutinio.votoProposto}" placeholder="Voto" style="width:65px; text-align:center; font-weight:bold; border-color:var(--primary-red);">
+                        </td>
+                        <td>
+                            <input type="text" id="sc-giudizio-${al.id}" value="${recordScrutinio.giudizio}" placeholder="Es: Livello Ottimo, Impegno costante / Carenze da ricuperare..." style="width:95%;">
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function salvaTabelloneScrutini() {
+            const periodo = document.getElementById('scrutinio-periodo-selettore').value;
+            const alunni = DB.alunni[currentClasseId] || [];
+
+            alunni.forEach(al => {
+                const votoVal = document.getElementById(`sc-voto-${al.id}`).value;
+                const giudizioVal = document.getElementById(`sc-giudizio-${al.id}`).value.trim();
+                const chiaveScrutinio = `${currentClasseId}_${currentMateria}_${periodo}_${al.id}`;
+
+                DB.scrutini[chiaveScrutinio] = {
+                    votoProposto: votoVal,
+                    giudizio: giudizioVal
+                };
+            });
+
+            salvaNelTempo();
+            alert(`Tabellone Scrutini (${periodo}) salvato con successo nell'archivio protetto!`);
+        }
+
+
+        // === GESTIONE AGENDA POTENZIATA ===
         function openAgendaView() {
             showView('agenda-view');
-            document.getElementById('age-data').valueAsDate = new Date();
+            document.getElementById('age-data').value = DATA_DI_LAVORO_SESSIONE;
             document.getElementById('age-titolo').value = "";
             document.getElementById('search-agenda-input').value = "";
             filtroDataAttivo = "all";
@@ -905,7 +1061,6 @@
             sel.innerHTML = '<option value="Tutte">Tutte le mie classi</option>';
             DB.classi.forEach(cl => { sel.innerHTML += `<option value="${cl.id}">Classe ${cl.id}</option>`; });
             
-            // Popola il menu a tendina per filtrare la tabella dell'agenda
             const filtroClasseSelect = document.getElementById('filtro-agenda-classe');
             filtroClasseSelect.innerHTML = '<option value="Tutte">Mostra tutte le classi</option>';
             DB.classi.forEach(cl => { filtroClasseSelect.innerHTML += `<option value="${cl.id}">Solo classe ${cl.id}</option>`; });
@@ -960,8 +1115,8 @@
             
             DB.agenda.sort((a,b) => new Date(a.data) - new Date(b.data));
 
-            // Setup date di controllo per i filtri temporali
-            const oggi = new Date(); oggi.setHours(0,0,0,0);
+            // Per i filtri temporali usiamo la DATA DI SESSIONE come perno di calcolo "Oggi"
+            const oggi = new Date(DATA_DI_LAVORO_SESSIONE); oggi.setHours(0,0,0,0);
             
             const inizioSettimana = new Date(oggi);
             const giornoCorrente = inizioSettimana.getDay(); 
@@ -972,15 +1127,10 @@
             fineSettimana.setDate(fineSettimana.getDate() + 6);
             fineSettimana.setHours(23,59,59,999);
 
-            // Filtra l'array globale in base ai criteri attivi
             let agendeFiltrate = DB.agenda.filter(ev => {
-                // 1. Filtro per classe
                 if (filtroClasse !== "Tutte" && ev.classe !== filtroClasse) return false;
-
-                // 2. Filtro per parola chiave testuale
                 if (termineRicerca && !ev.titolo.toLowerCase().includes(termineRicerca) && !ev.materia.toLowerCase().includes(termineRicerca)) return false;
 
-                // 3. Filtro Temporale
                 const dataEv = new Date(ev.data); dataEv.setHours(0,0,0,0);
                 if (filtroDataAttivo === "oggi") {
                     return dataEv.getTime() === oggi.getTime();
@@ -989,11 +1139,11 @@
                 } else if (filtroDataAttivo === "mese") {
                     return dataEv.getMonth() === oggi.getMonth() && dataEv.getFullYear() === oggi.getFullYear();
                 }
-                return true; // "all"
+                return true;
             });
 
             if(agendeFiltrate.length === 0) {
-                body.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748B; padding:20px;">Nessun impegno trovato con i filtri selezionati.</td></tr>`;
+                body.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748B; padding:20px;">Nessun impegno in agenda per i criteri selezionati.</td></tr>`;
                 return;
             }
 
@@ -1019,7 +1169,7 @@
             showView('tutte-classi-view');
             const sel = document.getElementById('tc-classe'); sel.innerHTML = "";
             TUTTE_LE_CLASSI.forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
-            document.getElementById('tc-data').valueAsDate = new Date();
+            document.getElementById('tc-data').value = DATA_DI_LAVORO_SESSIONE;
             renderFirmeLibere();
         }
 
@@ -1110,10 +1260,10 @@
                     const importato = JSON.parse(e.target.result);
                     
                     if (importato.classi && importato.alunni && importato.voti && !importato.payload) {
-                        DB = importato; if(!DB.agenda) DB.agenda = [];
+                        DB = importato; if(!DB.agenda) DB.agenda = []; if(!DB.scrutini) DB.scrutini={};
                         DB.classi.forEach(cl => { if(cl.coordinatore === undefined) cl.coordinatore = false; });
                         ordinaClassi(); salvaNelTempo(); inizializzaApp(); openSettingsView();
-                        alert("🎉 Vecchio backup ripristinato con successo!");
+                        alert("🎉 Backup ripristinato con successo!");
                         event.target.value = "";
                         return;
                     }
@@ -1150,7 +1300,7 @@
                     
                     const decoder = new TextDecoder();
                     DB = JSON.parse(decoder.decode(decryptedBuffer));
-                    if(!DB.agenda) DB.agenda = [];
+                    if(!DB.agenda) DB.agenda = []; if(!DB.scrutini) DB.scrutini = {};
                     DB.classi.forEach(cl => { if(cl.coordinatore === undefined) cl.coordinatore = false; });
                     
                     ordinaClassi(); salvaNelTempo(); inizializzaApp(); openSettingsView();
@@ -1170,12 +1320,10 @@
             document.getElementById('set-anno-corrente').innerText = DB.annoAttivo;
             document.getElementById('panel-passaggio-anno').classList.add('hidden');
             
-            // Popola selettore nuove classi
             const selNuova = document.getElementById('set-nuova-classe'); selNuova.innerHTML = "";
             const classiAttualiIds = DB.classi.map(c => c.id);
             TUTTE_LE_CLASSI.filter(c => !classiAttualiIds.includes(c)).forEach(c => { selNuova.innerHTML += `<option value="${c}">Classe ${c}</option>`; });
 
-            // Genera lista per toggle coordinatori
             const containerCoord = document.getElementById('container-settings-coordinatori');
             containerCoord.innerHTML = "";
             DB.classi.forEach(cl => {
@@ -1189,7 +1337,6 @@
                     </div>`;
             });
 
-            // Genera lista classi generali
             const lista = document.getElementById('set-lista-classi'); lista.innerHTML = "";
             DB.classi.forEach(cl => {
                 let badgeC = cl.coordinatore ? " <span style='color:var(--amber-coord); font-weight:bold;'>(Coordinatore)</span>" : "";
@@ -1203,7 +1350,6 @@
                 classeObj.coordinatore = document.getElementById(`set-coord-chk-${classeId}`).checked;
                 salvaNelTempo();
                 inizializzaApp();
-                // Rinfresca il pannello delle impostazioni per aggiornare i colori
                 openSettingsView();
             }
         }
@@ -1260,7 +1406,7 @@
             });
 
             DB.annoAttivo = nuovoAnnoStr; DB.classi = nuoveClassi; DB.alunni = nuoviAlunni;
-            DB.voti = []; DB.appelli = {}; DB.firme = []; DB.agenda = [];
+            DB.voti = []; DB.appelli = {}; DB.firme = []; DB.agenda = []; DB.scrutini = {};
             
             ordinaClassi(); salvaNelTempo(); inizializzaApp(); showView('dashboard-view');
             alert(`Registro aggiornato all'A.S. ${nuovoAnnoStr}`);
