@@ -296,9 +296,9 @@
                 <h2>⚙️ Impostazioni: Gestione Classi, Anno e Sicurezza Dati</h2>
                 
                 <div class="settings-card" style="background: #F0FDF4; border-color: #BBF7D0;">
-                    <h3 style="color: #166534; margin-top: 0;">💾 Salvataggio & Backup Sicuro (Consigliato)</h3>
+                    <h3 style="color: #166534; margin-top: 0;">💾 Salvataggio & Backup Sicuro (Cifrato)</h3>
                     <p style="font-size: 14px; margin-top: 5px; color: #1e293b;">
-                        Scarica un file di sicurezza sul tuo PC per non rischiare di perdere i dati se cancelli la cronologia o per spostarli su un altro computer.
+                        Scarica un file cifrato protetto da password. Nessuno potrà leggerne il contenuto senza la tua chiave di sicurezza.
                     </p>
                     <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                         <button class="btn-primary" style="background: #16a34a; width: auto; margin: 0;" onclick="esportaBackup()">📥 Scarica File di Backup</button>
@@ -931,27 +931,119 @@
             });
         }
 
-        function esportaBackup() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(DB));
-            const downloadAnchor = document.createElement('a'); downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `BACKUP_REGISTRO_${DB.annoAttivo.replace('/','-')}.json`);
-            document.body.appendChild(downloadAnchor); downloadAnchor.click(); downloadAnchor.remove();
+        // === NUOVO BACKUP CIFRATO CON CHIAVE DI SICUREZZA ===
+        async function esportaBackup() {
+            const chiave = prompt("Inserisci una Chiave di Sicurezza (Password) per proteggere il backup:\n*ATTENZIONE: Servirà la stessa chiave per ripristinare i dati!*");
+            if (!chiave) return alert("Esportazione annullata. La chiave è obbligatoria per motivi di sicurezza.");
+
+            try {
+                const stringaDati = JSON.stringify(DB);
+                const encoder = new TextEncoder();
+                const dataText = encoder.encode(stringaDati);
+                
+                const salt = window.crypto.getRandomValues(new Uint8Array(16));
+                const iv = window.crypto.getRandomValues(new Uint8Array(12));
+                
+                const passwordKey = await window.crypto.subtle.importKey(
+                    "raw", encoder.encode(chiave), "PBKDF2", false, ["deriveKey"]
+                );
+                
+                const cryptoKey = await window.crypto.subtle.deriveKey(
+                    { name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" },
+                    passwordKey,
+                    { name: "AES-GCM", length: 256 },
+                    false,
+                    ["encrypt"]
+                );
+                
+                const encryptedData = await window.crypto.subtle.encrypt(
+                    { name: "AES-GCM", iv: iv },
+                    cryptoKey,
+                    dataText
+                );
+                
+                const pacchettoBackup = {
+                    salt: btoa(String.fromCharCode(...salt)),
+                    iv: btoa(String.fromCharCode(...iv)),
+                    payload: btoa(String.fromCharCode(...new Uint8Array(encryptedData)))
+                };
+                
+                const blob = new Blob([JSON.stringify(pacchettoBackup)], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `BACKUP_REGISTRO_CIFRATO_${DB.annoAttivo.replace('/','-')}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                alert("🔒 Backup cifrato scaricato con successo! Conserva la tua chiave di sicurezza.");
+            } catch (error) {
+                console.error(error);
+                alert("❌ Errore durante la cifratura dei dati.");
+            }
         }
 
+        // === RIPRISTINO COMPATIBILE CON FILE CIFRATI E NON ===
         function importaBackup(event) {
             const file = event.target.files[0]; if (!file) return;
             if(!confirm("Attenzione: caricando questo file sovrascriverai i dati correnti. Continuare?")) { event.target.value = ""; return; }
 
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 try {
                     const importato = JSON.parse(e.target.result);
-                    if (importato.classi && importato.alunni && importato.voti) {
+                    
+                    // Se è un vecchio file non cifrato, lo importa direttamente
+                    if (importato.classi && importato.alunni && importato.voti && !importato.payload) {
                         DB = importato; if(!DB.agenda) DB.agenda = [];
                         ordinaClassi(); salvaNelTempo(); inizializzaApp(); openSettingsView();
-                        alert("🎉 Backup ripristinato con successo!");
-                    } else { alert("Errore: File non valido."); }
-                } catch (err) { alert("Errore durante la lettura del file."); }
+                        alert("🎉 Vecchio backup (non cifrato) ripristinato con successo!");
+                        event.target.value = "";
+                        return;
+                    }
+                    
+                    // Altrimenti esegue la decifratura con chiave
+                    if (!importato.salt || !importato.iv || !importato.payload) {
+                        return alert("Errore: File non valido o corrotto.");
+                    }
+
+                    const chiave = prompt("Inserisci la Chiave di Sicurezza (Password) impostata al momento del backup:");
+                    if (!chiave) { event.target.value = ""; return; }
+
+                    const salt = new Uint8Array(atob(importato.salt).split("").map(c => c.charCodeAt(0)));
+                    const iv = new Uint8Array(atob(importato.iv).split("").map(c => c.charCodeAt(0)));
+                    const payload = new Uint8Array(atob(importato.payload).split("").map(c => c.charCodeAt(0)));
+                    
+                    const encoder = new TextEncoder();
+                    const passwordKey = await window.crypto.subtle.importKey(
+                        "raw", encoder.encode(chiave), "PBKDF2", false, ["deriveKey"]
+                    );
+                    
+                    const cryptoKey = await window.crypto.subtle.deriveKey(
+                        { name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" },
+                        passwordKey,
+                        { name: "AES-GCM", length: 256 },
+                        false,
+                        ["decrypt"]
+                    );
+                    
+                    const decryptedBuffer = await window.crypto.subtle.decrypt(
+                        { name: "AES-GCM", iv: iv },
+                        cryptoKey,
+                        payload
+                    );
+                    
+                    const decoder = new TextDecoder();
+                    DB = JSON.parse(decoder.decode(decryptedBuffer));
+                    if(!DB.agenda) DB.agenda = [];
+                    
+                    ordinaClassi(); salvaNelTempo(); inizializzaApp(); openSettingsView();
+                    alert("🔓 Chiave corretta! Dati decifrati e registro ripristinato con successo.");
+                    
+                } catch (err) { 
+                    console.error(err);
+                    alert("❌ Chiave di Sicurezza Errata o file non valido. Impossibile decifrare."); 
+                }
                 event.target.value = "";
             };
             reader.readAsText(file);
@@ -972,7 +1064,8 @@
             });
         }
 
-        function aggiungereNuovaClasse() {
+        // === CORREZIONE EQUAGLIANZA FUNZIONE (HTML CERCAVA "aggiungiNuovaClasse") ===
+        function aggiungiNuovaClasse() {
             const clId = document.getElementById('set-nuova-classe').value; const matStr = document.getElementById('set-materie').value;
             if(!clId || !matStr.trim()) return alert("Specifica le materie!");
 
