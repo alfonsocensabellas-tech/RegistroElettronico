@@ -216,7 +216,7 @@
     <div id="app-view" class="hidden">
         <header>
             <div id="user-info">
-                <span><span id="label-nome-docente-connesso">Prof. Alfonso Censabella</span> (<span id="label-anno-attivo">---</span>)</span>
+                <span><span id="label-nome-docente-connesso">Docente</span> (<span id="label-anno-attivo">---</span>)</span>
                 <span class="badge-date-top">📅 Data di Lavoro: <strong id="header-date-display">--/--/----</strong></span>
             </div>
             <button class="logout-btn" onclick="logout()">Esci</button>
@@ -772,7 +772,7 @@
             const p = document.getElementById('password').value.trim();
             const dataScelta = document.getElementById('login-session-date').value;
 
-            if(ARCHIVIO_UTENTI[u] && ARCHIVIO_UTENTI[u].password === p) {
+            if(ARCHIVIO_UTENTI && ARCHIVIO_UTENTI[u] && ARCHIVIO_UTENTI[u].password === p) {
                 document.getElementById('login-error').style.display = 'none';
                 currentUserLoggato = u;
                 DB = ARCHIVIO_UTENTI[u].data;
@@ -818,7 +818,7 @@
             }
         }
 
-        function inizializzaApp() {
+        function ini-zializzaApp() {
             document.getElementById('label-anno-attivo').innerText = `A.S. ${DB.annoAttivo}`;
             const parts = DATA_DI_LAVORO_SESSIONE.split('-');
             document.getElementById('header-date-display').innerText = `${parts[2]}/${parts[1]}/${parts[0]}`;
@@ -1538,7 +1538,7 @@
                 if(giornoPartenzaSette === 0) giornoPartenzaSette = 7; 
                 giornoPartenzaSette--; 
 
-                let dataInizioIn Griglia = new Date(anno, mese, 1 - giornoPartenzaSette);
+                let dataInizioInGriglia = new Date(anno, mese, 1 - giornoPartenzaSette);
 
                 let htmlGrid = `<div class="calendar-grid-header"><div>LUN</div><div>MAR</div><div>MER</div><div>GIO</div><div>VEN</div><div>SAB</div><div>DOM</div></div><div class="calendar-days">`;
 
