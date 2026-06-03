@@ -182,7 +182,7 @@
             <div id="auth-login-section">
                 <h2>ClasseViva Docenti</h2>
                 <form onsubmit="event.preventDefault(); login();">
-                    <input type="text" id="username" placeholder="Username" required>
+                    <input type="text" id="username" placeholder="Username (es: alfonsocensabella)" required>
                     <input type="password" id="password" placeholder="Password" required>
                     
                     <div class="session-date-box">
@@ -399,7 +399,6 @@
                             <th>Materia / Dettagli Ora</th>
                             <th>Argomento</th>
                             <th>Tipo</th>
-                            <th style="text-align:center;">Azione</th>
                         </tr>
                     </thead>
                     <tbody id="tc-firme-body"></tbody>
@@ -457,32 +456,27 @@
                     <h3>➕ Aggiungi una nuova classe al tuo orario</h3>
                     <div style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 20px;">
                         <div>
-                            <label style="display:block; font-weight:600; font-size:13px; margin-bottom:5px;">Codice/Nome Classe:</label>
-                            <input type="text" id="new-class-id" placeholder="Es: 1A, 3B, 5AS..." style="width:140px;">
+                            <label style="display:block; font-weight:600; margin-bottom:5px; font-size:14px;">Scegli dall'istituto:</label>
+                            <select id="set-nuova-classe" style="font-weight:bold;"></select>
                         </div>
-                        <div style="flex-grow: 1;">
-                            <label style="display:block; font-weight:600; font-size:13px; margin-bottom:5px;">Materie d'Insegnamento (separate da virgola):</label>
-                            <input type="text" id="new-class-materie" placeholder="Es: Italiano, Storia, Geografia" style="width:100%;">
+                        <div style="flex-grow:1;">
+                            <label style="display:block; font-weight:600; margin-bottom:5px; font-size:14px;">Materie Insegnate (Separate da virgola):</label>
+                            <input type="text" id="set-materie" placeholder="Es. Latino, Geography" style="width:100%;">
                         </div>
-                        <button class="btn-primary" style="margin:0; width:auto;" onclick="aggiungiNuovaClasseProfilo()">Crea Classe</button>
+                        <button class="btn-primary" style="width:auto; margin:0;" onclick="aggiungiNuovaClasse()">Aggiungi Classe</button>
                     </div>
-                    
-                    <h3>Elenco Classi Configurate</h3>
+                    <h4 style="margin-top: 30px; border-bottom: 1px solid #E2E8F0; padding-bottom: 10px;">Le tue classi attuali</h4>
                     <div id="set-lista-classi"></div>
                 </div>
 
-                <div class="settings-card" style="border-color: var(--border-color); background: #FAF5FF;">
-                    <h3 style="color: #6B21A8; margin-top: 0;">⏳ Avanzamento Anno Scolastico (Promozione Classi)</h3>
-                    <p style="font-size: 13px; color: #5B21B6; margin-top: 0;">
-                        Questa procedura sposta gli studenti all'anno successivo (es: dalla 1A alla 2A, dalla 2A alla 3A) e pulisce in modo sicuro registri, voti e firme per iniziare il nuovo anno scolastico. Le classi quinte vengono archiviate.
-                    </p>
-                    <button class="btn-primary" style="background:#7E22CE; width:auto;" onclick="document.getElementById('panel-passaggio-anno').classList.remove('hidden')">🚀 Avvia Procedura Cambio Anno</button>
-                    
-                    <div id="panel-passaggio-anno" class="hidden" style="margin-top:15px; padding:15px; border:1px solid #D8B4FE; background:white; border-radius:6px;">
-                        <h4 style="margin:0 0 10px 0; color:#6B21A8;">Configurazione Passaggio Anno Scolastico</h4>
-                        <p style="font-size:12px; color:#64748B;">Seleziona quali delle tue classi attuali desideri promuovere e continuare a seguire nel prossimo anno:</p>
-                        <div id="passaggio-classi-checkboxes" style="display:flex; flex-direction:column; gap:8px; margin-bottom:15px;"></div>
-                        <button class="btn-primary" style="width:auto; margin:0; background-color:#6B21A8;" onclick="confermaPassaggioAnno()">Conferma Nuovo Anno</button>
+                <div class="settings-card" style="background: #FFF8F8; border-color: #FECACA;">
+                    <h3 style="color: #B91C1C;">🎓 Passaggio all'Anno Scolastico Successivo</h3>
+                    <p style="font-size:14px; margin-top:0;">Attualmente sei nell'A.S. <strong><span id="set-anno-corrente"></span></strong>.</p>
+                    <button class="btn-primary" style="background:#B91C1C; width:auto;" onclick="avviaPassaggioAnno()">Inizia procedura di avanzamento anno</button>
+                    <div id="panel-passaggio-anno" class="hidden" style="margin-top:20px; background:white; padding:20px; border-radius:8px; border:1px solid var(--border-color);">
+                        <h4 style="margin-top:0;">Scegli quali classi portare al prossimo anno</h4>
+                        <div id="list-passaggio-classi" style="margin-bottom: 20px;"></div>
+                        <button class="btn-primary" style="background:#16A34A; width:auto;" onclick="confermaPassaggioAnno()">Conferma e Passa al nuovo Anno</button>
                         <button class="btn-secondary" onclick="document.getElementById('panel-passaggio-anno').classList.add('hidden')">Annulla</button>
                     </div>
                 </div>
@@ -495,7 +489,7 @@
                 </div>
                 
                 <div id="info-classe-header-box"></div>
-                
+
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:15px;">
                     <h2 id="class-title" style="color: var(--primary-red); margin:0;">Classe: </h2>
                     <div class="materia-selector-wrapper" style="margin-bottom:0; padding:8px 15px;">
@@ -513,81 +507,88 @@
                 </div>
 
                 <div id="tab-appello" class="tab-content active">
-                    <div style="background: #F8FAFC; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                        <div>
-                            <span>Stato Appello del Giorno: </span><strong id="appello-status-badge" style="color:var(--primary-red)">NON COMPILATO</strong>
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px; background: #F8FAFC; padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); flex-wrap: wrap;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label style="font-weight: bold; margin-bottom: 4px;">📅 Data dell'Appello:</label>
+                            <input type="date" id="appello-data" onchange="renderAppello(); notaCambioDataLavoro(this.value)">
                         </div>
-                        <button class="btn-primary" style="width: auto; margin:0; background-color: var(--green-pass);" onclick="salvaAppelloClasse()">Salva Appello del Giorno</button>
+                        <div style="color: #64748B; font-size: 13px; flex-grow: 1; padding-top: 15px;">
+                            * Modificando questa data, sposterai temporaneamente anche il giorno corrente del registro elettronico per facilitare inserimenti consecutivi.
+                        </div>
                     </div>
+
+                    <h3>Registrazione Presenze Alunni</h3>
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 300px;">Alunno</th>
-                                <th>Presenza / Assenza</th>
-                                <th>Dettagli Ora Ingresso/Uscita</th>
+                                <th>Alunno</th>
+                                <th>Stato presenza / Specifica Ora</th>
                             </tr>
                         </thead>
-                        <tbody id="appello-table-body"></tbody>
+                        <tbody id="appello-body"></tbody>
                     </table>
+                    <button class="btn-primary" style="width: auto;" onclick="saveAppello()">Salva Appello del Giorno</button>
                 </div>
 
                 <div id="tab-firma" class="tab-content">
-                    <div style="background:#F8FAFC; padding:20px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:20px;">
-                        <h3 style="margin-top:0;" id="titolo-azione-firma">✍️ Apponi Firma sul Registro di Classe</h3>
-                        <input type="hidden" id="edit-firma-id" value="">
-                        <div style="display:flex; gap:15px; margin-bottom:15px; flex-wrap:wrap;">
+                    <h3>Inserisci Nuova Firma di Lezione</h3>
+                    <div style="background:#F8FAFC; padding:20px; border-radius:8px; margin-bottom: 25px; border: 1px solid var(--border-color);">
+                        <div style="display:flex; gap:15px; flex-wrap:wrap; margin-bottom:15px;">
                             <div class="form-group" style="margin-bottom:0;">
-                                <label>Quante Ore Svolte?</label>
-                                <select id="firma-ore-svolte">
-                                    <option value="1">1 ora di lezione</option>
-                                    <option value="2">2 ore di lezione</option>
-                                    <option value="3">3 ore di lezione</option>
-                                    <option value="4">4 ore di lezione</option>
+                                <label>Data</label>
+                                <input type="date" id="firma-data" onchange="notaCambioDataLavoro(this.value)">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label>N. Ore svolte</label>
+                                <select id="firma-num-ore">
+                                    <option value="1">1 ora</option>
+                                    <option value="2">2 ore</option>
+                                    <option value="3">3 ore</option>
+                                    <option value="4">4 ore</option>
                                 </select>
                             </div>
                             <div class="form-group" style="margin-bottom:0;">
-                                <label>In quale ora scolastica?</label>
-                                <select id="firma-ora-inizio">
+                                <label>Alla quale ora?</label>
+                                <select id="firma-ora-lezione">
                                     <option value="1^">1^ ora</option><option value="2^">2^ ora</option><option value="3^">3^ ora</option>
                                     <option value="4^">4^ ora</option><option value="5^">5^ ora</option><option value="6^">6^ ora</option>
                                     <option value="7^">7^ ora</option><option value="8^">8^ ora</option><option value="9^">9^ ora</option><option value="10^">10^ ora</option>
                                 </select>
                             </div>
-                            <div class="form-group" style="margin-bottom:0; flex-grow:1;">
-                                <label>Argomento della Lezione / Attività svolta</label>
-                                <input type="text" id="firma-argomento" placeholder="Spiegazione capitolo..., Esercitazione in laboratorio..." style="width:100%;">
+                            <div class="form-group" style="flex-grow:1; margin-bottom:0;">
+                                <label>Materia</label>
+                                <input type="text" id="firma-materia-readonly" readonly style="background:#E2E8F0; font-weight:bold; width:100%;">
                             </div>
                         </div>
-                        <div style="display:flex; gap:10px;">
-                            <button class="btn-primary" style="width: auto; margin:0;" id="btn-salva-firma" onclick="salvaFirmaLezione()">Registra Firma</button>
-                            <button class="btn-secondary" id="btn-annulla-edit-firma" style="display:none;" onclick="annullaModificaFirma()">Annulla Modifica</button>
+                        
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="firma-supplenza">
+                            <label for="firma-supplenza" style="margin:0; cursor:pointer;">Segna come ora di Supplenza</label>
                         </div>
+
+                        <div class="form-group">
+                            <label>Argomento della lezione</label>
+                            <textarea id="firma-argomento" placeholder="Inserisci qui i contenuti trattati..."></textarea>
+                        </div>
+                        <button class="btn-primary" style="width: auto;" onclick="addFirma()">Aggiungi Firma</button>
                     </div>
 
-                    <h3>Storico firme apposte in questa classe per la materia</h3>
+                    <h3>Storico Firme</h3>
                     <table>
                         <thead>
                             <tr>
-                                <th>Data Lezione</th>
-                                <th>Ora/Dettaglio</th>
-                                <th>Materia</th>
-                                <th>Argomento Trattato</th>
-                                <th style="text-align:center; width:150px;">Azioni</th>
+                                <th style="width: 15%;">Data</th>
+                                <th style="width: 25%;">Materia / Ore</th>
+                                <th>Argomento Lezione</th>
                             </tr>
                         </thead>
-                        <tbody id="storico-firme-classe-body"></tbody>
+                        <tbody id="firme-body"></tbody>
                     </table>
                 </div>
 
                 <div id="tab-voti" class="tab-content">
-                    <div style="display: flex; gap: 15px; margin-bottom: 15px; background: #EDF2F7; padding: 10px 15px; border-radius: 6px; align-items: center;">
-                        <span style="font-weight: 600;">Seleziona Periodo Valutativo:</span>
-                        <select id="voti-periodo-visualizzato" onchange="renderVoti()" style="font-weight: bold; color: var(--primary-dark);">
-                            <option value="Trimestre">Trimestre</option>
-                            <option value="Pentamestre">Pentamestre</option>
-                        </select>
-                    </div>
-
+                    <h3 id="titolo-voti-materia">Registro Valutazioni</h3>
+                    
                     <div id="form-voto-singolo" class="form-group" style="background:#F8FAFC; padding:20px; border-radius:8px; border:1px solid var(--border-color); display: flex; flex-direction: column; gap:10px;">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
                             <h4 style="margin:0; color:#475569;">Aggiungi Valutazione Singola</h4>
@@ -611,70 +612,69 @@
 
                     <div id="form-voti-flash" class="form-group hidden" style="background:#FFF9E6; padding:20px; border-radius:8px; border:1px solid #FCD34D; display: flex; flex-direction: column; gap:10px;">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <h4 style="margin:0; color:#B45309;">⚡ Inserimento Voti Flash (Intera classe)</h4>
-                            <button class="btn-secondary" style="background:#64748B; color:white;" onclick="toggleFormVoti('singolo')">Torna a Singolo</button>
+                            <h4 style="margin:0; color:#B45309;">⚡ Inserimento Rapido Voti Flash (Tutta la classe)</h4>
+                            <button class="btn-secondary" style="background:#64748B;" onclick="toggleFormVoti('singolo')">Torna a Voto Singolo</button>
                         </div>
-                        <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom:5px;">
-                            <div style="display:inline-block;">
-                                <label style="font-size:12px; font-weight:700;">Tipo Voto:</label>
-                                <select id="vf-tipo"><option value="Scritto">Scritto</option><option value="Orale">Orale</option></select>
-                            </div>
-                            <div style="display:inline-block;">
-                                <label style="font-size:12px; font-weight:700;">Periodo:</label>
-                                <select id="vf-periodo"><option value="Trimestre">Trimestre</option><option value="Pentamestre">Pentamestre</option></select>
-                            </div>
-                            <div style="display:inline-block; flex-grow:1;">
-                                <label style="font-size:12px; font-weight:700;">Commento comune a tutti (opzionale):</label>
-                                <input type="text" id="vf-commento" placeholder="Es. Verifica su equazioni..." style="width:100%;">
-                            </div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 5px;">
+                            <select id="vf-tipo"><option value="Scritto">Scritto</option><option value="Orale">Orale</option></select>
+                            <select id="vf-periodo"><option value="Trimestre">Trimestre</option><option value="Pentamestre">Pentamestre</option></select>
+                            <input type="text" id="vf-commento-collettivo" placeholder="💬 Scrivi qui un commento valido per TUTTA LA CLASSE..." style="flex-grow:1;">
                         </div>
-                        <div id="vf-griglia-alunni" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:10px; max-height:220px; overflow-y:auto; padding:5px;"></div>
-                        <button class="btn-primary" style="background-color:#D97706; width:auto; margin-top:5px;" onclick="salvaVotiFlashMassivi()">Registra tutti i voti inseriti</button>
+                        
+                        <p style="font-size:12px; margin:0; color:#92400E;">* Inserisci i voti solo per gli alunni che hanno svolto la prova. Gli altri rimarranno vuoti.</p>
+                        <div id="vf-griglia-alunni" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:8px; max-height:230px; overflow-y:auto; background:white; padding:12px; border-radius:6px; border:1px solid #CBD5E1;"></div>
+                        <button class="btn-primary" style="background:#D97706; width: max-content; padding:10px 25px; margin-top:5px;" onclick="salvaVotiFlashCollettivi()">Registra tutti i voti flash</button>
                     </div>
 
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 250px;">Alunno</th>
-                                <th>Voti Trimestre</th>
-                                <th style="text-align:center; width:90px;">Media Tri</th>
-                                <th>Voti Pentamestre</th>
-                                <th style="text-align:center; width:90px;">Media Pen</th>
+                                <th style="width: 25%;">Alunno</th>
+                                <th style="width: 30%;">Voti Trimestre</th>
+                                <th style="width: 10%; text-align:center;">Media Tri.</th>
+                                <th style="width: 30%;">Voti Pentamestre</th>
+                                <th style="width: 10%; text-align:center;">Media Pen.</th>
                             </tr>
                         </thead>
-                        <tbody id="voti-table-body"></tbody>
+                        <tbody id="voti-body"></tbody>
                     </table>
                 </div>
 
                 <div id="tab-scrutini" class="tab-content">
-                    <div style="background:#EDF2F7; padding:15px; border-radius:8px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <span style="font-weight:700; color:var(--dark-grey)">Scrutinio Periodo:</span>
-                            <select id="scrutinio-periodo-selettore" onchange="renderScrutini()" style="font-weight:bold; border-color:var(--primary-red);">
-                                <option value="Trimestre">Primo Trimestre</option>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px; flex-wrap: wrap; gap:10px;">
+                        <div>
+                            <h3 style="margin:0;">📋 Tabellone di Scrutinio - <span id="scrutinio-materia-titolo">Materia</span></h3>
+                            <p style="margin:5px 0 0 0; font-size:13px; color:#64748B;">Carica automaticamente le medie calcolate e gestisce i voti di scrutinio finale.</p>
+                        </div>
+                        <div style="display:flex; gap:10px; align-items:center;">
+                            <label style="font-weight:700; font-size:14px;">Periodo Scrutinio:</label>
+                            <select id="scrutinio-periodo-selettore" onchange="renderScrutini()" style="padding:6px 12px; font-weight:bold; border:2px solid var(--primary-red);">
+                                <option value="Trimestre">1° Trimestre</option>
                                 <option value="Pentamestre">Scrutinio Finale (Pentamestre)</option>
                             </select>
                         </div>
-                        <button class="btn-primary" style="width:auto; margin:0; background-color:var(--green-pass);" onclick="salvaTabelloneScrutini()">💾 Salva Tabellone Scrutini</button>
                     </div>
-                    <p style="font-size:13px; color:#64748B; margin-top:-10px; margin-bottom:15px;">Le medie e il numero di assenze visualizzati sono calcolati automaticamente in tempo reale estraendoli dai registri.</p>
+
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 250px;">Alunno</th>
-                                <th style="text-align:center; width:100px;">Media Registro</th>
-                                <th style="text-align:center; width:110px;">Tot Assenze</th>
-                                <th style="text-align:center; width:120px;">Voto Proposto</th>
-                                <th>Nota / Giudizio Sintetico Docente</th>
+                                <th style="width: 22%;">Alunno</th>
+                                <th style="width: 12%; text-align:center;">Media Registro</th>
+                                <th style="width: 12%; text-align:center;">Assenze Totali</th>
+                                <th style="width: 15%; text-align:center;">Voto Proposto</th>
+                                <th>Giudizio Sintetico / Note di Scrutinio</th>
                             </tr>
                         </thead>
-                        <tbody id="scrutini-table-body"></tbody>
+                        <tbody id="scrutini-body"></tbody>
                     </table>
+                    <button class="btn-primary" style="width: auto; background:#1E293B;" onclick="salvaTabelloneScrutini()">💾 Salva Voti e Giudizi Scrutinio</button>
                 </div>
 
                 <div id="tab-gestione-alunni" class="tab-content">
-                    <h3>Anagrafica Studenti della Classe</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-bottom: 20px;">
+                    <h3>👥 Anagrafica Alunni della Classe</h3>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <!-- Inserimento Singolo -->
                         <div style="background:#F8FAFC; padding:15px; border-radius:8px; border:1px solid var(--border-color); display:flex; flex-direction:column; justify-content:between; gap:10px;">
                             <h4 style="margin:0; color:var(--dark-grey);">Singolo Alunno</h4>
                             <div style="flex-grow:1;">
@@ -683,67 +683,95 @@
                             </div>
                             <button class="btn-primary" style="margin:0; width:100%;" onclick="aggiungiAlunnoInClasse()">Aggiungi Singolo</button>
                         </div>
+
+                        <!-- Inserimento Multiplo Mascolino/Massivo -->
                         <div style="background:#F0FDF4; padding:15px; border-radius:8px; border:1px solid #BBF7D0; display:flex; flex-direction:column; gap:10px;">
                             <h4 style="margin:0; color:#166534;">📝 Inserimento Multiplo Rapido</h4>
                             <div style="flex-grow:1;">
                                 <label style="display:block; font-weight:600; font-size:13px; margin-bottom:5px;">Incolla i nomi (uno per riga):</label>
                                 <textarea id="nuovi-alunni-multipli" placeholder="Es:&#10;Bianchi Giovanni&#10;Ferrari Laura&#10;Rossi Mario" style="width:100%; height:80px; box-sizing:border-box; font-family:inherit;"></textarea>
                             </div>
-                            <button class="btn-primary" style="margin:0; width:100%; background-color:var(--green-pass);" onclick="aggiungiAlunniMassivi()">Aggiungi Elenco Nomi</button>
+                            <button class="btn-primary" style="margin:0; width:100%; background-color:var(--green-pass);" onclick="aggiungiAlunniMultipliInClasse()">Aggiungi Elenco Alunni</button>
                         </div>
                     </div>
+
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 80px;">N. Reg</th>
-                                <th>Cognome e Nome Alunno</th>
-                                <th style="text-align: center; width: 120px;">Azioni</th>
+                                <th style="width: 10%;">N° Reg.</th>
+                                <th>Cognome e Nome</th>
+                                <th style="width: 15%; text-align:center;">Rimuovi</th>
                             </tr>
                         </thead>
-                        <tbody id="gestione-alunni-table-body"></tbody>
+                        <tbody id="gestione-alunni-body"></tbody>
                     </table>
                 </div>
+
             </div>
         </main>
     </div>
 
     <script>
-        const TUTTE_LE_CLASSI = ["1A","1B","1C","2A","2B","2C","3A","3B","3C","4A","4B","4C","5A","5B","5C","1AS","2AS","3AS","4AS","5AS"];
-        let ARCHIVIO_UTENTI = JSON.parse(localStorage.getItem('cv_archivio_utenti')) || {};
-        let currentUserLoggato = null;
-        let DB = null;
+        const TUTTE_LE_CLASSI = [];
+        ["1","2","3","4","5"].forEach(a => {
+            ["A","B","C","D","E","F","G","H","I","L","M","N","O"].forEach(s => TUTTE_LE_CLASSI.push(a+s));
+        });
 
-        let currentClasseId = null;
-        let currentMateria = null;
-        let DATA_DI_LAVORO_SESSIONE = "";
-        let filtroDataAttivo = "mese";
-        let calendarioDataCorrenteNavigazione = null;
+        // ARCHIVI UTENTI COMPLETI
+        let ARCHIVIO_UTENTI = {};
+        let currentUserLoggato = ""; // Tiene traccia di quale utente è connesso
+        let DB; // Puntatore al database dell'utente attivo
 
-        // INIZIALIZZAZIONE COMPILAZIONE DATA AUTOMATICA SU LOGIN DI OGGI
-        (function autoSetLoginDate() {
-            const d = new Date();
-            const iso = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-            document.getElementById('login-session-date').value = iso;
-        })();
+        let filtroDataAttivo = "mese"; 
+        let DATA_DI_LAVORO_SESSIONE = ""; 
+        let calendarioDataCorrenteNavigazione = null; 
 
-        // FUNZIONE CENTRALIZZATA DI FORMATTAZIONE DATA RICHIESTA (Es: Sab 16 maggio 2026)
-        function formattaDataEstesa(isoString) {
-            if(!isoString) return "";
-            const parti = isoString.split('-');
-            if(parti.length !== 3) return isoString;
-            const dataObj = new Date(parti[0], parti[1] - 1, parti[2]);
-            
-            let dataFormattata = new Intl.DateTimeFormat('it-IT', {
-                weekday: 'short',
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            }).format(dataObj);
-            
-            // Mette in maiuscolo la prima lettera del giorno (es: "sab" -> "Sab")
-            return dataFormattata.charAt(0).toUpperCase() + dataFormattata.slice(1);
+        // INIZIALIZZAZIONE COMPARTIMENTO UTENTI MULTIPLI
+        if (!localStorage.getItem('cv_archivio_utenti')) {
+            // Crea utente predefinito come da codice originale
+            ARCHIVIO_UTENTI = {
+                "alfonsocensabella": {
+                    username: "alfonsocensabella",
+                    password: "registro elettronico",
+                    nominativo: "Prof. Alfonso Censabella",
+                    data: {
+                        classi: [], alunni: {}, appelli: {}, firme: [], voti: [], firmeLibere: [], agenda: [], scrutini: {}, orarioDocente: {},
+                        annoAttivo: "2025/2026", lastSessionDate: "2026-09-15"
+                    }
+                }
+            };
+            localStorage.setItem('cv_archivio_utenti', JSON.stringify(ARCHIVIO_UTENTI));
+        } else {
+            ARCHIVIO_UTENTI = JSON.parse(localStorage.getItem('cv_archivio_utenti'));
         }
 
+        // Imposta graficamente l'ultima data inserita in assoluto per comodità visiva
+        let dataDefaultVisiva = "2026-09-15";
+        document.getElementById('login-session-date').value = dataDefaultVisiva;
+        document.getElementById('label-info-last-date').innerText = `📅 DATA DI SESSIONE (OGGI):`;
+
+        function salvaNelTempo() {
+            if (currentUserLoggato) {
+                ARCHIVIO_UTENTI[currentUserLoggato].data = DB;
+                localStorage.setItem('cv_archivio_utenti', JSON.stringify(ARCHIVIO_UTENTI));
+            }
+        }
+
+        function ordinaClassi() {
+            if(!DB.classi) return;
+            DB.classi.sort((a, b) => {
+                let numA = parseInt(a.id.match(/\d+/)[0]);
+                let numB = parseInt(b.id.match(/\d+/)[0]);
+                if (numA !== numB) return numA - numB;
+                let secA = a.id.replace(/\d+/, "");
+                let secB = b.id.replace(/\d+/, "");
+                return secA.localeCompare(secB);
+            });
+        }
+
+        let currentClasseId = ""; let currentMateria = "";
+
+        // GESTIONE SWITCH INTERFACCIA AUTH
         function switchAuthMode(mode) {
             if(mode === 'register') {
                 document.getElementById('auth-login-section').classList.add('hidden');
@@ -752,8 +780,10 @@
                 document.getElementById('auth-register-section').classList.add('hidden');
                 document.getElementById('auth-login-section').classList.remove('hidden');
             }
+            document.getElementById('login-error').style.display = 'none';
         }
 
+        // FUNZIONE NUOVA REGISTRAZIONE UTENTE
         function registraNuovoUtente() {
             const nominativo = document.getElementById('reg-nominativo').value.trim();
             const usernameInput = document.getElementById('reg-username').value.trim().toLowerCase();
@@ -762,24 +792,19 @@
             if(!nominativo || !usernameInput || !passwordInput) {
                 return alert("Tutti i campi sono obbligatori!");
             }
+
             if(ARCHIVIO_UTENTI[usernameInput]) {
                 return alert("Questo username è già registrato nel sistema! Scegline un altro.");
             }
 
+            // Crea la struttura dati isolata per il nuovo docente
             ARCHIVIO_UTENTI[usernameInput] = {
                 username: usernameInput,
                 password: passwordInput,
                 nominativo: nominativo,
                 data: {
                     classi: [],
-                    alunni: {},
-                    appelli: {},
-                    firme: [],
-                    voti: [],
-                    firmeLibere: [],
-                    agenda: [],
-                    scrutini: {},
-                    orarioDocente: {},
+                    alunni: {}, appelli: {}, firme: [], voti: [], firmeLibere: [], agenda: [], scrutini: {}, orarioDocente: {},
                     annoAttivo: "2025/2026",
                     lastSessionDate: new Date().toISOString().split('T')[0]
                 }
@@ -788,100 +813,111 @@
             localStorage.setItem('cv_archivio_utenti', JSON.stringify(ARCHIVIO_UTENTI));
             alert(`Registrazione completata con successo!\nOra puoi accedere con l'account di ${nominativo}.`);
             
+            // Svuota i campi e torna al login
             document.getElementById('reg-nominativo').value = "";
             document.getElementById('reg-username').value = "";
             document.getElementById('reg-password').value = "";
             switchAuthMode('login');
         }
 
+        // LOGIN AGGIORNATO DINAMICO
         function login() {
             const u = document.getElementById('username').value.trim().toLowerCase();
             const p = document.getElementById('password').value.trim();
             const dataScelta = document.getElementById('login-session-date').value;
-
+            
+            // Verifica la presenza dell'utente nell'archivio locale
             if(ARCHIVIO_UTENTI[u] && ARCHIVIO_UTENTI[u].password === p) {
                 document.getElementById('login-error').style.display = 'none';
+                
                 currentUserLoggato = u;
+                // Carica il DB specifico di questo utente
                 DB = ARCHIVIO_UTENTI[u].data;
 
+                // Controllo di sicurezza retrocompatibilità array mancanti
                 if (!DB.agenda) DB.agenda = [];
                 if (!DB.firmeLibere) DB.firmeLibere = [];
                 if (!DB.scrutini) DB.scrutini = {};
                 if (!DB.orarioDocente) DB.orarioDocente = {};
                 if (!DB.annoAttivo) DB.annoAttivo = "2025/2026";
+                DB.classi.forEach(cl => { 
+                    if (!DB.alunni[cl.id]) DB.alunni[cl.id] = []; 
+                    if (cl.coordinatore === undefined) cl.coordinatore = false; 
+                });
 
                 DATA_DI_LAVORO_SESSIONE = dataScelta;
                 DB.lastSessionDate = dataScelta;
+                calendarioDataCorrenteNavigazione = new Date(dataScelta);
                 salvaNelTempo();
 
+                // Aggiorna l'header con il nome reale del docente connesso
+                document.getElementById('label-nome-docente-connesso').innerText = ARCHIVIO_UTENTI[u].nominativo;
+                document.getElementById('header-date-display').innerText = dataScelta.split('-').reverse().join('/');
+                
                 document.getElementById('login-view').classList.add('hidden');
                 document.getElementById('app-view').classList.remove('hidden');
-
                 inizializzaApp();
-                showView('dashboard-view');
             } else {
                 document.getElementById('login-error').style.display = 'block';
             }
         }
 
-        function salvaNelTempo() {
-            if(currentUserLoggato && ARCHIVIO_UTENTI[currentUserLoggato]) {
-                ARCHIVIO_UTENTI[currentUserLoggato].data = DB;
-                localStorage.setItem('cv_archivio_utenti', JSON.stringify(ARCHIVIO_UTENTI));
-            }
+        function notaCambioDataLavoro(nuovaData) {
+            if(!nuovaData) return;
+            DATA_DI_LAVORO_SESSIONE = nuovaData;
+            DB.lastSessionDate = nuovaData;
+            salvaNelTempo();
+            document.getElementById('header-date-display').innerText = nuovaData.split('-').reverse().join('/');
         }
-
-        function logout() {
-            currentUserLoggato = null;
+        
+        function logout() { 
+            currentUserLoggato = "";
             DB = null;
-            document.getElementById('app-view').classList.add('hidden');
-            document.getElementById('login-view').classList.remove('hidden');
+            document.getElementById('app-view').classList.add('hidden'); 
+            document.getElementById('login-view').classList.remove('hidden'); 
             document.getElementById('username').value = "";
             document.getElementById('password').value = "";
+            switchAuthMode('login');
         }
-
-        function showView(viewId) {
-            const views = ['dashboard-view', 'classes-view', 'agenda-view', 'tutte-classi-view', 'settings-view', 'class-detail-view'];
-            views.forEach(v => {
-                document.getElementById(v).classList.add('hidden');
+        
+        function showView(vId) {
+            ['dashboard-view', 'classes-view', 'tutte-classi-view', 'settings-view', 'class-detail-view', 'agenda-view'].forEach(v => {
+                const el = document.getElementById(v);
+                if(el) el.classList.add('hidden');
             });
-            document.getElementById(viewId).classList.remove('hidden');
-            if(viewId === 'dashboard-view') renderDashboardOrario();
+            document.getElementById(vId).classList.remove('hidden');
+            if(vId === 'dashboard-view') renderDashboardOrario();
         }
 
         function inizializzaApp() {
-            document.getElementById('label-nome-docente-connesso').innerText = ARCHIVIO_UTENTI[currentUserLoggato].nominativo;
+            ordinaClassi();
             document.getElementById('label-anno-attivo').innerText = DB.annoAttivo;
-            document.querySelectorAll('.placeholder-anno-testo').forEach(el => el.innerText = DB.annoAttivo);
+            document.querySelectorAll('.placeholder-anno-testo').forEach(e => e.innerText = DB.annoAttivo);
             
-            const pData = DATA_DI_LAVORO_SESSIONE.split('-');
-            document.getElementById('header-date-display').innerText = pData[2]+'/'+pData[1]+'/'+pData[0];
-            
-            renderElencoClassiAssegnate();
-        }
-
-        function renderElencoClassiAssegnate() {
             const container = document.getElementById('container-elenco-classi');
             container.innerHTML = "";
+            
             if(DB.classi.length === 0) {
-                container.innerHTML = `<div style="grid-column: 1/-1; background:white; padding:20px; border-radius:8px; text-align:center; border:1px solid var(--border-color); color:#64748B;">Nessuna classe assegnata nel tuo profilo. Vai in <b>Impostazioni e Orario</b> per crearle.</div>`;
-                return;
+                container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #64748B; padding: 20px;">Nessuna classe assegnata. Vai in Impostazioni per aggiungerne una.</p>`;
+            } else {
+                DB.classi.forEach(cl => {
+                    let badgeC = cl.coordinatore ? `<span class="badge-coord">👑 Coordinatore</span>` : "";
+                    container.innerHTML += `
+                        <div class="menu-card" onclick="apriDettaglioClasse('${cl.id}')">
+                            ${badgeC}
+                            <h3>📚 ${cl.nome}</h3>
+                            <p>${cl.materie.join(', ')}</p>
+                        </div>`;
+                });
             }
-            DB.classi.forEach(cl => {
-                let badgeC = cl.coordinatore ? `<span class="badge-coord">👑 Coordinatore</span>` : "";
-                container.innerHTML += `
-                    <div class="menu-card" onclick="apriDettaglioClasse('${cl.id}')">
-                        ${badgeC}
-                        <h3>📚 ${cl.nome}</h3>
-                        <p>${cl.materie.join(', ')}</p>
-                    </div>`;
-            });
+            renderDashboardOrario();
         }
 
         function renderDashboardOrario() {
             const giorni = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
             const target = document.getElementById('dashboard-timetable-body');
             target.innerHTML = "";
+            
             for(let ora=1; ora<=6; ora++) {
                 let riga = `<tr><td style="font-weight:bold; background:#F8FAFC;">${ora}^ Ora</td>`;
                 giorni.forEach(g => {
@@ -902,8 +938,9 @@
             currentClasseId = classeId;
             const classeObj = DB.classi.find(c => c.id === classeId);
             if(!classeObj) return;
-
+            
             document.getElementById('class-title').innerText = `Classe: ${classeObj.nome}`;
+            
             const bannerBox = document.getElementById('info-classe-header-box');
             if(classeObj.coordinatore) {
                 bannerBox.innerHTML = `<div class="banner-coord-dettaglio">👑 Sei il docente Coordinatore di questa classe (Funzioni verbali e monitoraggio attive).</div>`;
@@ -913,292 +950,81 @@
 
             const selectMat = document.getElementById('main-materia-select');
             selectMat.innerHTML = "";
-            classeObj.materie.forEach(m => {
-                selectMat.innerHTML += `<option value="${m}">${m}</option>`;
-            });
+            classeObj.materie.forEach(m => selectMat.innerHTML += `<option value="${m}">${m}</option>`);
 
-            currentMateria = classeObj.materie[0] || "Nessuna";
-            annullaModificaFirma();
+            currentMateria = classeObj.materie[0] || "Generale";
+            document.getElementById('firma-materia-readonly').value = currentMateria;
+            
+            document.getElementById('firma-data').value = DATA_DI_LAVORO_SESSIONE;
+            document.getElementById('appello-data').value = DATA_DI_LAVORO_SESSIONE;
+
+            toggleFormVoti('singolo');
             switchTab('tab-appello');
             showView('class-detail-view');
         }
 
+        function vaiAdAgendaClasseSpecificata() {
+            openAgendaView();
+            document.getElementById('filtro-agenda-classe').value = currentClasseId;
+            renderAgenda();
+        }
+
         function onMateriaChanged() {
             currentMateria = document.getElementById('main-materia-select').value;
-            const activeTab = document.querySelector('.tab-btn.active').id.replace('btn-', '');
-            switchTab(activeTab);
+            document.getElementById('firma-materia-readonly').value = currentMateria;
+            switchTab(document.querySelector('.tab-content.active').id);
         }
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById('btn-'+tabId).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
 
-            const shortId = tabId.startsWith('tab-') ? tabId : 'tab-' + tabId;
-            const btnId = 'btn-' + shortId;
-
-            if(document.getElementById(btnId)) document.getElementById(btnId).classList.add('active');
-            if(document.getElementById(shortId)) document.getElementById(shortId).classList.remove('hidden');
-
-            if(shortId === 'tab-appello') renderAppello();
-            if(shortId === 'tab-firma') renderFirmeClasse();
-            if(shortId === 'tab-voti') renderVoti();
-            if(shortId === 'tab-scrutini') renderScrutini();
-            if(shortId === 'tab-gestione-alunni') renderGestioneAlunni();
+            if(tabId === 'tab-appello') renderAppello();
+            if(tabId === 'tab-firma') renderFirme();
+            if(tabId === 'tab-voti') renderVoti();
+            if(tabId === 'tab-scrutini') renderScrutini();
+            if(tabId === 'tab-gestione-alunni') renderGestioneAlunni();
         }
 
-        // ==========================================
-        // TAB APPELLO
-        // ==========================================
         function renderAppello() {
-            const body = document.getElementById('appello-table-body');
+            const body = document.getElementById('appello-body');
             body.innerHTML = "";
             const alunni = DB.alunni[currentClasseId] || [];
-            const chiaveAppello = `${currentClasseId}_${DATA_DI_LAVORO_SESSIONE}`;
-            const recordAppelloGiorno = DB.appelli[chiaveAppello] || {};
-
-            const badgeStatus = document.getElementById('appello-status-badge');
-            if(DB.appelli[chiaveAppello]) {
-                badgeStatus.innerText = "COMPILATO E SALVATO";
-                badgeStatus.style.color = "var(--green-pass)";
-            } else {
-                badgeStatus.innerText = "NON COMPILATO";
-                badgeStatus.style.color = "var(--primary-red)";
-            }
+            const dataSelezionata = document.getElementById('appello-data').value || DATA_DI_LAVORO_SESSIONE;
+            const chiave = `${currentClasseId}_${dataSelezionata}`;
+            const statoSalvati = DB.appelli[chiave] || {};
 
             if(alunni.length === 0) {
-                body.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#64748B;">Nessun alunno registrato in questa classe. Vai nel tab 'Gestione Alunni' per inserirli.</td></tr>`;
+                body.innerHTML = `<tr><td colspan="2" style="text-align:center; color:#64748B;">Nessun alunno presente in questa classe. Vai nel tab 'Gestione Alunni' per aggiungerli.</td></tr>`;
                 return;
             }
 
             alunni.forEach((al, index) => {
-                let statoSalvato = recordAppelloGiorno[al.id] ? recordAppelloGiorno[al.id].stato : "P";
-                let oraSalvata = recordAppelloGiorno[al.id] ? recordAppelloGiorno[al.id].ora : "1^";
-                let displayOra = ['R', 'U'].includes(statoSalvato) ? "inline-block" : "none";
+                const record = statoSalvati[al.id] || "P";
+                let stato = (typeof record === 'object') ? record.stato : record;
+                let ora = (typeof record === 'object') ? (record.ora || "") : "";
 
                 body.innerHTML += `
                     <tr>
                         <td><span class="num-registro">${index + 1}.</span><strong>${al.nome}</strong></td>
                         <td>
-                            <select id="appello-select-${al.id}" onchange="gestisciVisualizzazioneOra('${al.id}')" style="font-weight:bold;">
-                                <option value="P" ${statoSalvato=='P'?'selected':''}>🟢 Presente</option>
-                                <option value="A" ${statoSalvato=='A'?'selected':''}>🔴 Assente</option>
-                                <option value="R" ${statoSalvato=='R'?'selected':''}>🟡 Ritardo</option>
-                                <option value="U" ${statoSalvato=='U'?'selected':''}>🔵 Uscita Anticipata</option>
+                            <select id="appello-select-${al.id}" onchange="gestisciVisualizzazioneOra('${al.id}')">
+                                <option value="P" ${stato==='P'?'selected':''}>Presente</option>
+                                <option value="A" ${stato==='A'?'selected':''}>Assente</option>
+                                <option value="RB" ${stato==='RB'?'selected':''}>Ritardo Breve (RB)</option>
+                                <option value="R" ${stato==='R'?'selected':''}>Ritardo Ingresso (Ora Specifica)</option>
+                                <option value="U" ${stato==='U'?'selected':''}>Uscita Anticipata</option>
                             </select>
-                        </td>
-                        <td>
-                            <select id="appello-ora-${al.id}" style="display:${displayOra};">
+                            <select id="appello-ora-${al.id}" style="width:110px; margin-left:10px; ${['R','U'].includes(stato)?'':'display:none;'}">
                                 <option value="">-- Quale Ora? --</option>
-                                ${[1,2,3,4,5,6,7,8,9,10].map(h => `<option value="${h}^" ${oraSalvata==h+'^'?'selected':''}>${h}^ ora</option>`).join('')}
+                                ${[1,2,3,4,5,6,7,8,9,10].map(h => `<option value="${h}^" ${ora==h+'^'?'selected':''}>${h}^ ora</option>`).join('')}
                             </select>
                         </td>
-                    </tr>`;
+                    </tr>
+                `;
             });
-        }
-
-        function gestisciVisualizzazioneOra(alId) {
-            const stato = document.getElementById(`appello-select-${alId}`).value;
-            const selettoreOra = document.getElementById(`appello-ora-${alId}`);
-            if(['R', 'U'].includes(stato)) {
-                selettoreOra.style.display = "inline-block";
-            } else {
-                selettoreOra.style.display = "none";
-            }
-        }
-
-        function salvaAppelloClasse() {
-            const alunni = DB.alunni[currentClasseId] || [];
-            if(alunni.length === 0) return;
-            const chiaveAppello = `${currentClasseId}_${DATA_DI_LAVORO_SESSIONE}`;
-            let mappaturaOggi = {};
-
-            alunni.forEach(al => {
-                mappaturaOggi[al.id] = {
-                    stato: document.getElementById(`appello-select-${al.id}`).value,
-                    ora: document.getElementById(`appello-ora-${al.id}`).value || "1^"
-                };
-            });
-
-            DB.appelli[chiaveAppello] = mappaturaOggi;
-            salvaNelTempo();
-            alert("Appello giornaliero salvato con successo!");
-            renderAppello();
-        }
-
-        // ==========================================
-        // TAB FIRMA LEZIONE (CON MODIFICA E CANCELLAZIONE ABILITATI)
-        // ==========================================
-        function renderFirmeClasse() {
-            const body = document.getElementById('storico-firme-classe-body');
-            body.innerHTML = "";
-            
-            // Filtra solo le firme di questa classe e materia
-            let firmeFiltrate = DB.firme.filter(f => f.classeId === currentClasseId && f.materia === currentMateria);
-            
-            // Ordina per data decrescente
-            firmeFiltrate.sort((a,b) => new Date(b.data) - new Date(a.data));
-
-            if(firmeFiltrate.length === 0) {
-                body.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748B;">Nessuna firma apposta in questo anno per la materia selezionata.</td></tr>`;
-                return;
-            }
-
-            firmeFiltrate.forEach(f => {
-                body.innerHTML += `
-                    <tr>
-                        <td><code>${formattaDataEstesa(f.data)}</code></td>
-                        <td><b>${f.numOre} ore</b> svolte<br><small>Ora inizio: ${f.oraInizio}</small></td>
-                        <td><span class="badge-media pass" style="padding:3px 8px; font-size:12px;">${f.materia}</span></td>
-                        <td>${f.argomento}</td>
-                        <td style="text-align:center;">
-                            <button class="btn-secondary" style="padding:4px 8px; font-size:11px; margin-right:5px; background-color:#3B82F6;" onclick="avviaModificaFirma('${f.id}')">✏️</button>
-                            <button class="btn-danger" style="padding:4px 8px; font-size:11px;" onclick="cancellaFirmaClasse('${f.id}')">🗑️</button>
-                        </td>
-                    </tr>`;
-            });
-        }
-
-        function salvaFirmaLezione() {
-            const ore = document.getElementById('firma-ore-svolte').value;
-            const oraInizio = document.getElementById('firma-ora-inizio').value;
-            const arg = document.getElementById('firma-argomento').value.trim();
-            const editId = document.getElementById('edit-firma-id').value;
-
-            if(!arg) return alert("Inserisci l'argomento della lezione!");
-
-            if(editId) {
-                // MODIFICA FIRMA ESISTENTE
-                const fIndex = DB.firme.findIndex(f => f.id === editId);
-                if(fIndex !== -1) {
-                    DB.firme[fIndex].numOre = ore;
-                    DB.firme[fIndex].oraInizio = oraInizio;
-                    DB.firme[fIndex].argomento = arg;
-                    alert("Firma modificata con successo!");
-                }
-                annullaModificaFirma();
-            } else {
-                // NUOVA FIRMA
-                DB.firme.push({
-                    id: "F_" + Date.now(),
-                    classeId: currentClasseId,
-                    materia: currentMateria,
-                    data: DATA_DI_LAVORO_SESSIONE,
-                    numOre: ore,
-                    oraInizio: oraInizio,
-                    argomento: arg
-                });
-                alert("Lezione firmata e registrata con successo!");
-                document.getElementById('firma-argomento').value = "";
-            }
-
-            salvaNelTempo();
-            renderFirmeClasse();
-        }
-
-        function avviaModificaFirma(id) {
-            const f = DB.firme.find(firma => firma.id === id);
-            if(!f) return;
-
-            document.getElementById('titolo-azione-firma').innerText = "✏️ Modifica Firma Selezionata";
-            document.getElementById('edit-firma-id').value = f.id;
-            document.getElementById('firma-ore-svolte').value = f.numOre;
-            document.getElementById('firma-ora-inizio').value = f.oraInizio;
-            document.getElementById('firma-argomento').value = f.argomento;
-            
-            document.getElementById('btn-salva-firma').innerText = "Aggiorna Firma";
-            document.getElementById('btn-annulla-edit-firma').style.display = "inline-block";
-            
-            document.getElementById('titolo-azione-firma').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function annullaModificaFirma() {
-            document.getElementById('titolo-azione-firma').innerText = "✍️ Apponi Firma sul Registro di Classe";
-            document.getElementById('edit-firma-id').value = "";
-            document.getElementById('firma-ore-svolte').value = "1";
-            document.getElementById('firma-ora-inizio').value = "1^";
-            document.getElementById('firma-argomento').value = "";
-            
-            document.getElementById('btn-salva-firma').innerText = "Registra Firma";
-            document.getElementById('btn-annulla-edit-firma').style.display = "none";
-        }
-
-        function cancellaFirmaClasse(id) {
-            if(!confirm("Sei sicuro di voler eliminare questa firma dal registro di classe?")) return;
-            DB.firme = DB.firme.filter(f => f.id !== id);
-            salvaNelTempo();
-            renderFirmeClasse();
-            // Se si stava modificando proprio quella firma, resetta il form
-            if(document.getElementById('edit-firma-id').value === id) {
-                annullaModificaFirma();
-            }
-        }
-
-        // ==========================================
-        // TAB VOTI
-        // ==========================================
-        function getVoti(periodo) {
-            return DB.voti.filter(v => v.alunnoId === currentAlunnoId && v.materia === currentMateria && v.periodo === periodo);
-        }
-
-        function renderVoti() {
-            const periodoVis = document.getElementById('voti-periodo-visualizzato').value;
-            const body = document.getElementById('voti-table-body');
-            body.innerHTML = "";
-            const alunni = DB.alunni[currentClasseId] || [];
-
-            // Popola la select alunni del form singolo
-            const selAl = document.getElementById('voto-alunno');
-            selAl.innerHTML = "";
-            alunni.forEach(al => selAl.innerHTML += `<option value="${al.id}">${al.nome}</option>`);
-
-            if(alunni.length === 0) {
-                body.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748B;">Nessun alunno presente.</td></tr>`;
-                return;
-            }
-
-            alunni.forEach((al, index) => {
-                const getVotiStudente = (p) => DB.voti.filter(v => v.alunnoId === al.id && v.materia === currentMateria && v.periodo === p);
-                
-                const formatBox = (arr) => arr.map(v => {
-                    let commentoEsteso = v.commento ? `title="Nota: ${v.commento}" style="background:#FEF3C7; border:1px solid #D97706; cursor:help;"` : "";
-                    return `<div class="voto-box" ${commentoEsteso}><span class="${v.valore>=6?'voto-verde':'voto-rosso'}">${v.valore}</span><span class="btn-delete-voto" onclick="cancellaVoto('${v.id}')">×</span></div>`;
-                }).join('');
-
-                const media = (arr) => arr.length ? (arr.reduce((a,b)=>a+b.valore,0)/arr.length).toFixed(2) : "-";
-
-                let mTri = media(getVotiStudente('Trimestre')), mPen = media(getVotiStudente('Pentamestre'));
-
-                body.innerHTML += `
-                    <tr>
-                        <td><span class="num-registro">${index + 1}.</span><strong>${al.nome}</strong></td>
-                        <td>${formatBox(getVotiStudente('Trimestre'))}</td>
-                        <td style="text-align:center;">${mTri!=="--" ? `<span class="badge-media ${mTri>=6?'pass':'fail'}">${mTri}</span>` : "-"}</td>
-                        <td>${formatBox(getVotiStudente('Pentamestre'))}</td>
-                        <td style="text-align:center;">${mPen!=="--" ? `<span class="badge-media ${mPen>=6?'pass':'fail'}">${mPen}</span>` : "-"}</td>
-                    </tr>`;
-            });
-        }
-
-        function addVotoSingolo() {
-            const val = parseFloat(document.getElementById('voto-valore').value);
-            const commento = document.getElementById('voto-commento-singolo').value.trim();
-            if(!val || val<1 || val>10) return alert("Inserisci un voto valido da 1 a 10!");
-
-            DB.voti.push({
-                id: "V_" + Date.now(),
-                alunnoId: document.getElementById('voto-alunno').value,
-                materia: currentMateria,
-                valore: val,
-                tipo: document.getElementById('voto-tipo').value,
-                periodo: document.getElementById('voto-periodo').value,
-                commento: commento,
-                data: DATA_DI_LAVORO_SESSIONE
-            });
-
-            salvaNelTempo();
-            document.getElementById('voto-valore').value = "";
-            document.getElementById('voto-commento-singolo').value = "";
-            renderVoti();
         }
 
         function toggleFormVoti(tipo) {
@@ -1212,7 +1038,8 @@
                         <div style="display:flex; justify-content:space-between; align-items:center; background:#FFFDF2; padding:6px 10px; border-radius:6px; border:1px solid #FCD34D;">
                             <span style="font-size:13px; font-weight:600; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; max-width:180px;">${al.nome}</span>
                             <input type="number" id="vf-voto-${al.id}" step="0.25" min="1" max="10" placeholder="Voto" style="width:65px; padding:4px;">
-                        </div>`;
+                        </div>
+                    `;
                 });
             } else {
                 document.getElementById('form-voti-flash').classList.add('hidden');
@@ -1220,78 +1047,163 @@
             }
         }
 
-        function salvaVotiFlashMassivi() {
+        function gestisciVisualizzazioneOra(alId) {
+            const stato = document.getElementById(`appello-select-${alId}`).value;
+            const selettoreOra = document.getElementById(`appello-ora-${alId}`);
+            if(['R', 'U'].includes(stato)) {
+                selettoreOra.style.display = "inline-block";
+            } else {
+                selettoreOra.style.display = "none";
+                selettoreOra.value = "";
+            }
+        }
+
+        function saveAppello() {
+            const dataSelezionata = document.getElementById('appello-data').value;
+            if(!dataSelezionata) return alert("Seleziona una data valida sul calendario!");
+            
+            const chiave = `${currentClasseId}_${dataSelezionata}`;
+            DB.appells = DB.appelli || {}; // Safe guard
+            DB.appelli[chiave] = {};
+            let erroreOra = false;
+
+            (DB.alunni[currentClasseId]||[]).forEach(al => {
+                const stato = document.getElementById(`appello-select-${al.id}`).value;
+                const ora = document.getElementById(`appello-ora-${al.id}`).value;
+                if(['R','U'].includes(stato) && !ora) erroreOra = true;
+                DB.appelli[chiave][al.id] = { stato: stato, ora: ora };
+            });
+
+            if(erroreOra) {
+                alert("Attenzione: specifica l'ora per ritardi/uscite!");
+                return;
+            }
+            salvaNelTempo(); 
+            alert(`Appello salvato correttamente per il giorno ${dataSelezionata.split('-').reverse().join('/')}!`);
+        }
+
+        function renderFirme() {
+            const body = document.getElementById('firme-body');
+            body.innerHTML = "";
+            const filtrate = DB.firme.filter(f => f.classeId === currentClasseId);
+            filtrate.reverse().forEach(f => {
+                let badge = f.supplenza ? `<span class="badge-supplenza">SUPPLENZA</span>` : "";
+                let indicatoriOre = `<br><small style="color:#64748B;">Svolta alla <strong>${f.oraLezione || '1^'} ora</strong>, totale <strong>${f.numOre || '1'} ore</strong></small>`;
+                body.innerHTML += `<tr><td><code>${f.data.split('-').reverse().join('/')}</code></td><td><span style="font-weight:600; color:var(--primary-dark);">${f.materia}</span> ${badge} ${indicatoriOre}</td><td>${f.argomento}</td></tr>`;
+            });
+        }
+
+        function addFirma() {
+            const data = document.getElementById('firma-data').value;
+            const arg = document.getElementById('firma-argomento').value;
+            const isSupplenza = document.getElementById('firma-supplenza').checked;
+            const numOre = document.getElementById('firma-num-ore').value;
+            const oraLezione = document.getElementById('firma-ora-lezione').value;
+
+            if(!data || !arg.trim()) return alert("Compila l'argomento della lezione!");
+            
+            DB.firme.push({ classeId: currentClasseId, data: data, materia: currentMateria, argomento: arg, supplenza: isSupplenza, numOre: numOre, oraLezione: oraLezione });
+            document.getElementById('firma-argomento').value = "";
+            document.getElementById('firma-supplenza').checked = false;
+            salvaNelTempo(); renderFirme();
+        }
+
+        function renderVoti() {
+            document.getElementById('titolo-voti-materia').innerText = `Registro Valutazioni - ${currentMateria}`;
+            const selAlunno = document.getElementById('voto-alunno');
+            selAlunno.innerHTML = "";
+            const alunni = DB.alunni[currentClasseId] || [];
+            alunni.forEach((al, index) => { selAlunno.innerHTML += `<option value="${al.id}">${index+1}. ${al.nome}</option>`; });
+
+            const body = document.getElementById('voti-body'); body.innerHTML = "";
+
+            alunni.forEach((al, index) => {
+                const getVoti = (per) => DB.voti.filter(v => v.alunnoId === al.id && v.materia === currentMateria && v.periodo === per);
+                const formatBox = (arr) => arr.map(v => {
+                    let commentoEsteso = v.commento ? `title="Nota: ${v.commento}" style="background:#FEF3C7; border:1px solid #D97706; cursor:help;"` : "";
+                    return `<div class="voto-box" ${commentoEsteso}><span class="${v.valore>=6?'voto-verde':'voto-rosso'}">${v.valore}</span><span class="btn-delete-voto" onclick="cancellaVoto('${v.id}')">×</span></div>`;
+                }).join('');
+                
+                const media = (arr) => arr.length ? (arr.reduce((a,b)=>a+b.valore,0)/arr.length).toFixed(2) : "-";
+                let mTri = media(getVoti('Trimestre')), mPen = media(getVoti('Pentamestre'));
+                
+                body.innerHTML += `
+                    <tr>
+                        <td><span class="num-registro">${index + 1}.</span><strong>${al.nome}</strong></td>
+                        <td>${formatBox(getVoti('Trimestre'))}</td>
+                        <td style="text-align:center;">${mTri!=="-" ? `<span class="badge-media ${mTri>=6?'pass':'fail'}">${mTri}</span>` : "-"}</td>
+                        <td>${formatBox(getVoti('Pentamestre'))}</td>
+                        <td style="text-align:center;">${mPen!=="-" ? `<span class="badge-media ${mPen>=6?'pass':'fail'}">${mPen}</span>` : "-"}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function addVotoSingolo() {
+            const val = parseFloat(document.getElementById('voto-valore').value);
+            const commento = document.getElementById('voto-commento-singolo').value.trim();
+            if(!val || val<1 || val>10) return alert("Inserisci un voto valido da 1 a 10!");
+            
+            DB.voti.push({ id: "V_" + Date.now(), alunnoId: document.getElementById('voto-alunno').value, classeId: currentClasseId, materia: currentMateria, valore: val, tipo: document.getElementById('voto-tipo').value, periodo: document.getElementById('voto-periodo').value, commento: commento });
+            document.getElementById('voto-valore').value = ""; document.getElementById('voto-commento-singolo').value = "";
+            salvaNelTempo(); renderVoti();
+        }
+
+        function salvaVotiFlashCollettivi() {
             const tipo = document.getElementById('vf-tipo').value;
             const periodo = document.getElementById('vf-periodo').value;
-            const commento = document.getElementById('vf-commento').value.trim();
+            const commentoGenerale = document.getElementById('vf-commento-collettivo').value.trim();
             const alunni = DB.alunni[currentClasseId] || [];
+            let votiSalvati = 0;
 
-            let contatore = 0;
-            alunni.forEach(al => {
+            alunni.forEach((al, index) => {
                 const inputVoto = document.getElementById(`vf-voto-${al.id}`);
-                if(inputVoto && inputVoto.value) {
-                    let vVal = parseFloat(inputVoto.value);
-                    if(vVal >= 1 && vVal <= 10) {
-                        DB.voti.push({
-                            id: "V_" + (Date.now() + contatore),
-                            alunnoId: al.id,
-                            materia: currentMateria,
-                            valore: vVal,
-                            tipo: tipo,
-                            periodo: periodo,
-                            commento: commento,
-                            data: DATA_DI_LAVORO_SESSIONE
-                        });
-                        contatore++;
+                if (inputVoto && inputVoto.value !== "") {
+                    const valore = parseFloat(inputVoto.value);
+                    if (valore >= 1 && valore <= 10) {
+                        DB.voti.push({ id: "V_FLASH_" + Date.now() + "_" + index, alunnoId: al.id, classeId: currentClasseId, materia: currentMateria, valore: valore, tipo: tipo, periodo: periodo, commento: commentoGenerale || "Voto Rapido Flash" });
+                        votiSalvati++;
                     }
                 }
             });
 
-            salvaNelTempo();
-            alert(`Registrati con successo ${contatore} valutazioni nella classe.`);
-            document.getElementById('vf-commento').value = "";
-            toggleFormVoti('singolo');
-            renderVoti();
+            if(votiSalvati === 0) return alert("Non hai inserito nessun voto numerico nei campi!");
+            document.getElementById('vf-commento-collettivo').value = "";
+            salvaNelTempo(); toggleFormVoti('singolo'); renderVoti();
+            alert(`Registrati correttamente ${votiSalvati} voti.`);
         }
 
-        function cancellaVoto(votoId) {
-            DB.voti = DB.voti.filter(v => v.id !== votoId);
-            salvaNelTempo();
-            renderVoti();
-        }
+        function cancellaVoto(id) { DB.voti = DB.voti.filter(v => v.id !== id); salvaNelTempo(); renderVoti(); }
 
-        // ==========================================
-        // TAB SCRUTINI
-        // ==========================================
         function renderScrutini() {
+            document.getElementById('scrutinio-materia-titolo').innerText = currentMateria;
             const periodo = document.getElementById('scrutinio-periodo-selettore').value;
-            const body = document.getElementById('scrutini-table-body');
+            const body = document.getElementById('scrutini-body');
             body.innerHTML = "";
+            
             const alunni = DB.alunni[currentClasseId] || [];
 
-            if(alunni.length === 0) {
-                body.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748B;">Nessun alunno.</td></tr>`;
-                return;
-            }
-
-            alunni.forEach((al, index) => {
-                // Calcola Media Registro
-                const vFiltrati = DB.voti.filter(v => v.alunnoId === al.id && v.materia === currentMateria && v.periodo === periodo);
-                let mediaReale = vFiltrati.length ? (vFiltrati.reduce((a,b)=>a+b.valore,0)/vFiltrati.length).toFixed(2) : "-";
-
-                // Conteggio assenze ore totali per materia
-                let numAssenze = 0;
-                Object.keys(DB.appelli).forEach(chiave => {
-                    if(chiave.startsWith(currentClasseId + "_")) {
-                        let recordGiorno = DB.appelli[chiave][al.id];
-                        if(recordGiorno && recordGiorno.stato === 'A') {
-                            numAssenze++; // Considera convenzionalmente 1 giorno/ora
+            const contaAssenzeAlunno = (alunnoId) => {
+                let totaleAssenze = 0;
+                Object.keys(DB.appelli).forEach(chiaveData => {
+                    if(chiaveData.startsWith(currentClasseId + "_")) {
+                        const recordGiorno = DB.appelli[chiaveData][alunnoId];
+                        if(recordGiorno) {
+                            let s = (typeof recordGiorno === 'object') ? recordGiorno.stato : recordGiorno;
+                            if(s === "A") totaleAssenze++;
                         }
                     }
                 });
+                return totaleAssenze;
+            };
+
+            alunni.forEach((al, index) => {
+                const votiFiltrati = DB.voti.filter(v => v.alunnoId === al.id && v.materia === currentMateria && v.periodo === periodo);
+                const mediaReale = votiFiltrati.length ? (votiFiltrati.reduce((sum, v) => sum + v.valore, 0) / votiFiltrati.length).toFixed(2) : "-";
+                const numAssenze = contaAssenzeAlunno(al.id);
 
                 const chiaveScrutinio = `${currentClasseId}_${currentMateria}_${periodo}_${al.id}`;
-                let recordScrutinio = DB.scrutini[chiaveScrutinio] || { votoProposto: "", giudizio: "" };
+                const recordScrutinio = DB.scrutini[chiaveScrutinio] || { votoProposto: "", giudizio: "" };
 
                 body.innerHTML += `
                     <tr>
@@ -1308,7 +1220,8 @@
                         <td>
                             <input type="text" id="sc-giudizio-${al.id}" value="${recordScrutinio.giudizio}" placeholder="Es: Livello Ottimo, Impegno costante..." style="width:95%;">
                         </td>
-                    </tr>`;
+                    </tr>
+                `;
             });
         }
 
@@ -1320,81 +1233,86 @@
                 const votoVal = document.getElementById(`sc-voto-${al.id}`).value;
                 const giudizioVal = document.getElementById(`sc-giudizio-${al.id}`).value.trim();
                 const chiaveScrutinio = `${currentClasseId}_${currentMateria}_${periodo}_${al.id}`;
-                
+
                 DB.scrutini[chiaveScrutinio] = { votoProposto: votoVal, giudizio: giudizioVal };
             });
 
             salvaNelTempo();
             alert(`Tabellone Scrutini (${periodo}) salvato con successo!`);
-            renderScrutini();
         }
 
-        // ==========================================
-        // TAB GESTIONE ALUNNI
-        // ==========================================
         function renderGestioneAlunni() {
-            const body = document.getElementById('gestione-alunni-table-body');
-            body.innerHTML = "";
+            const target = document.getElementById('gestione-alunni-body');
+            target.innerHTML = "";
             const alunni = DB.alunni[currentClasseId] || [];
 
             if(alunni.length === 0) {
-                body.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#64748B;">Nessun alunno in elenco per questa classe.</td></tr>`;
+                target.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#64748B; padding:15px;">Nessun alunno configurato in questa classe. Aggiungine uno sopra.</td></tr>`;
                 return;
             }
 
-            alunni.forEach((al, index) => {
-                body.innerHTML += `
+            alunni.forEach((al, idx) => {
+                target.innerHTML += `
                     <tr>
-                        <td><span class="num-registro">${index + 1}.</span></td>
+                        <td><span class="num-registro">${idx+1}.</span></td>
                         <td><strong>${al.nome}</strong></td>
-                        <td style="text-align:center;">
-                            <button class="btn-danger" onclick="rimuoviAlunno('${al.id}')">🗑 Rimuovi</button>
-                        </td>
-                    </tr>`;
+                        <td style="text-align:center;"><button class="btn-danger" onclick="rimuoviAlunnoDaClasse('${al.id}', '${al.nome.replace(/'/g, "\\'")}')">🗑 Rimuovi</button></td>
+                    </tr>
+                `;
             });
         }
 
         function aggiungiAlunnoInClasse() {
-            const nome = document.getElementById('nuovo-alunno-nome').value.trim();
-            if(!nome) return alert("Inserisci il cognome e nome!");
+            const input = document.getElementById('nuovo-alunno-nome');
+            const nomeStr = input.value.trim();
+            if(!nomeStr) return alert("Inserisci il Cognome e il Nome dell'alunno!");
 
             if(!DB.alunni[currentClasseId]) DB.alunni[currentClasseId] = [];
             
-            DB.alunni[currentClasseId].push({ id: "AL_" + Date.now(), nome: nome });
-            DB.alunni[currentClasseId].sort((a,b) => a.nome.localeCompare(b.nome));
-
-            salvaNelTempo();
-            document.getElementById('nuovo-alunno-nome').value = "";
-            renderGestioneAlunni();
-        }
-
-        function aggiungiAlunniMassivi() {
-            const testo = document.getElementById('nuovi-alunni-multipli').value.trim();
-            if(!testo) return alert("Incolla dei nomi validi!");
-
-            if(!DB.alunni[currentClasseId]) DB.alunni[currentClasseId] = [];
-            
-            const linee = testo.split('\n');
-            let inseriti = 0;
-
-            linee.forEach((l, i) => {
-                let pulito = l.trim();
-                if(pulito.length > 2) {
-                    DB.alunni[currentClasseId].push({ id: "AL_" + (Date.now() + i), nome: pulito });
-                    inseriti++;
-                }
+            DB.alunni[currentClasseId].push({
+                id: currentClasseId + "_" + Date.now() + "_" + Math.floor(Math.random()*1000),
+                nome: nomeStr
             });
 
             DB.alunni[currentClasseId].sort((a,b) => a.nome.localeCompare(b.nome));
+            input.value = "";
             salvaNelTempo();
-
-            alert(`Inseriti con successo ${inseriti} nuovi alunni.`);
-            document.getElementById('nuovi-alunni-multipli').value = "";
             renderGestioneAlunni();
         }
 
-        function rimuoviAlunno(alunnoId) {
-            if(confirm("Sei sicuro? Rimuovendo l'alunno perderai anche tutti i suoi voti e registri associati.")) {
+        // NUOVA FUNZIONE PER L'INSERIMENTO MULTIPLO
+        function aggiungiAlunniMultipliInClasse() {
+            const textarea = document.getElementById('nuovi-alunni-multipli');
+            const testo = textarea.value.trim();
+            
+            if(!testo) return alert("Incolla o digita almeno un nome di un alunno!");
+
+            if(!DB.alunni[currentClasseId]) DB.alunni[currentClasseId] = [];
+
+            // Separa il testo per ogni riga, pulisce gli spazi vuoti e rimuove righe bianche
+            const righe = testo.split('\n').map(r => r.trim()).filter(r => r.length > 0);
+            
+            let contatoreInseriti = 0;
+
+            righe.forEach(nomeAlunno => {
+                DB.alunni[currentClasseId].push({
+                    id: currentClasseId + "_" + Date.now() + "_" + Math.floor(Math.random()*100000),
+                    nome: nomeAlunno
+                });
+                contatoreInseriti++;
+            });
+
+            // Ordina alfabeticamente l'intera classe dopo il caricamento massivo
+            DB.alunni[currentClasseId].sort((a,b) => a.nome.localeCompare(b.nome));
+            
+            textarea.value = ""; // Svuota l'interfaccia
+            salvaNelTempo();
+            renderGestioneAlunni();
+            alert(`Inserimento completato! Aggiunti correttamente ${contatoreInseriti} nuovi alunni.`);
+        }
+
+        function rimuoviAlunnoDaClasse(alunnoId, nome) {
+            if(confirm(`Sei sicuro di voler rimuovere l'alunno ${nome} della classe? Verranno eliminati anche i suoi voti.`)) {
                 DB.alunni[currentClasseId] = DB.alunni[currentClasseId].filter(a => a.id !== alunnoId);
                 DB.voti = DB.voti.filter(v => v.alunnoId !== alunnoId);
                 salvaNelTempo();
@@ -1402,34 +1320,21 @@
             }
         }
 
-        // ==========================================
-        // VISTA AGENDA GENERALE
-        // ==========================================
         function openAgendaView() {
             showView('agenda-view');
             document.getElementById('age-data').value = DATA_DI_LAVORO_SESSIONE;
             document.getElementById('age-titolo').value = "";
             document.getElementById('search-agenda-input').value = "";
-
+            
             const sel = document.getElementById('age-classe-select');
             sel.innerHTML = '<option value="Tutte">Tutte le mie classi</option>';
-            DB.classi.forEach(cl => {
-                sel.innerHTML += `<option value="${cl.id}">Classe ${cl.id}</option>`;
-            });
-
+            DB.classi.forEach(cl => { sel.innerHTML += `<option value="${cl.id}">Classe ${cl.id}</option>`; });
+            
             const filtroClasseSelect = document.getElementById('filtro-agenda-classe');
             filtroClasseSelect.innerHTML = '<option value="Tutte">Mostra tutte le classi</option>';
-            DB.classi.forEach(cl => {
-                filtroClasseSelect.innerHTML += `<option value="${cl.id}">Solo classe ${cl.id}</option>`;
-            });
+            DB.classi.forEach(cl => { filtroClasseSelect.innerHTML += `<option value="${cl.id}">Solo classe ${cl.id}</option>`; });
 
-            onAgendaClasseChange();
-            renderAgenda();
-        }
-
-        function vaiAdAgendaClasseSpecificata() {
-            openAgendaView();
-            document.getElementById('filtro-agenda-classe').value = currentClasseId;
+            onAgendaClasseChange(); 
             renderAgenda();
         }
 
@@ -1437,13 +1342,11 @@
             const classeSelezionata = document.getElementById('age-classe-select').value;
             const matSel = document.getElementById('age-materia-select');
             matSel.innerHTML = '<option value="Generale/Agenda">Generale / Agenda</option>';
-            
+
             if(classeSelezionata !== "Tutte") {
                 const cObj = DB.classi.find(c => c.id === classeSelezionata);
                 if(cObj && cObj.materie) {
-                    cObj.materie.forEach(m => {
-                        matSel.innerHTML += `<option value="${m}">${m}</option>`;
-                    });
+                    cObj.materie.forEach(m => { matSel.innerHTML += `<option value="${m}">${m}</option>`; });
                 }
             }
         }
@@ -1457,6 +1360,7 @@
 
         function navigaCalendario(direzione) {
             if(!calendarioDataCorrenteNavigazione) calendarioDataCorrenteNavigazione = new Date(DATA_DI_LAVORO_SESSIONE);
+            
             if(filtroDataAttivo === 'mese') {
                 calendarioDataCorrenteNavigazione.setMonth(calendarioDataCorrenteNavigazione.getMonth() + direzione);
             } else if(filtroDataAttivo === 'settimana') {
@@ -1469,75 +1373,61 @@
 
         function addAgendaEvent() {
             const data = document.getElementById('age-data').value;
-            const cl = document.getElementById('age-classe-select').value;
             const tipo = document.getElementById('age-tipo').value;
-            const mat = document.getElementById('age-materia-select').value;
-            const tit = document.getElementById('age-titolo').value.trim();
+            const classe = document.getElementById('age-classe-select').value;
+            const materia = document.getElementById('age-materia-select').value;
+            const titolo = document.getElementById('age-titolo').value.trim();
 
-            if(!data || !tit) return alert("Compila data e descrizione dell'impegno!");
+            if(!data || !titolo) return alert("Compila la data e il titolo della scadenza!");
 
-            DB.agenda.push({
-                id: "A_" + Date.now(),
-                data: data,
-                classe: cl,
-                tipo: tipo,
-                materia: mat,
-                titolo: tit
-            });
-
-            salvaNelTempo();
-            alert("Evento inserito nell'agenda!");
+            DB.agenda.push({ id: "E_" + Date.now(), data: data, tipo: tipo, classe: classe, materia: materia, titolo: titolo });
             document.getElementById('age-titolo').value = "";
-            renderAgenda();
+            salvaNelTempo(); renderAgenda();
         }
 
         function renderAgenda() {
-            if(!calendarioDataCorrenteNavigazione) calendarioDataCorrenteNavigazione = new Date(DATA_DI_LAVORO_SESSIONE);
             const target = document.getElementById('calendar-render-target');
             const titoloPeriodo = document.getElementById('calendar-period-title');
             const filtroClasse = document.getElementById('filtro-agenda-classe').value;
-            const ricercaTesto = document.getElementById('search-agenda-input').value.toLowerCase().trim();
-
-            // Filtro comune
+            const termineRicerca = document.getElementById('search-agenda-input').value.trim().toLowerCase();
+            
+            if(!calendarioDataCorrenteNavigazione) calendarioDataCorrenteNavigazione = new Date(DATA_DI_LAVORO_SESSIONE);
+            
             let eventiFiltratiComuni = DB.agenda.filter(ev => {
-                if(filtroClasse !== "Tutte" && ev.classe !== "Tutte" && ev.classe !== filtroClasse) return false;
-                if(ricercaTesto) {
-                    return ev.titolo.toLowerCase().includes(ricercaTesto) || ev.materia.toLowerCase().includes(ricercaTesto) || ev.tipo.toLowerCase().includes(ricercaTesto);
-                }
+                if (filtroClasse !== "Tutte" && ev.classe !== filtroClasse) return false;
+                if (termineRicerca && !ev.titolo.toLowerCase().includes(termineRicerca) && !ev.materia.toLowerCase().includes(termineRicerca)) return false;
                 return true;
             });
 
-            if(filtroDataAttivo === 'mese') {
+            const mesiNomi = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
+            const oggiReale = new Date(DATA_DI_LAVORO_SESSIONE); oggiReale.setHours(0,0,0,0);
+
+            if (filtroDataAttivo === 'mese') {
                 let anno = calendarioDataCorrenteNavigazione.getFullYear();
                 let mese = calendarioDataCorrenteNavigazione.getMonth();
-                const mesiNomi = ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
                 titoloPeriodo.innerText = `${mesiNomi[mese]} ${anno}`;
 
                 let primoGiornoMese = new Date(anno, mese, 1);
-                let giornoDellaSettimana = primoGiornoMese.getDay(); 
-                let offsetInizio = giornoDellaSettimana === 0 ? 6 : giornoDellaSettimana - 1;
+                let giornoDellaSettimanaInizio = primoGiornoMese.getDay(); 
+                let offsetIniziale = giornoDellaSettimanaInizio === 0 ? 6 : giornoDellaSettimanaInizio - 1; 
 
                 let dataInizioCal = new Date(primoGiornoMese);
-                dataInizioCal.setDate(dataInizioCal.getDate() - offsetInizio);
+                dataInizioCal.setDate(dataInizioCal.getDate() - offsetIniziale);
 
-                let htmlGrid = `<div class="calendar-grid"><div class="calendar-grid-header"><span>LUN</span><span>MAR</span><span>MER</span><span>GIO</span><span>VEN</span><span>SAB</span><span>DOM</span></div><div class="calendar-days">`;
+                let htmlGrid = `<div class="calendar-grid"><div class="calendar-grid-header"><div>Lun</div><div>Mar</div><div>Mer</div><div>Gio</div><div>Ven</div><div>Sab</div><div>Dom</div></div><div class="calendar-days">`;
 
-                let oggiReale = new Date(DATA_DI_LAVORO_SESSIONE);
-                oggiReale.setHours(0,0,0,0);
-
-                for(let i=0; i<42; i++) {
+                for (let i = 0; i < 42; i++) {
                     let cellDate = new Date(dataInizioCal);
                     cellDate.setDate(cellDate.getDate() + i);
                     cellDate.setHours(0,0,0,0);
-                    let isoDataString = cellDate.getFullYear() + '-' + String(cellDate.getMonth()+1).padStart(2,'0') + '-' + String(cellDate.getDate()).padStart(2,'0');
 
+                    let isoDataString = cellDate.toISOString().split('T')[0];
                     let classeCella = "calendar-day-cell";
                     if (cellDate.getMonth() !== mese) classeCella += " other-month";
                     if (cellDate.getTime() === oggiReale.getTime()) classeCella += " today-cell";
 
                     let eventiGiorno = eventiFiltratiComuni.filter(e => e.data === isoDataString);
                     let listaBadgeEventi = "";
-
                     eventiGiorno.forEach(ev => {
                         let coloreScelto = ev.tipo.includes("COMPITO") ? "var(--primary-red)" : (ev.tipo.includes("VERIFICA")||ev.tipo.includes("AGENDA") ? "var(--amber-coord)" : "#475569");
                         listaBadgeEventi += `<div class="calendar-event-badge" style="background:${coloreScelto};" title="[${ev.classe}] ${ev.titolo}" onclick="alert('[${ev.classe}] - ${ev.tipo}\\nMateria: ${ev.materia}\\nDescrizione: ${ev.titolo}')"><b>${ev.classe}:</b> ${ev.titolo}</div>`;
@@ -1554,51 +1444,57 @@
                 let dist = g === 0 ? -6 : 1 - g;
                 let lunedi = new Date(corrente); lunedi.setDate(lunedi.getDate() + dist);
                 let domenica = new Date(lunedi); domenica.setDate(domenica.getDate() + 6);
-                
-                titoloPeriodo.innerText = `Settimana dal ${lunedi.getDate()}/${lunedi.getMonth()+1} al ${domenica.getDate()}/${domenica.getMonth()+1}`;
 
-                let htmlLista = `<div class="calendar-view-panel">`;
+                titoloPeriodo.innerText = `Settimana dal ${lunedi.getDate()}/${lunedi.getMonth()+1} al ${domenica.getDate()}/${domenica.getMonth()+1}/${domenica.getFullYear()}`;
+
+                let htmlWrap = `<div class="calendar-view-panel">`;
                 for(let i=0; i<7; i++) {
-                    let d = new Date(lunedi); d.setDate(d.getDate() + i);
-                    let iso = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-                    let evG = eventiFiltratiComuni.filter(e => e.data === iso);
+                    let giornoCiclo = new Date(lunedi); giornoCiclo.setDate(giornoCiclo.getDate() + i);
+                    let isoData = giornoCiclo.toISOString().split('T')[0];
+                    let eventiDelGiorno = eventiFiltratiComuni.filter(e => e.data === isoData);
+                    
+                    let nomiGiorniIT = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+                    let stileBordoOggi = giornoCiclo.getTime() === oggiReale.getTime() ? `style="border: 2px solid var(--primary-red); background:#FFF5F5;"` : '';
 
-                    htmlLista += `
-                        <div class="calendar-row-item">
-                            <div class="calendar-row-date"><span>${d.getDate()}</span><small>${d.toLocaleDateString('it-IT',{weekday:'short'}).toUpperCase()}</small></div>
-                            <div class="calendar-row-content">
-                                ${evG.length === 0 ? '<span style="color:#CBD5E1; font-size:13px;">Nessun impegno</span>' : evG.map(e => `<div style="margin-bottom:4px; font-size:13px;">📍 [<b>${e.classe}</b>] <b>${e.tipo}</b> (${e.materia}): ${e.titolo}</div>`).join('')}
-                            </div>
-                        </div>`;
+                    htmlWrap += `<div class="calendar-row-item" ${stileBordoOggi}><div class="calendar-row-date"><span>${nomiGiorniIT[giornoCiclo.getDay()]}</span><span style="font-size:20px;">${giornoCiclo.getDate()}</span></div><div class="calendar-row-content">`;
+                    if(eventiDelGiorno.length === 0) {
+                        htmlWrap += `<span style="color:#94A3B8; font-size:13px;">Nessun impegno programmato</span>`;
+                    } else {
+                        eventiDelGiorno.forEach(ev => {
+                            htmlWrap += `<div style="margin-bottom:8px; padding-bottom:5px; border-bottom:1px dashed var(--border-color); display:flex; justify-content:space-between; align-items:center;"><div><strong style="color:var(--primary-red); font-size:13px;">[Classe ${ev.classe}]</strong> <b>${ev.tipo}</b> - ${ev.materia ? '📚 '+ev.materia+' : ' : ''} ${ev.titolo}</div><button class="btn-danger" style="padding:2px 6px; font-size:11px;" onclick="cancellaEventoAgenda('${ev.id}')">🗑</button></div>`;
+                        });
+                    }
+                    htmlWrap += `</div></div>`;
                 }
-                htmlLista += `</div>`;
-                target.innerHTML = htmlLista;
+                htmlWrap += `</div>`;
+                target.innerHTML = htmlWrap;
 
             } else if (filtroDataAttivo === 'giorno') {
-                let iso = calendarioDataCorrenteNavigazione.getFullYear() + '-' + String(calendarioDataCorrenteNavigazione.getMonth()+1).padStart(2,'0') + '-' + String(calendarioDataCorrenteNavigazione.getDate()).padStart(2,'0');
-                titoloPeriodo.innerText = formattaDataEstesa(iso);
+                let isoData = calendarioDataCorrenteNavigazione.toISOString().split('T')[0];
+                titoloPeriodo.innerText = `Impegni del Giorno: ${calendarioDataCorrenteNavigazione.getDate()} ${mesiNomi[calendarioDataCorrenteNavigazione.getMonth()]} ${calendarioDataCorrenteNavigazione.getFullYear()}`;
 
-                let evG = eventiFiltratiComuni.filter(e => e.data === iso);
-                let htmlLista = `
-                    <div class="calendar-view-panel">
-                        <h3>Impegni del Giorno:</h3>
-                        ${evG.length === 0 ? '<p style="color:#64748B;">Nessun compito o appuntamento in agenda per questa data.</p>' : evG.map(e => `
-                            <div style="background:#F8FAFC; padding:12px; border-radius:6px; border-left:4px solid var(--primary-red); margin-bottom:8px;">
-                                <strong>Classe: ${e.classe}</strong> | <b>${e.tipo}</b> - Materia: <u>${e.materia}</u><br>${e.titolo}
-                            </div>`).join('')}
-                    </div>`;
-                target.innerHTML = htmlLista;
+                let eventiDelGiorno = eventiFiltratiComuni.filter(e => e.data === isoData);
+                let htmlWrap = `<div class="calendar-view-panel">`;
+                if(eventiDelGiorno.length === 0) {
+                    htmlWrap += `<div style="text-align:center; color:#64748B; padding:30px;">Nessun impegno in questa data specifica.</div>`;
+                } else {
+                    eventiDelGiorno.forEach(ev => {
+                        htmlWrap += `<div class="calendar-row-item" style="padding:15px; align-items:center; justify-content:space-between; display:flex;"><div><span style="background:var(--primary-dark); color:white; padding:4px 8px; border-radius:4px; font-weight:bold; font-size:12px; margin-right:10px;">${ev.classe}</span><strong>${ev.tipo}</strong> (${ev.materia}): ${ev.titolo}</div><button class="btn-danger" onclick="cancellaEventoAgenda('${ev.id}')">Elimina</button></div>`;
+                    });
+                }
+                htmlWrap += `</div>`;
+                target.innerHTML = htmlWrap;
 
             } else if (filtroDataAttivo === 'lista') {
-                titoloPeriodo.innerText = "Tutti gli eventi in Archivio";
+                titoloPeriodo.innerText = "Tutti gli impegni inseriti in archivio";
                 let htmlLista = `<div style="padding:15px;"><table><thead><tr><th>Data</th><th>Classe</th><th>Tipo / Materia</th><th>Descrizione</th><th style='text-align:center;'>Azione</th></tr></thead><tbody>`;
+                
                 eventiFiltratiComuni.sort((a,b)=>new Date(a.data)-new Date(b.data));
-
                 if(eventiFiltratiComuni.length === 0) {
                     htmlLista += `<tr><td colspan="5" style="text-align:center; color:#64748B;">Nessun risultato trovato in archivio.</td></tr>`;
                 } else {
                     eventiFiltratiComuni.forEach(ev => {
-                        htmlLista += `<tr><td><code>${formattaDataEstesa(ev.data)}</code></td><td><span style="font-weight:bold; color:var(--primary-dark);">${ev.classe}</span></td><td><b>${ev.tipo}</b><br><small>${ev.materia}</small></td><td>${ev.titolo}</td><td style="text-align:center;"><button class="btn-danger" style="padding:4px 8px;" onclick="cancellaEventoAgenda('${ev.id}')">🗑</button></td></tr>`;
+                        htmlLista += `<tr><td><code>${ev.data.split('-').reverse().join('/')}</code></td><td><span style="font-weight:bold; color:var(--primary-dark);">${ev.classe}</span></td><td><b>${ev.tipo}</b><br><small>${ev.materia}</small></td><td>${ev.titolo}</td><td style="text-align:center;"><button class="btn-danger" style="padding:4px 8px;" onclick="cancellaEventoAgenda('${ev.id}')">🗑</button></td></tr>`;
                     });
                 }
                 htmlLista += `</tbody></table></div>`;
@@ -1606,197 +1502,185 @@
             }
         }
 
-        function cancellaEventoAgenda(id) {
-            DB.agenda = DB.agenda.filter(ev => ev.id !== id);
-            salvaNelTempo();
-            renderAgenda();
-        }
+        function cancellaEventoAgenda(id) { DB.agenda = DB.agenda.filter(ev => ev.id !== id); salvaNelTempo(); renderAgenda(); }
 
-        // ==========================================
-        // VISTA LEZIONI LIBERE / ISTITUTO (CON CANCELLAZIONE ABILITATA)
-        // ==========================================
         function openTutteClassiView() {
             showView('tutte-classi-view');
-            const sel = document.getElementById('tc-classe');
-            sel.innerHTML = "";
+            const sel = document.getElementById('tc-classe'); sel.innerHTML = "";
             TUTTE_LE_CLASSI.forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
             document.getElementById('tc-data').value = DATA_DI_LAVORO_SESSIONE;
-            document.getElementById('tc-materia').value = "";
-            document.getElementById('tc-argomento').value = "";
-            document.getElementById('tc-supplenza').checked = false;
             renderFirmeLibere();
         }
 
         function addFirmaLibera() {
-            const cl = document.getElementById('tc-classe').value;
-            const data = document.getElementById('tc-data').value;
-            const mat = document.getElementById('tc-materia').value.trim();
-            const arg = document.getElementById('tc-argomento').value.trim();
-            const nOre = document.getElementById('tc-num-ore').value;
-            const qualeOra = document.getElementById('tc-ora-lezione').value;
-            const isSupplenza = document.getElementById('tc-supplenza').checked;
+            const cl = document.getElementById('tc-classe').value; const data = document.getElementById('tc-data').value;
+            const mat = document.getElementById('tc-materia').value; const arg = document.getElementById('tc-argomento').value;
+            const isSupplenza = document.getElementById('tc-supplenza').checked; const numOre = document.getElementById('tc-num-ore').value;
+            const oraLezione = document.getElementById('tc-ora-lezione').value;
 
-            if(!mat || !arg || !data) return alert("Compila tutti i campi richiesti!");
-
-            DB.firmeLibere.push({
-                id: "FL_" + Date.now(),
-                classe: cl,
-                data: data,
-                materia: mat,
-                argomento: arg,
-                numOre: nOre,
-                oraInizio: qualeOra,
-                supplenza: isSupplenza
-            });
-
-            salvaNelTempo();
-            alert("Firma fuori orario/supplenza d'Istituto registrata!");
-            document.getElementById('tc-materia').value = "";
-            document.getElementById('tc-argomento').value = "";
+            if(!mat.trim() || !arg.trim()) return alert("Compila i campi Materia e Argomento!");
+            DB.firmeLibere = DB.firmeLibere || [];
+            DB.firmeLibere.push({ data, classe: cl, materia: mat, argomento: arg, supplenza: isSupplenza, numOre: numOre, oraLezione: oraLezione });
+            
+            document.getElementById('tc-materia').value = ""; document.getElementById('tc-argomento').value = "";
             document.getElementById('tc-supplenza').checked = false;
-            renderFirmeLibere();
+            salvaNelTempo(); renderFirmeLibere();
         }
 
         function renderFirmeLibere() {
-            const body = document.getElementById('tc-firme-body');
-            body.innerHTML = "";
-            
-            // Ordina per data decrescente
-            DB.firmeLibere.sort((a,b) => new Date(b.data) - new Date(a.data));
-
-            if(DB.firmeLibere.length === 0) {
-                body.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#64748B;">Nessuna lezione fuori profilo salvata nello storico d'istituto.</td></tr>`;
-                return;
-            }
-
-            DB.firmeLibere.forEach(f => {
-                let badge = f.supplenza ? '<span class="badge-supplenza" style="margin:0;">SUPPLENZA</span>' : '<span class="badge-media pass" style="color:#1E40AF; background:#DBEAFE; padding:3px 8px; font-size:11px;">FIRMA LIBERA</span>';
-                body.innerHTML += `
-                    <tr>
-                        <td><code>${formattaDataEstesa(f.data)}</code></td>
-                        <td><strong>${f.classe}</strong></td>
-                        <td><b>${f.materia}</b><br><small>${f.numOre} ore (${f.oraInizio} ora)</small></td>
-                        <td>${f.argomento}</td>
-                        <td>${badge}</td>
-                        <td style="text-align:center;">
-                            <button class="btn-danger" style="padding:4px 8px; font-size:11px;" onclick="cancellaFirmaLibera('${f.id}')">🗑️</button>
-                        </td>
-                    </tr>`;
+            const body = document.getElementById('tc-firme-body'); body.innerHTML = "";
+            (DB.firmeLibere || []).slice().reverse().forEach(f => {
+                let badge = f.supplenza ? `<span class="badge-supplenza">SUPPLENZA</span>` : `<span style="background:#E2E8F0; padding:4px 8px; border-radius:4px; font-size:12px;">LEZ. REGOLARE</span>`;
+                let infoOrario = `<br><small style="color:#64748B;">Svolta alla <strong>${f.oraLezione || '1^'} ora</strong> (${f.numOre || 1}h totali)</small>`;
+                body.innerHTML += `<tr><td><code>${f.data.split('-').reverse().join('/')}</code></td><td><strong>${f.classe}</strong></td><td><span style="font-weight:bold;">${f.materia}</span>${infoOrario}</td><td>${f.argomento}</td><td>${badge}</td></tr>`;
             });
         }
 
-        function cancellaFirmaLibera(id) {
-            if(!confirm("Vuoi cancellare questa firma d'istituto?")) return;
-            DB.firmeLibere = DB.firmeLibere.filter(f => f.id !== id);
-            salvaNelTempo();
-            renderFirmeLibere();
+        async function esportaBackup() {
+            const chiave = prompt("Inserisci una Chiave di Sicurezza (Password) per proteggere il backup:\n*ATTENZIONE: Servirà la stessa chiave per ripristinare i dati!*");
+            if (!chiave) return alert("Esportazione annullata. La chiave è obbligatoria per motivi di sicurezza.");
+
+            try {
+                const stringaDati = JSON.stringify(DB);
+                const encoder = new TextEncoder();
+                const dataText = encoder.encode(stringaDati);
+                
+                const salt = window.crypto.getRandomValues(new Uint8Array(16));
+                const iv = window.crypto.getRandomValues(new Uint8Array(12));
+                
+                const passwordKey = await window.crypto.subtle.importKey(
+                    "raw", encoder.encode(chiave), "PBKDF2", false, ["deriveKey"]
+                );
+                
+                const cryptoKey = await window.crypto.subtle.deriveKey(
+                    { name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" },
+                    passwordKey,
+                    { name: "AES-GCM", length: 256 },
+                    false,
+                    ["encrypt"]
+                );
+                
+                const encryptedData = await window.crypto.subtle.encrypt(
+                    { name: "AES-GCM", iv: iv },
+                    cryptoKey,
+                    dataText
+                );
+                
+                const pacchettoBackup = {
+                    salt: btoa(String.fromCharCode(...salt)),
+                    iv: btoa(String.fromCharCode(...iv)),
+                    payload: btoa(String.fromCharCode(...new Uint8Array(encryptedData)))
+                };
+                
+                const blob = new Blob([JSON.stringify(pacchettoBackup)], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `BACKUP_REGISTRO_${currentUserLoggato.toUpperCase()}_${DB.annoAttivo.replace('/','-')}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                alert("🔒 Backup cifrato scaricato con successo! Conserva la tua chiave di sicurezza.");
+            } catch (error) {
+                console.error(error);
+                alert("❌ Errore durante la cifratura dei dati.");
+            }
         }
 
-        // ==========================================
-        // VISTA IMPOSTAZIONI E ACCOUNT
-        // ==========================================
+        function importaBackup(event) {
+            const file = event.target.files[0]; if (!file) return;
+            if(!confirm("Attenzione: caricando questo file sovrascriverai i dati dell'utente corrente. Continuare?")) { event.target.value = ""; return; }
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const importato = JSON.parse(e.target.result);
+                    
+                    if (importato.classi && importato.alunni && importato.voti && !importato.payload) {
+                        DB = importato; if(!DB.agenda) DB.agenda = []; if(!DB.scrutini) DB.scrutini={}; if(!DB.orarioDocente) DB.orarioDocente={};
+                        DB.classi.forEach(cl => { if(cl.coordinatore === undefined) cl.coordinatore = false; });
+                        ordinaClassi(); salvaNelTempo(); inizializzaApp(); openSettingsView();
+                        alert("🎉 Backup ripristinato con successo!");
+                        event.target.value = "";
+                        return;
+                    }
+                    
+                    if (!importato.salt || !importato.iv || !importato.payload) {
+                        return alert("Errore: File non valido o corrotto.");
+                    }
+
+                    const chiave = prompt("Inserisci la Chiave di Sicurezza (Password) impostata al momento del backup:");
+                    if (!chiave) { event.target.value = ""; return; }
+
+                    const salt = new Uint8Array(atob(importato.salt).split("").map(c => c.charCodeAt(0)));
+                    const iv = new Uint8Array(atob(importato.iv).split("").map(c => c.charCodeAt(0)));
+                    const payload = new Uint8Array(atob(importato.payload).split("").map(c => c.charCodeAt(0)));
+                    
+                    const encoder = new TextEncoder();
+                    const passwordKey = await window.crypto.subtle.importKey(
+                        "raw", encoder.encode(chiave), "PBKDF2", false, ["deriveKey"]
+                    );
+                    
+                    const cryptoKey = await window.crypto.subtle.deriveKey(
+                        { name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" },
+                        passwordKey,
+                        { name: "AES-GCM", length: 256 },
+                        false,
+                        ["decrypt"]
+                    );
+                    
+                    const decryptedBuffer = await window.crypto.subtle.decrypt(
+                        { name: "AES-GCM", iv: iv },
+                        cryptoKey,
+                        payload
+                    );
+                    
+                    const decoder = new TextDecoder();
+                    DB = JSON.parse(decoder.decode(decryptedBuffer));
+                    if(!DB.agenda) DB.agenda = []; if(!DB.scrutini) DB.scrutini = {}; if(!DB.orarioDocente) DB.orarioDocente = {};
+                    DB.classi.forEach(cl => { if(cl.coordinatore === undefined) cl.coordinatore = false; });
+                    
+                    ordinaClassi(); salvaNelTempo(); inizializzaApp(); openSettingsView();
+                    alert("🔓 Chiave corretta! Dati decifrati e registro ripristinato.");
+                    
+                } catch (err) { 
+                    console.error(err);
+                    alert("❌ Chiave di Sicurezza Errata o file non valido."); 
+                }
+                event.target.value = "";
+            };
+            reader.readAsText(file);
+        }
+
         function openSettingsView() {
             showView('settings-view');
-            document.getElementById('new-class-id').value = "";
-            document.getElementById('new-class-materie').value = "";
+            document.getElementById('set-anno-corrente').innerText = DB.annoAttivo;
+            document.getElementById('panel-passaggio-anno').classList.add('hidden');
+            
+            const selNuova = document.getElementById('set-nuova-classe'); selNuova.innerHTML = "";
+            const classiAttualiIds = DB.classi.map(c => c.id);
+            TUTTE_LE_CLASSI.filter(c => !classiAttualiIds.includes(c)).forEach(c => { selNuova.innerHTML += `<option value="${c}">Classe ${c}</option>`; });
 
-            // Sezione coordinatore
-            const coordWrap = document.getElementById('container-settings-coordinatori');
-            coordWrap.innerHTML = "";
-            if(DB.classi.length === 0) {
-                coordWrap.innerHTML = "<p style='color:#64748B; font-size:13px; margin:0;'>Nessuna classe presente. Creane una qui sotto.</p>";
-            }
-
+            const containerCoord = document.getElementById('container-settings-coordinatori');
+            containerCoord.innerHTML = "";
             DB.classi.forEach(cl => {
-                coordWrap.innerHTML += `
-                    <div style="display:flex; align-items:center; gap:10px; background:white; border:1px solid var(--border-color); padding:8px 12px; border-radius:6px;">
-                        <input type="checkbox" id="set-coord-${cl.id}" ${cl.coordinatore?'checked':''} onchange="aggiornaIncaricoCoordinatore('${cl.id}', this.checked)">
-                        <label for="set-coord-${cl.id}" style="margin:0; cursor:pointer; font-weight:600;">Classe <b>${cl.nome}</b></label>
+                containerCoord.innerHTML += `
+                    <div style="display:flex; align-items:center; justify-content:space-between; background:white; padding:10px 14px; border:1px solid #E2E8F0; border-radius:6px;">
+                        <span>Incarico Coordinamento su: <strong>Classe ${cl.id}</strong></span>
+                        <div class="checkbox-wrapper" style="margin:0; background:${cl.coordinatore?'#FEF3C7':'#F1F5F9'}; border:1px solid ${cl.coordinatore?'#FCD34D':'#CBD5E1'};">
+                            <input type="checkbox" id="set-coord-chk-${cl.id}" ${cl.coordinatore?'checked':''} onchange="toggleCoordinatore('${cl.id}')">
+                            <label for="set-coord-chk-${cl.id}" style="cursor:pointer; color:${cl.coordinatore?'var(--amber-coord)':'#475569'}; font-size:13px;">Docente Coordinatore</label>
+                        </div>
                     </div>`;
             });
 
-            // Lista classi con cancellazione
-            const lista = document.getElementById('set-lista-classi');
-            lista.innerHTML = "";
-            if(DB.classi.length === 0) {
-                lista.innerHTML = "<p style='color:#64748B; font-size:13px;'>Nessuna classe configurata.</p>";
-            }
+            const lista = document.getElementById('set-lista-classi'); lista.innerHTML = "";
             DB.classi.forEach(cl => {
                 let badgeC = cl.coordinatore ? " <span style='color:var(--amber-coord); font-weight:bold;'>(Coordinatore)</span>" : "";
-                lista.innerHTML += `
-                    <div class="class-list-item">
-                        <div><strong>${cl.nome}</strong>${badgeC} - Materie: ${cl.materie.join(', ')}</div>
-                        <button class="btn-danger" onclick="rimuoviClasse('${cl.id}')">🗑 Rimuovi</button>
-                    </div>`;
-            });
-
-            // Checkboxes per cambio anno
-            const pAnnoWrap = document.getElementById('passaggio-classi-checkboxes');
-            pAnnoWrap.innerHTML = "";
-            DB.classi.forEach(cl => {
-                let anNum = parseInt(cl.id.charAt(0));
-                if(anNum < 5) {
-                    pAnnoWrap.innerHTML += `
-                        <div class="checkbox-wrapper" style="margin:0;"><input type="checkbox" id="pass-${cl.id}" checked><label for="pass-${cl.id}" style="cursor:pointer; color:#166534;">Continua a seguire la futura classe di ${cl.nome}</label></div>`;
-                }
+                lista.innerHTML += `<div class="class-list-item"><div><strong>${cl.nome}</strong>${badgeC} - Materie: ${cl.materie.join(', ')}</div><button class="btn-danger" onclick="rimuoviClasse('${cl.id}')">🗑 Rimuovi</button></div>`;
             });
 
             renderSettingsOrarioCompilabile();
-        }
-
-        function aggiornaIncaricoCoordinatore(clId, checkStato) {
-            const clObj = DB.classi.find(c => c.id === clId);
-            if(clObj) {
-                clObj.coordinatore = checkStato;
-                salvaNelTempo();
-                renderElencoClassiAssegnate();
-            }
-        }
-
-        function aggiungiNuovaClasseProfilo() {
-            let id = document.getElementById('new-class-id').value.trim().toUpperCase().replace(/\s+/g, '');
-            let matsText = document.getElementById('new-class-materie').value.trim();
-
-            if(!id || !matsText) return alert("Inserisci codice classe e almeno una materia!");
-
-            if(DB.classi.some(c => c.id === id)) return alert("Questa classe è già configurata nel tuo profilo!");
-
-            let arrayMaterie = matsText.split(',').map(m => m.trim()).filter(m => m.length > 0);
-
-            DB.classi.push({
-                id: id,
-                nome: `Classe ${id}`,
-                materie: arrayMaterie,
-                coordinatore: false
-            });
-
-            if(!DB.alunni[id]) DB.alunni[id] = [];
-
-            ordinaClassi();
-            salvaNelTempo();
-            renderElencoClassiAssegnate();
-            openSettingsView();
-            alert(`Classe ${id} inserita con successo nel tuo profilo docente.`);
-        }
-
-        function rimuoviClasse(id) {
-            if(confirm(`Sei sicuro di voler eliminare definitivamente la Classe ${id}? Verranno persi alunni, voti, scrutini ed appelli di questa classe!`)) {
-                DB.classi = DB.classi.filter(c => c.id !== id);
-                delete DB.alunni[id];
-                
-                // Pulisce anche l'orario settimanale
-                Object.keys(DB.orarioDocente).forEach(k => {
-                    if(DB.orarioDocente[k] === id) delete DB.orarioDocente[k];
-                });
-
-                salvaNelTempo();
-                renderElencoClassiAssegnate();
-                openSettingsView();
-            }
-        }
-
-        function ordinaClassi() {
-            DB.classi.sort((a,b) => a.id.localeCompare(b.id, undefined, {numeric: true, sensitivity: 'base'}));
         }
 
         function renderSettingsOrarioCompilabile() {
@@ -1808,14 +1692,14 @@
                 let riga = `<tr><td style="font-weight:bold; background:#F8FAFC;">${ora}^ Ora</td>`;
                 giorni.forEach(g => {
                     let chiave = `${g}_${ora}`;
-                    let valueSalvato = DB.orarioDocente[chiave] || "";
+                    let valoreSalvato = DB.orarioDocente[chiave] || "";
                     
-                    let selectHtml = `<select id="cell-${gie=chiave}" class="timetable-select"><option value="">- libera -</option>`;
-                    DB.classi.forEach(c => {
-                        selectHtml += `<option value="${c.id}" ${valueSalvato==c.id?'selected':''}>Cl. ${c.id}</option>`;
+                    let opzioniSelect = `<option value="">-- Libero --</option>`;
+                    DB.classi.forEach(cl => {
+                        opzioniSelect += `<option value="${cl.id}" ${valoreSalvato===cl.id?'selected':''}>Classe ${cl.id}</option>`;
                     });
-                    selectHtml += `</select>`;
-                    riga += `<td>${selectHtml}</td>`;
+
+                    riga += `<td><select id="time-select-${chiave}" class="timetable-select">${opzioniSelect}</select></td>`;
                 });
                 riga += `</tr>`;
                 target.innerHTML += riga;
@@ -1824,33 +1708,75 @@
 
         function salvaOrarioDocente() {
             const giorni = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+            DB.orarioDocente = {};
+
             for(let ora=1; ora<=6; ora++) {
                 giorni.forEach(g => {
                     let chiave = `${g}_${ora}`;
-                    let elId = `cell-${gie=chiave}`;
-                    let selectVal = document.getElementById(elId).value;
-                    if(selectVal) {
-                        DB.orarioDocente[chiave] = selectVal;
-                    } else {
-                        delete DB.orarioDocente[chiave];
-                    }
+                    let val = document.getElementById(`time-select-${chiave}`).value;
+                    if(val) DB.orarioDocente[chiave] = val;
                 });
             }
             salvaNelTempo();
-            alert("Orario settimanale salvato con successo!");
-            renderDashboardOrario();
+            alert("Orario settimanale salvato con successo ed applicato alla Dashboard!");
+        }
+
+        function toggleCoordinatore(classeId) {
+            const classeObj = DB.classi.find(c => c.id === classeId);
+            if(classeObj) {
+                classeObj.coordinatore = document.getElementById(`set-coord-chk-${classeId}`).checked;
+                salvaNelTempo();
+                inizializzaApp();
+                openSettingsView();
+            }
+        }
+
+        function aggiungiNuovaClasse() {
+            const clId = document.getElementById('set-nuova-classe').value; const matStr = document.getElementById('set-materie').value;
+            if(!clId || !matStr.trim()) return alert("Specifica le materie!");
+
+            const materieArr = matStr.split(',').map(m => m.trim());
+            DB.classi.push({ id: clId, nome: `Classe ${clId}`, materie: materieArr, coordinatore: false });
+            DB.alunni[clId] = []; 
+            
+            document.getElementById('set-materie').value = "";
+            ordinaClassi(); salvaNelTempo(); inizializzaApp(); openSettingsView();
+        }
+
+        function rimuoviClasse(id) {
+            if(confirm(`Eliminare la classe ${id}? L'operazione non è reversibile e rimuoverà orario, alunni e registrazioni.`)) {
+                DB.classi = DB.classi.filter(c => c.id !== id);
+                delete DB.alunni[id];
+                Object.keys(DB.orarioDocente).forEach(k => {
+                    if(DB.orarioDocente[k] === id) delete DB.orarioDocente[k];
+                });
+                salvaNelTempo(); inizializzaApp(); openSettingsView();
+            }
+        }
+
+        function avviaPassaggioAnno() {
+            document.getElementById('panel-passaggio-anno').classList.remove('hidden');
+            const lista = document.getElementById('list-passaggio-classi'); lista.innerHTML = "";
+            if(DB.classi.length === 0) { lista.innerHTML = "<p>Nessuna classe attiva in elenco.</p>"; return; }
+
+            DB.classi.forEach(cl => {
+                let annoNum = parseInt(cl.id.charAt(0)); let sez = cl.id.substring(1);
+                if(annoNum === 5) {
+                    lista.innerHTML += `<div class="class-list-item"><div><strong>${cl.id}</strong> -> <span style="color:var(--red-fail); font-weight:bold;">Esce dal ciclo (Maturità)</span></div></div>`;
+                } else {
+                    let nextId = (annoNum + 1) + sez;
+                    lista.innerHTML += `<div class="class-list-item" style="background:#F0FDF4; border:1px solid #BBF7D0; margin-bottom:4px;"><div><strong>${cl.id}</strong> diventerà la futura <strong>${nextId}</strong></div><div class="checkbox-wrapper" style="margin:0;"><input type="checkbox" id="pass-${cl.id}" checked><label for="pass-${cl.id}" style="cursor:pointer; color:#166534;">Continua a seguire</label></div></div>`;
+                }
+            });
         }
 
         function confermaPassaggioAnno() {
             if(!confirm("Confermi l'avanzamento d'anno?")) return;
-            let anni = DB.annoAttivo.split('/'); 
-            let nuovoAnnoStr = `${parseInt(anni[0])+1}/${parseInt(anni[1])+1}`;
-            let nuoveClassi = []; 
-            let nuoviAlunni = {};
+            let anni = DB.annoAttivo.split('/'); let nuovoAnnoStr = `${parseInt(anni[0])+1}/${parseInt(anni[1])+1}`;
+            let nuoveClassi = []; let nuoviAlunni = {};
 
             DB.classi.forEach(cl => {
-                let annoNum = parseInt(cl.id.charAt(0)); 
-                let sez = cl.id.substring(1);
+                let annoNum = parseInt(cl.id.charAt(0)); let sez = cl.id.substring(1);
                 if(annoNum < 5) {
                     let chk = document.getElementById(`pass-${cl.id}`);
                     if(chk && chk.checked) {
@@ -1861,139 +1787,11 @@
                 }
             });
 
-            DB.annoAttivo = nuovoAnnoStr; 
-            DB.classi = nuoveClassi; 
-            DB.alunni = nuoviAlunni;
+            DB.annoAttivo = nuovoAnnoStr; DB.classi = nuoveClassi; DB.alunni = nuoviAlunni;
             DB.voti = []; DB.appelli = {}; DB.firme = []; DB.agenda = []; DB.scrutini = {}; DB.orarioDocente = {};
             
-            ordinaClassi();
-            salvaNelTempo();
-            inizializzaApp();
-            document.getElementById('panel-passaggio-anno').classList.add('hidden');
-            showView('dashboard-view');
-            alert(`🎉 Registro aggiornato con successo all'anno scolastico ${nuovoAnnoStr}!`);
-        }
-
-        // ==========================================
-        // STRUMENTI CRITTOGRAFIA & BACKUP (NATIVI)
-        // ==========================================
-        async function generaChiave(password, salt) {
-            const encoder = new TextEncoder();
-            const passwordBuffer = encoder.encode(password);
-            const baseKey = await crypto.subtle.importKey("raw", passwordBuffer, "PBKDF2", false, ["deriveKey"]);
-            return crypto.subtle.deriveKey(
-                { name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" },
-                baseKey,
-                { name: "AES-GCM", length: 256 },
-                false,
-                ["encrypt", "decrypt"]
-            );
-        }
-
-        async function esportaBackup() {
-            const chiaveSicurezza = prompt("Imposta una Chiave di Sicurezza (Password) per proteggere questo backup:\n(Senza di essa non potrai recuperare i dati)");
-            if (!chiaveSicurezza) return;
-
-            try {
-                const encoder = new TextEncoder();
-                const datiString = JSON.stringify(DB);
-                const salt = crypto.getRandomValues(new Uint8Array(16));
-                const iv = crypto.getRandomValues(new Uint8Array(12));
-                const chiaveCifratura = await generaChiave(chiaveSicurezza, salt);
-
-                const payloadCifrato = await crypto.subtle.encrypt(
-                    { name: "AES-GCM", iv: iv },
-                    chiaveCifratura,
-                    encoder.encode(datiString)
-                );
-
-                const backupPacchetto = {
-                    salt: btoa(String.fromCharCode(...salt)),
-                    iv: btoa(String.fromCharCode(...iv)),
-                    payload: btoa(String.fromCharCode(...new Uint8Array(payloadCifrato)))
-                };
-
-                const blob = new Blob([JSON.stringify(backupPacchetto)], { type: "application/json" });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = `Backup_Registro_${currentUserLoggato}_${DB.annoAttivo.replace('/','-')}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                alert("🔒 Backup cifrato esportato con successo! Conserva la tua chiave di sicurezza.");
-            } catch (error) {
-                console.error(error);
-                alert("❌ Errore durante la cifratura dei dati.");
-            }
-        }
-
-        function importaBackup(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            if(!confirm("Attenzione: caricando questo file sovrascriverai i dati dell'utente corrente. Continuare?")) {
-                event.target.value = "";
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                try {
-                    const importato = JSON.parse(e.target.result);
-                    
-                    if (importato.classi && importato.alunni && importato.voti && !importato.payload) {
-                        DB = importato;
-                        if(!DB.agenda) DB.agenda = [];
-                        if(!DB.scrutini) DB.scrutini={};
-                        if(!DB.orarioDocente) DB.orarioDocente={};
-                        DB.classi.forEach(cl => { if(cl.coordinatore === undefined) cl.coordinatore = false; });
-                        ordinaClassi(); salvaNelTempo(); inizializzaApp(); openSettingsView();
-                        alert("🎉 Backup ripristinato con successo!");
-                        event.target.value = "";
-                        return;
-                    }
-
-                    if (!importato.salt || !importato.iv || !importato.payload) {
-                        return alert("Errore: File non valido o corrotto.");
-                    }
-
-                    const chiave = prompt("Inserisci la Chiave di Sicurezza (Password) impostata al momento del backup:");
-                    if (!chiave) { event.target.value = ""; return; }
-
-                    const salt = new Uint8Array(atob(importato.salt).split("").map(c => c.charCodeAt(0)));
-                    const iv = new Uint8Array(atob(importato.iv).split("").map(c => c.charCodeAt(0)));
-                    const payload = new Uint8Array(atob(importato.payload).split("").map(c => c.charCodeAt(0)));
-
-                    const chiaveDecifratura = await generaChiave(chiave, salt);
-                    const decryptedBuffer = await crypto.subtle.decrypt(
-                        { name: "AES-GCM", iv: iv },
-                        chiaveDecifratura,
-                        payload
-                    );
-
-                    const decoder = new TextDecoder();
-                    const datiScompattati = JSON.parse(decoder.decode(decryptedBuffer));
-
-                    DB = datiScompattati;
-                    if(!DB.agenda) DB.agenda = [];
-                    if(!DB.scrutini) DB.scrutini = {};
-                    if(!DB.orarioDocente) DB.orarioDocente = {};
-                    
-                    ordinaClassi();
-                    salvaNelTempo();
-                    inizializzaApp();
-                    openSettingsView();
-
-                    alert("🔓 Backup decifrato e ripristinato con successo nel profilo!");
-                } catch (error) {
-                    console.error(error);
-                    alert("❌ Chiave errata o file corrotto. Ripristino fallito.");
-                }
-                event.target.value = "";
-            };
-            reader.readAsText(file);
+            ordinaClassi(); salvaNelTempo(); inizializzaApp(); showView('dashboard-view');
+            alert(`Registro aggiornato all'A.S. ${nuovoAnnoStr}`);
         }
     </script>
 </body>
