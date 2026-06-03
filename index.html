@@ -173,6 +173,9 @@
         .timetable-select { width: 100%; border: none; background: transparent; font-weight: bold; color: var(--primary-dark); text-align: center; cursor: pointer; }
         .timetable-cell-active { background: #EFF6FF; border: 1px solid #BFDBFE !important; border-radius: 4px; font-weight: bold; color: #1E40AF; cursor: pointer; transition: all 0.2s; font-size: 13px; padding: 8px; }
         .timetable-cell-active:hover { background: #DBEAFE; transform: scale(1.02); }
+
+        .btn-action { background: none; border: none; cursor: pointer; font-size: 14px; padding: 4px 8px; border-radius: 4px; transition: background 0.2s; }
+        .btn-action:hover { background-color: #E2E8F0; }
     </style>
 </head>
 <body>
@@ -580,6 +583,7 @@
                                 <th style="width: 15%;">Data</th>
                                 <th style="width: 25%;">Materia / Ore</th>
                                 <th>Argomento Lezione</th>
+                                <th style="width: 15%; text-align:center;">Azioni</th>
                             </tr>
                         </thead>
                         <tbody id="firme-body"></tbody>
@@ -898,7 +902,7 @@
             container.innerHTML = "";
             
             if(DB.classi.length === 0) {
-                container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #64748B; padding: 20px;">Nessuna classe assegnata. Vai in Impostazioni per aggiungerne una.</p>`;
+                container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #64748B; padding: 20px;">Nessuna classe assegnata. Vai in Impostazioni per aggiurnerne una.</p>`;
             } else {
                 DB.classi.forEach(cl => {
                     let badgeC = cl.coordinatore ? `<span class="badge-coord">👑 Coordinatore</span>` : "";
@@ -1086,10 +1090,21 @@
             const body = document.getElementById('firme-body');
             body.innerHTML = "";
             const filtrate = DB.firme.filter(f => f.classeId === currentClasseId);
-            filtrate.reverse().forEach(f => {
+            filtrate.reverse().forEach((f, idx) => {
+                // Troviamo l'indice reale nell'array globale DB.firme
+                const globalIndex = DB.firme.indexOf(f);
                 let badge = f.supplenza ? `<span class="badge-supplenza">SUPPLENZA</span>` : "";
                 let indicatoriOre = `<br><small style="color:#64748B;">Svolta alla <strong>${f.oraLezione || '1^'} ora</strong>, totale <strong>${f.numOre || '1'} ore</strong></small>`;
-                body.innerHTML += `<tr><td><code>${f.data.split('-').reverse().join('/')}</code></td><td><span style="font-weight:600; color:var(--primary-dark);">${f.materia}</span> ${badge} ${indicatoriOre}</td><td>${f.argomento}</td></tr>`;
+                body.innerHTML += `
+                    <tr>
+                        <td><code>${f.data.split('-').reverse().join('/')}</code></td>
+                        <td><span style="font-weight:600; color:var(--primary-dark);">${f.materia}</span> ${badge} ${indicatoriOre}</td>
+                        <td>${f.argomento}</td>
+                        <td style="text-align:center;">
+                            <button class="btn-action" onclick="modificaFirma(${globalIndex})" title="Modifica firma">✏️</button>
+                            <button class="btn-action" style="color:var(--red-fail);" onclick="eliminaFirma(${globalIndex})" title="Elimina firma">🗑</button>
+                        </td>
+                    </tr>`;
             });
         }
 
@@ -1106,6 +1121,46 @@
             document.getElementById('firma-argomento').value = "";
             document.getElementById('firma-supplenza').checked = false;
             salvaNelTempo(); renderFirme();
+        }
+
+        function modificaFirma(index) {
+            const firma = DB.firme[index];
+            if (!firma) return;
+
+            const nuovaData = prompt("Modifica la Data (AAAA-MM-GG):", fira.data || firma.data);
+            if (nuovaData === null) return; // Annullato
+
+            const nuoveOre = prompt("Modifica Numero Ore (1, 2, 3 o 4):", firma.numOre || "1");
+            if (nuoveOre === null) return;
+
+            const nuovaOraLezione = prompt("Modifica l'ora di inizio lezione (es: 1^, 2^, 3^...):", firma.oraLezione || "1^");
+            if (nuovaOraLezione === null) return;
+
+            const nuovoArgomento = prompt("Modifica l'argomento trattato:", firma.argomento);
+            if (nuovoArgomento === null) return;
+
+            if (!nuovaData.trim() || !nuovoArgomento.trim()) {
+                alert("La data e l'argomento non possono essere vuoti!");
+                return;
+            }
+
+            firma.data = nuovaData.trim();
+            firma.numOre = nuoveOre.trim();
+            firma.oraLezione = nuovaOraLezione.trim();
+            firma.argomento = nuovoArgomento.trim();
+
+            salvaNelTempo();
+            renderFirme();
+            alert("Firma modificata con successo!");
+        }
+
+        function eliminaFirma(index) {
+            if (confirm("Sei sicuro di voler eliminare definitivamente questa firma di lezione?")) {
+                DB.firme.splice(index, 1);
+                salvaNelTempo();
+                renderFirme();
+                alert("Firma eliminata con successo.");
+            }
         }
 
         function renderVoti() {
@@ -1280,7 +1335,6 @@
             renderGestioneAlunni();
         }
 
-        // NUOVA FUNZIONE PER L'INSERIMENTO MULTIPLO
         function aggiungiAlunniMultipliInClasse() {
             const textarea = document.getElementById('nuovi-alunni-multipli');
             const testo = textarea.value.trim();
@@ -1289,9 +1343,7 @@
 
             if(!DB.alunni[currentClasseId]) DB.alunni[currentClasseId] = [];
 
-            // Separa il testo per ogni riga, pulisce gli spazi vuoti e rimuove righe bianche
             const righe = testo.split('\n').map(r => r.trim()).filter(r => r.length > 0);
-            
             let contatoreInseriti = 0;
 
             righe.forEach(nomeAlunno => {
@@ -1302,10 +1354,9 @@
                 contatoreInseriti++;
             });
 
-            // Ordina alfabeticamente l'intera classe dopo il caricamento massivo
             DB.alunni[currentClasseId].sort((a,b) => a.nome.localeCompare(b.nome));
             
-            textarea.value = ""; // Svuota l'interfaccia
+            textarea.value = ""; 
             salvaNelTempo();
             renderGestioneAlunni();
             alert(`Inserimento completato! Aggiunti correttamente ${contatoreInseriti} nuovi alunni.`);
