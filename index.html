@@ -836,27 +836,32 @@
         }
 
         async function login() {
-            const usr = document.getElementById('username').value.trim().toLowerCase();
-            const psw = document.getElementById('password').value;
-            const dataSess = document.getElementById('login-session-date').value;
+    const userIn = document.getElementById('username').value;
+    const passIn = document.getElementById('password').value;
 
-            if(!dataSess) return alert("Inserisci la data di sessione di lavoro!");
-            
-            // Prova a scaricare i dati più aggiornati dal server prima di validare
-            await scaricaDaSupabase(usr);
+    // 1. Chiediamo direttamente al database di Supabase se esiste il professore
+    const { data, error } = await window.supabase
+        .from('professori') // Assicurati che la tabella su Supabase si chiami così
+        .select('*')
+        .eq('username', userIn)
+        .eq('password', passIn)
+        .single();
 
-            const utente = DB.utenti[usr];
-            if(utente && utente.password === psw) {
-                document.getElementById('login-error').style.display = "none";
-                utenteConnesso = utente;
-                utenteConnesso.dataLavoro = dataSess;
-                
-                localStorage.setItem('classeviva_docente_session', JSON.stringify({username: usr, dataLavoro: dataSess}));
-                avviaApplicazioneDettaglio();
-            } else {
-                document.getElementById('login-error').style.display = "block";
-            }
-        }
+    // 2. Se Supabase non trova nulla o dà errore, l'accesso fallisce
+    if (error || !data) {
+        document.getElementById('login-error').style.display = 'block';
+        alert("Credenziali errate o utente non trovato nel database.");
+    } else {
+        // 3. Se lo trova, puliamo l'errore e carichiamo i dati dell'account
+        document.getElementById('login-error').style.display = 'none';
+        
+        // Impostiamo il nome del docente connesso usando i dati presi dal cloud
+        document.getElementById('label-nome-docente-connesso').innerText = data.nominativo || data.username;
+        
+        // Sblocchiamo l'applicazione per mostrare il registro
+        inizializzaApp(); 
+    }
+}
 
         function logout() {
             utenteConnesso = null;
