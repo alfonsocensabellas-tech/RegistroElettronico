@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    const SUPABASE_URL = "https://bmkdfagvjfhviizshfkg.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJta2RmYWd2amZodmlpenNoZmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzODUxNzUsImV4cCI6MjA5NTk2MTE3NX0.wfh8Z72RFNPAeyVN-JdSof95nsKx4s1cjh6kReMH-Ig";
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro Elettronico Docenti - ClasseViva</title>
@@ -836,9 +840,20 @@
             }
         }
 
-        function salvaNelTempo() {
-            if(currentUser && DB) {
+        async function salvaNelTempo() {
+            if (currentUser && DB) {
                 localStorage.setItem(`cv_database_user_${currentUser.username}`, JSON.stringify(DB));
+                console.log("Sincronizzazione Cloud in corso...");
+                const { error } = await supabase
+                    .from('registri_utenti')
+                    .update({ dati_registro: DB })
+                    .eq('username', currentUser.username.toLowerCase().trim());
+
+                if (error) {
+                    console.error("Errore di sincronizzazione Cloud:", error);
+                } else {
+                    console.log("Dati sincronizzati sul Cloud con successo!");
+                }
             }
         }
 
