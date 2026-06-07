@@ -1492,20 +1492,45 @@
             if (viewId === 'classes-view') renderElencoClassiAssegnate();
         }
 
-       async function salvaSulDatabase() {
+       // --- FUNZIONE PER SALVARE (Chiama questa quando modifichi il registro) ---
+async function salvaSulDatabase() {
+    console.log("Salvataggio in corso...");
     try {
         const { data, error } = await window.supabase
-            .from('dati_registro') // Assicurati che il nome sia quello esatto che hai creato su Supabase
-            .upsert({ id: 'configurazione_unica', dati: DB }); // 'upsert' aggiorna se esiste, crea se non esiste
+            .from('registro_dati') // Nome tabella dallo screenshot
+            .upsert({ 
+                id: 'configurazione_unica', // Identificativo fisso
+                data: DB                    // Salva tutto l'oggetto DB nella colonna 'data'
+            });
 
         if (error) throw error;
-        console.log("Salvataggio su database avvenuto!");
+        console.log("✅ Dati salvati con successo su Supabase!");
     } catch (err) {
-        console.error("Errore di salvataggio:", err);
-        alert("Impossibile salvare sul database. Controlla la connessione.");
+        console.error("❌ Errore durante il salvataggio:", err.message);
+        alert("Errore salvataggio: " + err.message);
     }
 }
 
+// --- FUNZIONE PER CARICARE (Chiama questa all'avvio) ---
+async function caricaDalDatabase() {
+    try {
+        const { data, error } = await window.supabase
+            .from('registro_dati')
+            .select('data') // Legge solo la colonna 'data'
+            .eq('id', 'configurazione_unica')
+            .single();
+
+        if (error && error.code !== 'PGRST116') throw error; 
+        
+        if (data) {
+            DB = data.data; // Carica il JSON dentro la variabile DB
+            console.log("📂 Dati caricati correttamente da Supabase!");
+        }
+    } catch (err) {
+        console.error("❌ Errore durante il caricamento:", err.message);
+    }
+}
+        
         // FUNZIONE DI SINCRONIZZAZIONE ESENTE DA RICHIAMI A SALVANELTEMPO
         async function sincronizzaSupabase() {
             if (!window.supabase || !utenteConnesso) return;
