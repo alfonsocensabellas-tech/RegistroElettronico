@@ -813,15 +813,24 @@
                 let datiRegistroCaricati;
 
                 if (!utenteCloud) {
-                    // SE L'UTENTE NON ESISTE SUL CLOUD: Lo creiamo al volo con la password inserita
                     console.log("Nuovo utente rilevato. Creazione account cloud...");
                     
                     prof = { username: u, password: p };
                     
-                    // Struttura iniziale pulita del database (inclusi i campi speciali che usa la tua app)
+                    // STRUTTURA INIZIALE ESATTA DEL TUO REGISTRO ORIGINALE
                     datiRegistroCaricati = {
-                        studenti: [], classi: [], materie: [], orario: {}, registroGiornaliero: {}, note: [],
-                        agenda: [], scrutini: {}, orarioDocente: {}
+                        classi: {},
+                        orario: {},
+                        orarioDocente: {},
+                        registroGiornaliero: {},
+                        lezioni: {},
+                        giustificazioni: {},
+                        note: {},
+                        compiti: {},
+                        agenda: [],
+                        scrutini: {},
+                        colloqui: [],
+                        comunicazioni: []
                     };
 
                     // Salviamo il nuovo utente online
@@ -847,23 +856,31 @@
                 currentUser = prof;
                 DB = datiRegistroCaricati;
 
-                // 3. Salviamo comunque una copia locale nel browser per sicurezza/velocità futura
+                // 3. Garantiamo che tutte le strutture dati interne esistano (Fix anti-blocco)
+                if(!DB.classi) DB.classi = {};
+                if(!DB.orario) DB.orario = {};
+                if(!DB.orarioDocente) DB.orarioDocente = {};
+                if(!DB.registroGiornaliero) DB.registroGiornaliero = {};
+                if(!DB.lezioni) DB.lezioni = {};
+                if(!DB.giustificazioni) DB.giustificazioni = {};
+                if(!DB.note) DB.note = {};
+                if(!DB.compiti) DB.compiti = {};
+                if(!DB.agenda) DB.agenda = [];
+                if(!DB.scrutini) DB.scrutini = {};
+                if(!DB.colloqui) DB.colloqui = [];
+                if(!DB.comunicazioni) DB.comunicazioni = [];
+
+                // 4. Salviamo una copia locale di backup nel browser
                 localStorage.setItem(`cv_user_auth_${u}`, JSON.stringify(prof));
                 localStorage.setItem('cv_last_user', u);
                 localStorage.setItem(`cv_last_date_${u}`, d);
                 localStorage.setItem(`cv_database_user_${u}`, JSON.stringify(DB));
 
-                // 4. Controlli di sicurezza sulle tabelle della tua app
-                if(!DB.agenda) DB.agenda = [];
-                if(!DB.scrutini) DB.scrutini = {};
-                if(!DB.orarioDocente) DB.orarioDocente = {};
-
-                // 5. Nascondiamo l'errore (se era presente) e puliamo i campi di testo
+                // 5. Puliamo la schermata di login e carichiamo l'app originale
                 document.getElementById('login-error').style.display = 'none';
                 document.getElementById('username').value = "";
                 document.getElementById('password').value = "";
 
-                // 6. Avviamo l'interfaccia grafica del registro
                 inizializzaApp();
                 showView('dashboard-view');
                 document.getElementById('login-view').classList.add('hidden');
@@ -871,7 +888,7 @@
 
             } catch (error) {
                 console.error("Errore durante il login:", error);
-                alert("Errore di connessione al database Cloud. Controlla internet o le chiavi inserite.");
+                alert("Errore di connessione al database Cloud.");
             }
         }
 
@@ -891,17 +908,17 @@
 
         async function salvaNelTempo() {
             if (currentUser && DB) {
+                // Salva copia locale per sicurezza
                 localStorage.setItem(`cv_database_user_${currentUser.username}`, JSON.stringify(DB));
-                console.log("Sincronizzazione Cloud in corso...");
+                
+                // Sincronizza su Supabase Cloud
                 const { error } = await supabase
                     .from('registri_utenti')
                     .update({ dati_registro: DB })
                     .eq('username', currentUser.username.toLowerCase().trim());
 
                 if (error) {
-                    console.error("Errore di sincronizzazione Cloud:", error);
-                } else {
-                    console.log("Dati sincronizzati sul Cloud con successo!");
+                    console.error("Errore Cloud:", error);
                 }
             }
         }
