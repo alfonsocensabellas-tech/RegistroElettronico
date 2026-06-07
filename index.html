@@ -1492,29 +1492,19 @@
             if (viewId === 'classes-view') renderElencoClassiAssegnate();
         }
 
-        // SALVATAGGIO POTENZIATO CON COPERTURA ANTI LOOP CLOUD
-        function salvaNelTempo() {
-            if (!DB) return;
-            
-            // 1. Scrittura immediata nella memoria del browser corrente
-            localStorage.setItem('classeviva_docente_db', JSON.stringify(DB));
-            console.log("Salvataggio locale eseguito.");
+       async function salvaSulDatabase() {
+    try {
+        const { data, error } = await window.supabase
+            .from('dati_registro') // Assicurati che il nome sia quello esatto che hai creato su Supabase
+            .upsert({ id: 'configurazione_unica', dati: DB }); // 'upsert' aggiorna se esiste, crea se non esiste
 
-            // 2. Invio automatico a Supabase evitando i crash di chiamata circolare
-            if (utenteConnesso && utenteConnesso.username && !inSincronizzazione) {
-                inSincronizzazione = true;
-                
-                sincronizzaSupabase()
-                    .then(() => {
-                        console.log("Cloud auto-sync completato.");
-                        inSincronizzazione = false;
-                    })
-                    .catch(err => {
-                        console.error("Errore auto-sync cloud:", err);
-                        inSincronizzazione = false;
-                    });
-            }
-        }
+        if (error) throw error;
+        console.log("Salvataggio su database avvenuto!");
+    } catch (err) {
+        console.error("Errore di salvataggio:", err);
+        alert("Impossibile salvare sul database. Controlla la connessione.");
+    }
+}
 
         // FUNZIONE DI SINCRONIZZAZIONE ESENTE DA RICHIAMI A SALVANELTEMPO
         async function sincronizzaSupabase() {
