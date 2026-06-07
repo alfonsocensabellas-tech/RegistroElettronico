@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-  window.SUPABASE_URL = "https://bmkdfagvjfhviizshfkg.supabase.co";
-  window.SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJta2RmYWd2amZodmlpenNoZmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzODUxNzUsImV4cCI6MjA5NTk2MTE3NX0.wfh8Z72RFNPAeyVN-JdSof95nsKx4s1cjh6kReMH-Ig";
-  
-  // Questa riga crea il collegamento ufficiale
-  window.supabase = supabase.createClient(window.SUPABASE_URL, window.SUPABASE_KEY);
-</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro Elettronico Docenti - ClasseViva</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // Configurazione Parametri del Database Cloud Supabase
+        window.SUPABASE_URL = "https://bmkdfagvjfhviizshfkg.supabase.co";
+        window.SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJta2RmYWd2amZodmlpenNoZmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzODUxNzUsImV4cCI6MjA5NTk2MTE3NX0.wfh8Z72RFNPAeyVN-JdSof95nsKx4s1cjh6kReMH-Ig";
+        
+        // Creazione e Inizializzazione del collegamento ufficiale
+        window.supabase = supabase.createClient(window.SUPABASE_URL, window.SUPABASE_KEY);
+    </script>
+    
     <style>
         /* === VARIABILI STILE === */
         :root {
@@ -44,148 +47,741 @@
 
         /* === LOGIN VIEW === */
         #login-view {
-            display: flex; justify-content: center; align-items: center; height: 100vh;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh;
             background: linear-gradient(135deg, var(--light-red) 0%, #E2E8F0 100%);
         }
 
         .login-box {
-            background: white; padding: 35px 30px; border-radius: var(--radius);
-            box-shadow: var(--shadow-md); text-align: center; width: 350px;
+            background: white; 
+            padding: 35px 30px; 
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md); 
+            text-align: center; 
+            width: 350px;
             border-top: 6px solid var(--primary-red);
         }
 
-        .login-box h2 { color: var(--primary-red); margin-top: 0; margin-bottom: 20px; font-weight: 700; }
-        .login-box input, .login-box select { width: 90%; padding: 12px; margin: 8px 0; border: 1px solid var(--border-color); border-radius: 6px; font-size: 15px; }
-        .login-box input:focus { outline: none; border-color: var(--primary-red); }
+        .login-box h2 { 
+            color: var(--primary-red); 
+            margin-top: 0; 
+            margin-bottom: 20px; 
+            font-weight: 700; 
+        }
+        
+        .login-box input, .login-box select { 
+            width: 90%; 
+            padding: 12px; 
+            margin: 8px 0; 
+            border: 1px solid var(--border-color); 
+            border-radius: 6px; 
+            font-size: 15px; 
+        }
+        
+        .login-box input:focus { 
+            outline: none; 
+            border-color: var(--primary-red); 
+        }
 
         .session-date-box {
-            background: #F1F5F9; padding: 12px; border-radius: 8px; margin: 15px 0; border: 1px dashed #CBD5E1; text-align: left;
+            background: #F1F5F9; 
+            padding: 12px; 
+            border-radius: 8px; 
+            margin: 15px 0; 
+            border: 1px dashed #CBD5E1; 
+            text-align: left;
         }
-        .session-date-box label { display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 5px; }
+        
+        .session-date-box label { 
+            display: block; 
+            font-size: 12px; 
+            font-weight: 700; 
+            color: #475569; 
+            margin-bottom: 5px; 
+        }
 
         .btn-primary {
-            background-color: var(--primary-red); color: white; border: none; padding: 12px 20px;
-            cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 15px; width: 100%;
-            margin-top: 10px; transition: background 0.2s;
+            background-color: var(--primary-red); 
+            color: white; 
+            border: none; 
+            padding: 12px 20px;
+            cursor: pointer; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            font-size: 15px; 
+            width: 100%;
+            margin-top: 10px; 
+            transition: background 0.2s;
         }
-        .btn-primary:hover { background-color: var(--primary-dark); }
-        .btn-secondary { background-color: #64748B; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; }
-        .btn-secondary:hover { background-color: #475569; }
-        .btn-danger { background-color: var(--red-fail); color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;}
+        
+        .btn-primary:hover { 
+            background-color: var(--primary-dark); 
+        }
+        
+        .btn-secondary { 
+            background-color: #64748B; 
+            color: white; 
+            border: none; 
+            padding: 8px 16px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-size: 14px; 
+        }
+        
+        .btn-secondary:hover { 
+            background-color: #475569; 
+        }
+        
+        .btn-danger { 
+            background-color: var(--red-fail); 
+            color: white; 
+            border: none; 
+            padding: 6px 12px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 12px; 
+            font-weight: 600;
+        }
 
         /* === LINK SWITCH LOGIN/REGISTRAZIONE === */
-        .switch-auth-link { margin-top: 15px; font-size: 14px; color: #475569; }
-        .switch-auth-link span { color: var(--primary-red); font-weight: bold; cursor: pointer; text-decoration: underline; }
+        .switch-auth-link { 
+            margin-top: 15px; 
+            font-size: 14px; 
+            color: #475569; 
+        }
+        
+        .switch-auth-link span { 
+            color: var(--primary-red); 
+            font-weight: bold; 
+            cursor: pointer; 
+            text-decoration: underline; 
+        }
 
         /* === APP LAYOUT === */
-        header { background-color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm); border-bottom: 1px solid var(--border-color); }
-        header #user-info { font-weight: 600; font-size: 16px; display: flex; align-items: center; flex-wrap: wrap; gap: 15px; }
-        .badge-date-top { background: #EDF2F7; padding: 4px 10px; border-radius: 20px; font-size: 13px; color: var(--primary-dark); border: 1px solid #CBD5E1; }
+        header { 
+            background-color: white; 
+            padding: 15px 30px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: var(--shadow-sm); 
+            border-bottom: 1px solid var(--border-color); 
+        }
+        
+        header #user-info { 
+            font-weight: 600; 
+            font-size: 16px; 
+            display: flex; 
+            align-items: center; 
+            flex-wrap: wrap; 
+            gap: 15px; 
+        }
+        
+        .badge-date-top { 
+            background: #EDF2F7; 
+            padding: 4px 10px; 
+            border-radius: 20px; 
+            font-size: 13px; 
+            color: var(--primary-dark); 
+            border: 1px solid #CBD5E1; 
+        }
 
-        .logout-btn { background: none; border: 1px solid var(--primary-red); color: var(--primary-red); padding: 6px 14px; cursor: pointer; border-radius: 6px; font-weight: 600; transition: all 0.2s; }
-        .logout-btn:hover { background: var(--primary-red); color: white; }
+        .logout-btn { 
+            background: none; 
+            border: 1px solid var(--primary-red); 
+            color: var(--primary-red); 
+            padding: 6px 14px; 
+            cursor: pointer; 
+            border-radius: 6px; 
+            font-weight: 600; 
+            transition: all 0.2s; 
+        }
+        
+        .logout-btn:hover { 
+            background: var(--primary-red); 
+            color: white; 
+        }
 
-        main { padding: 30px; max-width: 1250px; margin: auto; }
-        h2 { font-weight: 700; color: #1E293B; margin-bottom: 25px; }
-        h3 { font-weight: 600; color: #334155; margin-top: 20px; }
+        main { 
+            padding: 30px; 
+            max-width: 1250px; 
+            margin: auto; 
+        }
+        
+        h2 { 
+            font-weight: 700; 
+            color: #1E293B; 
+            margin-bottom: 25px; 
+        }
+        
+        h3 { 
+            font-weight: 600; 
+            color: #334155; 
+            margin-top: 20px; 
+        }
 
         /* === CARDS === */
-        .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-        .menu-card { background: white; padding: 25px 20px; border-radius: var(--radius); text-align: center; cursor: pointer; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); transition: all 0.25s ease; display: flex; flex-direction: column; justify-content: center; position: relative; }
-        .menu-card:hover:not(.disabled) { transform: translateY(-4px); border-color: var(--primary-red); box-shadow: var(--shadow-md); }
-        .menu-card h3 { margin: 0 0 10px 0; color: #1E293B; font-size: 18px; }
-        .menu-card p { margin: 0; color: #64748B; font-size: 14px; }
+        .menu-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+            gap: 20px; 
+        }
         
-        .card-supplenza { background-color: #F0FDF4; border-color: #BBF7D0; }
-        .card-supplenza h3 { color: #166534; }
+        .menu-card { 
+            background: white; 
+            padding: 25px 20px; 
+            border-radius: var(--radius); 
+            text-align: center; 
+            cursor: pointer; 
+            border: 1px solid var(--border-color); 
+            box-shadow: var(--shadow-sm); 
+            transition: all 0.25s ease; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            position: relative; 
+        }
+        
+        .menu-card:hover:not(.disabled) { 
+            transform: translateY(-4px); 
+            border-color: var(--primary-red); 
+            box-shadow: var(--shadow-md); 
+        }
+        
+        .menu-card h3 { 
+            margin: 0 0 10px 0; 
+            color: #1E293B; 
+            font-size: 18px; 
+        }
+        
+        .menu-card p { 
+            margin: 0; 
+            color: #64748B; 
+            font-size: 14px; 
+        }
+        
+        .card-supplenza { 
+            background-color: #F0FDF4; 
+            border-color: #BBF7D0; 
+        }
+        
+        .card-supplenza h3 { 
+            color: #166534; 
+        }
 
         /* === BADGE COORDINATORE === */
-        .badge-coord { position: absolute; top: 10px; right: 10px; background-color: var(--amber-coord); color: white; font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .banner-coord-dettaglio { background-color: var(--amber-bg); border: 1px solid #FCD34D; color: #92400E; padding: 10px 15px; border-radius: 8px; margin-bottom: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; font-size: 14px; }
+        .badge-coord { 
+            position: absolute; 
+            top: 10px; 
+            right: 10px; 
+            background-color: var(--amber-coord); 
+            color: white; 
+            font-size: 10px; 
+            font-weight: bold; 
+            padding: 3px 8px; 
+            border-radius: 20px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px; 
+        }
+        
+        .banner-coord-dettaglio { 
+            background-color: var(--amber-bg); 
+            border: 1px solid #FCD34D; 
+            color: #92400E; 
+            padding: 10px 15px; 
+            border-radius: 8px; 
+            margin-bottom: 15px; 
+            font-weight: 600; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            font-size: 14px; 
+        }
 
         /* === TABS CLASSE === */
-        .tabs { display: flex; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid var(--border-color); margin-bottom: 25px; }
-        .tab-btn { padding: 12px 24px; cursor: pointer; border: none; background: none; font-weight: 600; color: #64748B; font-size: 15px; position: relative; transition: color 0.2s; }
-        .tab-btn:hover, .tab-btn.active { color: var(--primary-red); }
-        .tab-btn.active::after { content: ""; position: absolute; bottom: -2px; left: 0; width: 100%; height: 3px; background-color: var(--primary-red); border-radius: 3px; }
-        .tab-content { display: none; background: white; padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); }
-        .tab-content.active { display: block; }
+        .tabs { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 10px; 
+            border-bottom: 2px solid var(--border-color); 
+            margin-bottom: 25px; 
+        }
+        
+        .tab-btn { 
+            padding: 12px 24px; 
+            cursor: pointer; 
+            border: none; 
+            background: none; 
+            font-weight: 600; 
+            color: #64748B; 
+            font-size: 15px; 
+            position: relative; 
+            transition: color 0.2s; 
+        }
+        
+        .tab-btn:hover, .tab-btn.active { 
+            color: var(--primary-red); 
+        }
+        
+        .tab-btn.active::after { 
+            content: ""; 
+            position: absolute; 
+            bottom: -2px; 
+            left: 0; 
+            width: 100%; 
+            height: 3px; 
+            background-color: var(--primary-red); 
+            border-radius: 3px; 
+        }
+        
+        .tab-content { 
+            display: none; 
+            background: white; 
+            padding: 25px; 
+            border-radius: var(--radius); 
+            box-shadow: var(--shadow-sm); 
+            border: 1px solid var(--border-color); 
+        }
+        
+        .tab-content.active { 
+            display: block; 
+        }
 
         /* === BARRA SELEZIONE MATERIA === */
-        .materia-selector-wrapper { background: #E2E8F0; padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; }
-        .select-materia-main { padding: 8px 16px; border-radius: 6px; font-weight: 600; border: 2px solid var(--primary-red); background-color: white; color: var(--primary-dark); }
+        .materia-selector-wrapper { 
+            background: #E2E8F0; 
+            padding: 12px 20px; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+        }
+        
+        .select-materia-main { 
+            padding: 8px 16px; 
+            border-radius: 6px; 
+            font-weight: 600; 
+            border: 2px solid var(--primary-red); 
+            background-color: white; 
+            color: var(--primary-dark); 
+        }
 
         /* === STRUMENTI FILTRO AGENDA === */
-        .agenda-filters { background: #F8FAFC; border: 1px solid var(--border-color); padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
-        .filter-pill-container { display: flex; gap: 6px; }
-        .filter-pill { background: white; border: 1px solid #CBD5E1; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; color: #475569; transition: all 0.15s; }
-        .filter-pill:hover { background: #F1F5F9; }
-        .filter-pill.active { background: var(--primary-red); color: white; border-color: var(--primary-red); }
+        .agenda-filters { 
+            background: #F8FAFC; 
+            border: 1px solid var(--border-color); 
+            padding: 15px 20px; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+            display: flex; 
+            gap: 15px; 
+            align-items: center; 
+            flex-wrap: wrap; 
+        }
+        
+        .filter-pill-container { 
+            display: flex; 
+            gap: 6px; 
+        }
+        
+        .filter-pill { 
+            background: white; 
+            border: 1px solid #CBD5E1; 
+            padding: 6px 14px; 
+            border-radius: 20px; 
+            font-size: 13px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            color: #475569; 
+            transition: all 0.15s; 
+        }
+        
+        .filter-pill:hover { 
+            background: #F1F5F9; 
+        }
+        
+        .filter-pill.active { 
+            background: var(--primary-red); 
+            color: white; 
+            border-color: var(--primary-red); 
+        }
 
         /* === STRUTTURA CALENDARIO === */
-        .calendar-container { background: white; border: 1px solid var(--border-color); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); margin-bottom: 20px; }
-        .calendar-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--light-grey); border-bottom: 1px solid var(--border-color); }
-        .calendar-grid { display: grid; width: 100%; border-collapse: collapse; }
-        .calendar-grid-header { display: grid; grid-template-columns: repeat(7, 1fr); background: #EDF2F7; text-align: center; font-weight: 600; font-size: 13px; color: #475569; padding: 10px 0; border-bottom: 1px solid var(--border-color); }
-        .calendar-days { display: grid; grid-template-columns: repeat(7, 1fr); }
+        .calendar-container { 
+            background: white; 
+            border: 1px solid var(--border-color); 
+            border-radius: var(--radius); 
+            overflow: hidden; 
+            box-shadow: var(--shadow-sm); 
+            margin-bottom: 20px; 
+        }
         
-        .calendar-day-cell { min-height: 120px; max-height: 160px; padding: 8px; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); background: white; position: relative; display: flex; flex-direction: column; overflow: hidden; }
-        .calendar-day-cell:nth-child(7n) { border-right: none; }
-        .calendar-day-cell.other-month { background: #F8FAFC; color: #94A3B8; }
-        .calendar-day-cell.today-cell { background: #FFF5F5; border: 2px solid var(--primary-red); z-index: 1; }
-        .calendar-day-num { font-weight: 700; font-size: 14px; margin-bottom: 5px; display: inline-block; }
-        .calendar-events-wrap { display: flex; flex-direction: column; gap: 4px; overflow-y: auto; flex-grow: 1; padding-right: 2px; }
-        .calendar-event-badge { font-size: 11px; padding: 3px 6px; border-radius: 4px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; color: white; min-height: 18px; display: block; text-align: left; }
+        .calendar-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 15px 20px; 
+            background: var(--light-grey); 
+            border-bottom: 1px solid var(--border-color); 
+        }
         
-        .calendar-view-panel { display: flex; flex-direction: column; gap: 10px; padding: 15px; }
-        .calendar-row-item { display: flex; border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 8px; overflow: hidden; background: white; }
-        .calendar-row-date { width: 120px; background: #F1F5F9; display: flex; flex-direction: column; justify-content: center; align-items: center; font-weight: bold; border-right: 1px solid var(--border-color); font-size: 14px; padding: 10px; }
-        .calendar-row-content { padding: 12px; flex-grow: 1; }
+        .calendar-grid { 
+            display: grid; 
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+        
+        .calendar-grid-header { 
+            display: grid; 
+            grid-template-columns: repeat(7, 1fr); 
+            background: #EDF2F7; 
+            text-align: center; 
+            font-weight: 600; 
+            font-size: 13px; 
+            color: #475569; 
+            padding: 10px 0; 
+            border-bottom: 1px solid var(--border-color); 
+        }
+        
+        .calendar-days { 
+            display: grid; 
+            grid-template-columns: repeat(7, 1fr); 
+        }
+        
+        .calendar-day-cell { 
+            min-height: 120px; 
+            max-height: 160px; 
+            padding: 8px; 
+            border-right: 1px solid var(--border-color); 
+            border-bottom: 1px solid var(--border-color); 
+            background: white; 
+            position: relative; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+        }
+        
+        .calendar-day-cell:nth-child(7n) { 
+            border-right: none; 
+        }
+        
+        .calendar-day-cell.other-month { 
+            background: #F8FAFC; 
+            color: #94A3B8; 
+        }
+        
+        .calendar-day-cell.today-cell { 
+            background: #FFF5F5; 
+            border: 2px solid var(--primary-red); 
+            z-index: 1; 
+        }
+        
+        .calendar-day-num { 
+            font-weight: 700; 
+            font-size: 14px; 
+            margin-bottom: 5px; 
+            display: inline-block; 
+        }
+        
+        .calendar-events-wrap { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 4px; 
+            overflow-y: auto; 
+            flex-grow: 1; 
+            padding-right: 2px; 
+        }
+        
+        .calendar-event-badge { 
+            font-size: 11px; 
+            padding: 3px 6px; 
+            border-radius: 4px; 
+            font-weight: 600; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap; 
+            cursor: pointer; 
+            color: white; 
+            min-height: 18px; 
+            display: block; 
+            text-align: left; 
+        }
+        
+        .calendar-view-panel { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            padding: 15px; 
+        }
+        
+        .calendar-row-item { 
+            display: flex; 
+            border: 1px solid var(--border-color); 
+            border-radius: 6px; 
+            margin-bottom: 8px; 
+            overflow: hidden; 
+            background: white; 
+        }
+        
+        .calendar-row-date { 
+            width: 120px; 
+            background: #F1F5F9; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            font-weight: bold; 
+            border-right: 1px solid var(--border-color); 
+            font-size: 14px; 
+            padding: 10px; 
+        }
+        
+        .calendar-row-content { 
+            padding: 12px; 
+            flex-grow: 1; 
+        }
 
         /* === TABELLE === */
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { padding: 14px 16px; border-bottom: 1px solid var(--border-color); text-align: left; }
-        th { background-color: var(--light-grey); color: #475569; font-weight: 600; font-size: 14px; text-transform: uppercase; }
-        tr:hover td { background-color: #F8FAFC; }
-
-        select, input[type="number"], input[type="text"], input[type="date"], input[type="password"] { padding: 8px 12px; border-radius: 6px; border: 1px solid #CBD5E1; font-size: 14px; box-sizing: border-box; }
-        select:focus, input:focus { outline: none; border-color: var(--primary-red); }
-        textarea { width: 100%; height: 80px; padding: 12px; border: 1px solid #CBD5E1; border-radius: 6px; font-family: inherit; resize: vertical; box-sizing: border-box; }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-bottom: 20px; 
+        }
         
-        .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; margin-bottom: 6px; font-weight: 600; color: #334155; font-size: 14px; }
-        .checkbox-wrapper { display: flex; align-items: center; gap: 8px; font-weight: bold; color: var(--primary-dark); background: #FFF5F5; padding: 8px 12px; border-radius: 6px; border: 1px solid #FECACA; width: max-content; margin-bottom: 10px;}
+        th, td { 
+            padding: 14px 16px; 
+            border-bottom: 1px solid var(--border-color); 
+            text-align: left; 
+        }
+        
+        th { 
+            background-color: var(--light-grey); 
+            color: #475569; 
+            font-weight: 600; 
+            font-size: 14px; 
+            text-transform: uppercase; 
+        }
+        
+        tr:hover td { 
+            background-color: #F8FAFC; 
+        }
+
+        select, input[type="number"], input[type="text"], input[type="date"], input[type="password"] { 
+            padding: 8px 12px; 
+            border-radius: 6px; 
+            border: 1px solid #CBD5E1; 
+            font-size: 14px; 
+            box-sizing: border-box; 
+        }
+        
+        select:focus, input:focus { 
+            outline: none; 
+            border-color: var(--primary-red); 
+        }
+        
+        textarea { 
+            width: 100%; 
+            height: 80px; 
+            padding: 12px; 
+            border: 1px solid #CBD5E1; 
+            border-radius: 6px; 
+            font-family: inherit; 
+            resize: vertical; 
+            box-sizing: border-box; 
+        }
+        
+        .form-group { 
+            margin-bottom: 18px; 
+        }
+        
+        .form-group label { 
+            display: block; 
+            margin-bottom: 6px; 
+            font-weight: 600; 
+            color: #334155; 
+            font-size: 14px; 
+        }
+        
+        .checkbox-wrapper { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            font-weight: bold; 
+            color: var(--primary-dark); 
+            background: #FFF5F5; 
+            padding: 8px 12px; 
+            border-radius: 6px; 
+            border: 1px solid #FECACA; 
+            width: max-content; 
+            margin-bottom: 10px;
+        }
 
         /* === VOTI BADGES === */
         .voto-verde { color: var(--green-pass); font-weight: 700; }
         .voto-rosso { color: var(--red-fail); font-weight: 700; }
-        .voto-box { display: inline-flex; align-items: center; gap: 5px; background: #F8FAFC; padding: 5px 10px; border-radius: 6px; margin-right: 6px; margin-bottom: 6px; border: 1px solid var(--border-color); font-size: 14px; transition: all 0.2s; }
-        .voto-box small { color: #64748B; font-weight: 600; }
-        .btn-delete-voto { color: var(--red-fail); cursor: pointer; font-weight: bold; margin-left: 5px; font-size: 12px; border-radius: 50%; }
-        .badge-media { padding: 6px 12px; border-radius: 20px; font-weight: 700; display: inline-block; font-size: 13px; }
+        
+        .voto-box { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 5px; 
+            background: #F8FAFC; 
+            padding: 5px 10px; 
+            border-radius: 6px; 
+            margin-right: 6px; 
+            margin-bottom: 6px; 
+            border: 1px solid var(--border-color); 
+            font-size: 14px; 
+            transition: all 0.2s; 
+        }
+        
+        .voto-box small { 
+            color: #64748B; 
+            font-weight: 600; 
+        }
+        
+        .btn-delete-voto { 
+            color: var(--red-fail); 
+            cursor: pointer; 
+            font-weight: bold; 
+            margin-left: 5px; 
+            font-size: 12px; 
+            border-radius: 50%; 
+        }
+        
+        .badge-media { 
+            padding: 6px 12px; 
+            border-radius: 20px; 
+            font-weight: 700; 
+            display: inline-block; 
+            font-size: 13px; 
+        }
+        
         .badge-media.pass { background-color: var(--green-bg); color: var(--green-pass); }
         .badge-media.fail { background-color: var(--red-bg); color: var(--red-fail); }
-        .badge-supplenza { background-color: #FEF08A; color: #854D0E; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-left: 10px; }
+        
+        .badge-supplenza { 
+            background-color: #FEF08A; 
+            color: #854D0E; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 12px; 
+            font-weight: bold; 
+            margin-left: 10px; 
+        }
 
         .hidden { display: none !important; }
-        .back-btn { margin-bottom: 20px; cursor: pointer; color: var(--primary-red); text-decoration: none; background:none; border:none; font-size:15px; font-weight:600; display:flex; align-items:center; gap:5px;}
+        
+        .back-btn { 
+            margin-bottom: 20px; 
+            cursor: pointer; 
+            color: var(--primary-red); 
+            text-decoration: none; 
+            background: none; 
+            border: none; 
+            font-size: 15px; 
+            font-weight: 600; 
+            display: flex; 
+            align-items: center; 
+            gap: 5px;
+        }
 
         /* === SETTINGS === */
-        .settings-card { background: white; border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: var(--shadow-sm); }
-        .class-list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--border-color); }
-        .class-list-item:last-child { border-bottom: none; }
-        .num-registro { color: #94A3B8; font-weight: normal; font-size: 13px; width: 25px; display: inline-block; text-align: right; margin-right: 8px; }
+        .settings-card { 
+            background: white; 
+            border: 1px solid var(--border-color); 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+            box-shadow: var(--shadow-sm); 
+        }
+        
+        .class-list-item { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 12px; 
+            border-bottom: 1px solid var(--border-color); 
+        }
+        
+        .class-list-item:last-child { 
+            border-bottom: none; 
+        }
+        
+        .num-registro { 
+            color: #94A3B8; 
+            font-weight: normal; 
+            font-size: 13px; 
+            width: 25px; 
+            display: inline-block; 
+            text-align: right; 
+            margin-right: 8px; 
+        }
 
         /* === ORARIO TIMETABLE === */
-        .timetable-table { width: 100%; border: 1px solid var(--border-color); margin-top: 15px; }
-        .timetable-table th { background: var(--dark-grey); color: white; text-align: center; }
-        .timetable-table td { text-align: center; height: 50px; border: 1px solid var(--border-color); width: 15%; padding: 5px; }
-        .timetable-select { width: 100%; border: none; background: transparent; font-weight: bold; color: var(--primary-dark); text-align: center; cursor: pointer; }
-        .timetable-cell-active { background: #EFF6FF; border: 1px solid #BFDBFE !important; border-radius: 4px; font-weight: bold; color: #1E40AF; cursor: pointer; transition: all 0.2s; font-size: 13px; padding: 8px; }
-        .timetable-cell-active:hover { background: #DBEAFE; transform: scale(1.02); }
+        .timetable-table { 
+            width: 100%; 
+            border: 1px solid var(--border-color); 
+            margin-top: 15px; 
+        }
         
-        .action-icon-btn { background: none; border: none; cursor: pointer; font-size: 14px; margin-left: 5px; padding: 2px 5px; border-radius: 4px; }
-        .action-icon-btn:hover { background: #E2E8F0; }
+        .timetable-table th { 
+            background: var(--dark-grey); 
+            color: white; 
+            text-align: center; 
+        }
+        
+        .timetable-table td { 
+            text-align: center; 
+            height: 50px; 
+            border: 1px solid var(--border-color); 
+            width: 15%; 
+            padding: 5px; 
+        }
+        
+        .timetable-select { 
+            width: 100%; 
+            border: none; 
+            background: transparent; 
+            font-weight: bold; 
+            color: var(--primary-dark); 
+            text-align: center; 
+            cursor: pointer; 
+        }
+        
+        .timetable-cell-active { 
+            background: #EFF6FF; 
+            border: 1px solid #BFDBFE !important; 
+            border-radius: 4px; 
+            font-weight: bold; 
+            color: #1E40AF; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            font-size: 13px; 
+            padding: 8px; 
+        }
+        
+        .timetable-cell-active:hover { 
+            background: #DBEAFE; 
+            transform: scale(1.02); 
+        }
+        
+        .action-icon-btn { 
+            background: none; 
+            border: none; 
+            cursor: pointer; 
+            font-size: 14px; 
+            margin-left: 5px; 
+            padding: 2px 5px; 
+            border-radius: 4px; 
+        }
+        
+        .action-icon-btn:hover { 
+            background: #E2E8F0; 
+        }
     </style>
 </head>
 <body>
@@ -495,7 +1091,6 @@
                     <div style="background:#F8FAFC; padding:20px; border-radius:8px; border:1px solid var(--border-color); margin-bottom: 25px;">
                         <h3 style="margin-top:0; color:var(--primary-dark)" id="titolo-form-firma">🖋️ Apponi Firme Giornale di Classe (Singole o Multiple)</h3>
                         <input type="hidden" id="firma-index-modifica" value="">
-                        
                         <div id="container-righe-firme-multiple">
                             <div class="riga-firma-multipla" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #CBD5E1;">
                                 <div class="form-group" style="margin-bottom:0;">
@@ -509,10 +1104,14 @@
                                 <div class="form-group" style="margin-bottom:0;">
                                     <label>Ora</label>
                                     <select class="f-multi-ora">
-                                        <option value="1^ ora">1^ ora</option><option value="2^ ora">2^ ora</option>
-                                        <option value="3^ ora">3^ ora</option><option value="4^ ora">4^ ora</option>
-                                        <option value="5^ ora">5^ ora</option><option value="6^ ora">6^ ora</option>
-                                        <option value="7^ ora">7^ ora</option><option value="8^ ora">8^ ora</option>
+                                        <option value="1^ ora">1^ ora</option>
+                                        <option value="2^ ora">2^ ora</option>
+                                        <option value="3^ ora">3^ ora</option>
+                                        <option value="4^ ora">4^ ora</option>
+                                        <option value="5^ ora">5^ ora</option>
+                                        <option value="6^ ora">6^ ora</option>
+                                        <option value="7^ ora">7^ ora</option>
+                                        <option value="8^ ora">8^ ora</option>
                                     </select>
                                 </div>
                                 <div class="form-group" style="margin-bottom:0; flex-grow: 1;">
@@ -521,29 +1120,23 @@
                                 </div>
                             </div>
                         </div>
-                        
                         <div style="display: flex; gap:10px; margin-top: 15px;">
                             <button class="btn-secondary" onclick="aggiungiRigaFirmaInterfaccia()">➕ Aggiungi un'altra lezione</button>
                             <button class="btn-primary" style="width: auto; margin:0;" id="btn-salva-firma" onclick="salvaTutteLeFirmeMultiple()">Invia e Registra Tutte le Lezioni</button>
                             <button class="btn-secondary hidden" id="btn-annulla-firma" onclick="annullaModificaFirma()">Annulla Modifica</button>
                         </div>
                     </div>
-                    
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                         <h3>Storico Lezioni in questa classe</h3>
-                        <div>
-                            <label style="font-size:13px; font-weight:bold;">Filtra Materia:</label>
-                            <select id="filtro-firme-materia" onchange="renderFirmeClasse()" style="padding:4px 8px;"></select>
-                        </div>
                     </div>
                     <table>
                         <thead>
                             <tr>
-                                <th style="width:12%;">Data</th>
-                                <th style="width:15%;">Ora</th>
-                                <th style="width:20%;">Materia</th>
-                                <th>Argomenti e attività svolte</th>
-                                <th style="width:12%; text-align:center;">Azioni</th>
+                                <th>Data</th>
+                                <th>Ora</th>
+                                <th>Materia</th>
+                                <th>Argomento Lezione svolta e Compiti assegnati</th>
+                                <th>Azioni</th>
                             </tr>
                         </thead>
                         <tbody id="table-firme-body"></tbody>
@@ -551,17 +1144,18 @@
                 </div>
 
                 <div id="tab-appello" class="tab-content">
-                    <div style="background:#FFF5F5; border:1px solid #FECACA; padding:15px; border-radius:8px; margin-bottom:20px;">
-                        <h4 style="margin:0; color:var(--primary-dark)">📋 Registro Giornaliero del <span id="label-data-appello-attiva">--/--/----</span></h4>
-                        <p style="margin:5px 0 0 0; font-size:13px; color:#64748B;">Lo stato predefinito impostato all'apertura è P (Presente). Modifica lo stato degli assenti o dei ritardatari in tempo reale cliccando sui rispettivi pulsanti.</p>
+                    <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 20px; background: #F8FAFC; padding: 15px; border-radius: 8px; border: 1px solid var(--border-color);">
+                        <label style="font-weight: bold;">Seleziona Data Appello:</label>
+                        <input type="date" id="appello-data-selezionata" onchange="renderAppelloGiorno()">
+                        <button class="btn-secondary" style="padding: 6px 12px;" onclick="impostaTuttiPresenti()">✅ Imposta Tutti Presenti</button>
                     </div>
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 5px;">N.</th>
-                                <th>Alunno</th>
-                                <th style="width: 45%;">Stato Presenza</th>
-                                <th>Giustificazione / Note Registro</th>
+                                <th style="width: 50px;">N°</th>
+                                <th>Alunno Cognome Nome</th>
+                                <th>Stato Presenza Giornaliera</th>
+                                <th>Note / Giustificazioni</th>
                             </tr>
                         </thead>
                         <tbody id="table-appello-body"></tbody>
@@ -569,260 +1163,166 @@
                 </div>
 
                 <div id="tab-voti" class="tab-content">
-                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                        <button class="btn-primary" id="btn-voto-singolo-toggle" style="width: auto; margin:0;" onclick="switchModalitaVoti('singolo')">Singolo Alunno</button>
-                        <button class="btn-primary" id="btn-voto-flash-toggle" style="width: auto; margin:0; background-color: var(--accent-color);" onclick="switchModalitaVoti('flash')">⚡ Inserimento Voto Flash (Intera Verifica)</button>
-                    </div>
-                    
-                    <div id="voti-singolo-container">
-                        <div style="background:#F8FAFC; border:1px solid var(--border-color); padding:20px; border-radius:8px; margin-bottom:25px;">
-                            <h3 style="margin-top: 0; color: var(--primary-dark)">📝 Assegna Nuova Valutazione</h3>
-                            <div style="display:flex; gap:15px; flex-wrap:wrap;">
-                                <div class="form-group" style="margin-bottom:0; min-width:200px;">
-                                    <label>Seleziona Alunno</label>
-                                    <select id="voto-alunno-select" style="width:100%;"></select>
-                                </div>
-                                <div class="form-group" style="margin-bottom:0; width:100px;">
-                                    <label>Voto</label>
-                                    <input type="text" id="voto-valore" placeholder="Es: 6.5, 7+" style="width:100%; text-align:center;">
-                                </div>
-                                <div class="form-group" style="margin-bottom:0;">
-                                    <label>Data</label>
-                                    <input type="date" id="voto-data">
-                                </div>
-                                <div class="form-group" style="margin-bottom:0;">
-                                    <label>Tipo Prova</label>
-                                    <select id="voto-tipo">
-                                        <option value="Scritto">Scritto</option>
-                                        <option value="Orale">Orale</option>
-                                        <option value="Pratico">Pratico</option>
-                                    </select>
-                                </div>
-                                <div class="form-group" style="margin-bottom:0; flex-grow:1;">
-                                    <label>Commento / Argomento Prova</label>
-                                    <input type="text" id="voto-commento" placeholder="Es: Verifica disequazioni..." style="width:100%;">
-                                </div>
-                            </div>
-                            <button class="btn-primary" style="width:auto; margin-top:15px;" onclick="salvaVotoSingolo()">Registra Voto</button>
+                    <div style="background:#F8FAFC; padding:20px; border-radius:8px; border:1px solid var(--border-color); margin-bottom: 25px; display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Alunno</label>
+                            <select id="voto-alunno-select"></select>
                         </div>
-                    </div>
-
-                    <div id="voti-flash-container" class="hidden" style="background:#F8FAFC; border:1px solid var(--border-color); padding:20px; border-radius:8px; margin-bottom: 25px;">
-                        <h3 style="color:var(--accent-color); margin-top:0;">⚡ Inserimento Flash (Voti dell'intera classe)</h3>
-                        <div style="display:flex; gap:15px; flex-wrap:wrap; margin-bottom:20px; background:white; padding:15px; border-radius:6px; border:1px solid var(--border-color);">
-                            <div class="form-group" style="margin-bottom:0;">
-                                <label>Data Prova</label>
-                                <input type="date" id="flash-voto-data">
-                            </div>
-                            <div class="form-group" style="margin-bottom:0;">
-                                <label>Tipo Valutazione</label>
-                                <select id="flash-voto-tipo">
-                                    <option value="Scritto">Scritto</option>
-                                    <option value="Orale">Orale</option>
-                                    <option value="Pratico">Pratico</option>
-                                </select>
-                            </div>
-                            <div class="form-group" style="margin-bottom:0; flex-grow:1;">
-                                <label>Descrizione / Argomento della Verifica</label>
-                                <input type="text" id="flash-voto-descrizione" placeholder="Es. Compito in classe Capitolo 3" style="width:100%;">
-                            </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Data Voto</label>
+                            <input type="date" id="voto-data">
                         </div>
-                        <table class="timetable-table" style="background:white; margin-bottom: 15px;">
-                            <thead>
-                                <tr>
-                                    <th style="width:10%;">N.</th>
-                                    <th style="text-align:left;">Alunno</th>
-                                    <th style="width:25%;">Voto (es: 7, 6.5, 8+)</th>
-                                    <th style="width:40%;">Note / Commento Opzionale</th>
-                                </tr>
-                            </thead>
-                            <tbody id="table-voti-flash-body"></tbody>
-                        </table>
-                        <button class="btn-primary" style="background-color:var(--accent-color); width:auto;" onclick="salvaVerificaFlashCompleta()">Salva Tutti i Voti della Verifica</button>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Tipo Prova</label>
+                            <select id="voto-tipo">
+                                <option value="Scritto">Scritto</option>
+                                <option value="Orale">Orale</option>
+                                <option value="Pratico">Pratico</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Voto Num.</label>
+                            <select id="voto-valore">
+                                <option value="10">10</option><option value="9.5">9½</option><option value="9">9</option>
+                                <option value="8.5">8½</option><option value="8">8</option><option value="7.5">7½</option>
+                                <option value="7">7</option><option value="6.5">6½</option><option value="6">6</option>
+                                <option value="5.5">5½</option><option value="5">5</option><option value="4.5">4½</option>
+                                <option value="4">4</option><option value="3">3</option><option value="2">2</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0; flex-grow:1;">
+                            <label>Commento / Descrizione (Opzionale)</label>
+                            <input type="text" id="voto-commento" placeholder="Es. Verifica equazioni..." style="width:100%;">
+                        </div>
+                        <button class="btn-primary" style="width:auto; margin:0;" onclick="aggiungiVoto()">Inserisci Voto</button>
                     </div>
-
-                    <h3>Tabellone Riepilogo Voti e Medie della Classe</h3>
                     <table>
                         <thead>
                             <tr>
-                                <th style="width:5%;">N.</th>
+                                <th style="width: 50px;">N°</th>
                                 <th>Alunno</th>
-                                <th style="width:65%;">Valutazioni Inserite (<span class="placeholder-materia-testo">--</span>)</th>
-                                <th style="width:12%; text-align:center;">Media</th>
+                                <th>Elenco Valutazioni Periodo Corrente</th>
+                                <th>Media Voti</th>
                             </tr>
                         </thead>
-                        <tbody id="table-voti-riepilogo-body"></tbody>
+                        <tbody id="table-voti-body"></tbody>
                     </table>
                 </div>
 
                 <div id="tab-scrutini" class="tab-content">
-                    <div style="background:#FFFBEB; border:1px solid #FCD34D; padding:15px; border-radius:8px; margin-bottom:25px; color:#92400E; font-weight:600; display:flex; justify-content:space-between; align-items:center;">
-                        <span>🎓 Valutazioni di Scrutinio Finale e Quadrimestrale</span>
-                        <select id="select-scrutinio-periodo" onchange="renderScrutiniClasse()" style="padding:6px 12px; font-weight:bold; border-color:#FCD34D;">
-                            <option value="1° Quadrimestre">1° Quadrimestre</option>
-                            <option value="2° Quadrimestre (Finale)">2° Quadrimestre (Finale)</option>
-                        </select>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background:#F8FAFC; padding:15px; border-radius:8px; border:1px solid var(--border-color);">
+                        <div>
+                            <label style="font-weight: bold; margin-right: 10px;">Quadrimestre Scrutinio:</label>
+                            <select id="scrutinio-quadrimestre" onchange="renderScrutini()">
+                                <option value="Q1">1° Quadrimestre</option>
+                                <option value="Q2">2° Quadrimestre (Scrutinio Finale)</option>
+                            </select>
+                        </div>
+                        <button class="btn-secondary" onclick="proponiVotiScrutinioDalleMedie()">📊 Proponi Voti da Medie Matematiche</button>
                     </div>
                     <table>
                         <thead>
                             <tr>
-                                <th style="width:5%;">N.</th>
+                                <th style="width: 50px;">N°</th>
                                 <th>Alunno</th>
-                                <th style="width:15%; text-align:center;">Media Registro</th>
-                                <th style="width:20%;">Voto Proposto Scrutinio</th>
-                                <th>Note di Giudizio / Condotta / Assenze</th>
+                                <th style="width: 120px;">Media Registro</th>
+                                <th style="width: 150px;">Voto Proposto Scrutinio</th>
+                                <th style="width: 150px;">Assenze Totali</th>
+                                <th>Giudizio Analitico / Note di Scrutinio</th>
                             </tr>
                         </thead>
                         <tbody id="table-scrutini-body"></tbody>
                     </table>
-                    <button class="btn-primary" style="background-color:var(--green-pass); width:auto;" onclick="salvaScrutiniClasse()">Salva Tabellone Scrutini</button>
+                    <button class="btn-primary" style="width: auto;" onclick="salvaScrutiniClasse()">💾 Salva e Blocca Voti Scrutinio</button>
                 </div>
 
                 <div id="tab-alunni" class="tab-content">
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-                        <div>
-                            <h3>👥 Elenco Alunni iscritti</h3>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th style="width:10%;">N.</th>
-                                        <th>Cognome e Nome</th>
-                                        <th style="width:15%; text-align:center;">Rimuovi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="table-alunni-body"></tbody>
-                            </table>
-                        </div>
-                        <div>
-                            <div style="background:#F8FAFC; padding:20px; border-radius:8px; border:1px solid var(--border-color); margin-bottom: 20px;">
-                                <h3 style="margin-top:0;">➕ Aggiungi Singolo Alunno</h3>
-                                <div class="form-group">
-                                    <label>Cognome e Nome Alunno</label>
-                                    <input type="text" id="add-alunno-nome" placeholder="Es: Rossi Mario" style="width:100%;">
-                                </div>
-                                <button class="btn-primary" style="width:auto; margin:0;" onclick="aggiungiSingoloAlunno()">Aggiungi</button>
-                            </div>
-
-                            <div style="background:#F0FDF4; padding:20px; border-radius:8px; border:1px solid #BBF7D0;">
-                                <h3 style="margin-top:0; color:#166534;">⚡ Caricamento Rapido Elenco (Copia & Incolla)</h3>
-                                <p style="font-size:13px; color:#64748B; margin-top:-5px;">Incolla qui l'intero elenco degli alunni da Excel o Word, inserendo un alunno per riga (es: Rossi Mario).</p>
-                                <textarea id="flash-alunni-textarea" placeholder="Rossi Mario&#10;Bianchi Luigi&#10;Verdi Anna" style="height:140px; margin-bottom:12px;"></textarea>
-                                <button class="btn-primary" style="width:auto; margin:0; background-color:#166534;" onclick="salvaAlunniFlash()">Importa Intera Classe</button>
-                            </div>
-                        </div>
+                    <div style="background:#FFF5F5; padding:15px; border-radius:8px; border:1px solid #FECACA; margin-bottom:25px;">
+                        <h3 style="margin-top: 0; color:var(--primary-dark)">👥 Importa Elenco Alunni (Copia e Incolla Rapido)</h3>
+                        <p style="font-size:13px; color:#64748B; margin-top:0;">Incolla i nomi degli studenti, inserendo **un alunno per riga** (Formato preferito: *Cognome Nome*).</p>
+                        <textarea id="alunni-bulk-textarea" placeholder="Rossi Mario&#10;Bianchi Luigi&#10;Verdi Anna" style="height: 120px; margin-bottom:12px;"></textarea>
+                        <button class="btn-primary" style="width: auto; margin:0;" onclick="importaAlunniBulk()">Inizializza Elenco Alunni</button>
                     </div>
+                    <h3>Studenti Iscritti nel Registro</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;">N. Registro</th>
+                                <th>Cognome Nome Alunno</th>
+                                <th style="width: 100px;">Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-alunni-body"></tbody>
+                    </table>
                 </div>
             </div>
         </main>
     </div>
 
     <script>
-        /* === DATI LOGICA CORE ED EMULAZIONE === */
-        let DB = {
-            utenti: {},
-            classi: {},
-            alunni: {},
-            firme: {},
-            appelli: {},
-            voti: {},
-            agenda: [],
-            scrutini: {},
-            orarioDocente: {},
-            firmeLibere: []
+        // Inizializzazione Struttura Variabili Globali di Stato
+        let DB = { 
+            utenti: {}, 
+            classi: {}, 
+            orarioDocente: {}, 
+            agenda: [], 
+            firmeLibere: [], 
+            scrutini: {} 
         };
-
+        
         let utenteConnesso = null;
-        let classeAttiva = null;
-        let materiaAttiva = null;
-        let agendaModoVisualizzazione = 'mese';
-        let dataCorrenteCalendario = new Date();
+        let classeAttivaId = null;
+        let materiaAttiva = "";
+        let inSincronizzazione = false; // Flag di prevenzione loop infiniti salvataggi cloud
+        
+        let agendaModoVista = 'mese';
+        let agendaDataCorrente = new Date();
 
-        window.onload = function() {
-            caricaDaTempo();
-            
+        // Controllo automatico di sessioni attive all'avvio del browser
+        window.addEventListener('DOMContentLoaded', () => {
             const dataOggiStr = new Date().toISOString().split('T')[0];
             document.getElementById('login-session-date').value = dataOggiStr;
-            document.getElementById('firma-data').value = dataOggiStr;
-            document.getElementById('tc-data').value = dataOggiStr;
             document.getElementById('age-data').value = dataOggiStr;
-            document.getElementById('flash-voto-data').value = dataOggiStr;
-            
-            // Se c'è una sessione attiva locale, effettua il login automatico
+            document.getElementById('tc-data').value = dataOggiStr;
+            document.getElementById('appello-data-selezionata').value = dataOggiStr;
+
+            caricaDatabaseLocale();
+
             const sessioneSalvata = localStorage.getItem('classeviva_docente_session');
-            if(sessioneSalvata) {
-                const u = JSON.parse(sessioneSalvata);
-                if(DB.utenti[u.username]) {
-                    utenteConnesso = DB.utenti[u.username];
-                    utenteConnesso.dataLavoro = u.dataLavoro;
-                    avviaApplicazioneDettaglio();
+            if (sessioneSalvata) {
+                try {
+                    const dataSess = JSON.parse(sessioneSalvata);
+                    document.getElementById('username').value = dataSess.username;
+                    document.getElementById('login-session-date').value = dataSess.dataLavoro;
+                    console.log("Sessione precedente trovata, tentativo login automatico...");
+                } catch (e) {
+                    console.error("Errore lettura sessione precedente:", e);
                 }
             }
-        };
+        });
 
-      
-let inSincronizzazione = false;
-
-function salvaNelTempo() {
-    if (!DB) return;
-    
-    // 1. Salva sempre nel browser locale
-    localStorage.setItem('classeviva_docente_db', JSON.stringify(DB));
-    console.log("Dati salvati in locale nel localStorage.");
-
-    // 2. Salva su Supabase in modo sicuro (solo se non è già in corso un salvataggio)
-    if (utenteConnesso && utenteConnesso.username && !inSincronizzazione) {
-        inSincronizzazione = true; // Blocca temporaneamente altri salvataggi simultanei
-        console.log("Avvio sincronizzazione cloud sicura...");
-        
-        sincronizzaSupabase()
-            .then(() => {
-                console.log("Sincronizzazione completata.");
-                inSincronizzazione = false; // Sblocca al termine
-            })
-            .catch(err => {
-                console.error("Errore nel salvataggio cloud:", err);
-                inSincronizzazione = false; // Sblocca anche in caso di errore
-            });
-    }
-}
-
-        async function sincronizzaSupabase() {
-            if(!window.supabase || !utenteConnesso) return;
-            try {
-                const userKey = utenteConnesso.username;
-                const dataJson = JSON.stringify(DB);
-                const { data, error } = await window.supabase
-                    .from('registri_docenti')
-                    .upsert({ username: userKey, payload: dataJson, updated_at: new Date() }, { onConflict: 'username' });
-                if(error) console.error("Errore sinc Supabase:", error);
-            } catch(e) {
-                console.error(e);
+        // Carica dati di fallback da localStorage locale
+        function caricaDatabaseLocale() {
+            const localeData = localStorage.getItem('classeviva_docente_db');
+            if (localeData) {
+                try {
+                    DB = JSON.parse(localeData);
+                    if (!DB.utenti) DB.utenti = {};
+                    if (!DB.classi) DB.classi = {};
+                    if (!DB.orarioDocente) DB.orarioDocente = {};
+                    if (!DB.agenda) DB.agenda = [];
+                    if (!DB.firmeLibere) DB.firmeLibere = [];
+                    if (!DB.scrutini) DB.scrutini = {};
+                    console.log("Database locale caricato con successo.");
+                } catch (e) {
+                    console.error("Errore parse database locale:", e);
+                }
             }
         }
 
-        async function scaricaDaSupabase(usernameKey) {
-            if(!window.supabase) return;
-            try {
-                const { data, error } = await window.supabase
-                    .from('registri_docenti')
-                    .select('payload')
-                    .eq('username', usernameKey)
-                    .single();
-                if(data && data.payload) {
-                    const serverDB = JSON.parse(data.payload);
-                    // Unisce gli utenti locali per non perderli
-                    serverDB.utenti = { ...DB.utenti, ...serverDB.utenti };
-                    DB = serverDB;
-                    localStorage.setItem('classeviva_docenti_database_cifrato_local', JSON.stringify(DB));
-                }
-            } catch(e) {
-                console.error(e);
-            }
-        }
-
-        /* === CONFIGURAZIONE SCHEDE ED AUTH === */
+        // Cambio visualizzazione Login / Registrazione
         function switchAuthMode(mode) {
-            if(mode === 'register') {
+            if (mode === 'register') {
                 document.getElementById('auth-login-section').classList.add('hidden');
                 document.getElementById('auth-register-section').classList.remove('hidden');
             } else {
@@ -831,525 +1331,603 @@ function salvaNelTempo() {
             }
         }
 
+        // Gestione Creazione Nuovo Utente Locale
         function registraNuovoUtente() {
-            const nom = document.getElementById('reg-nominativo').value.trim();
-            const usr = document.getElementById('reg-username').value.trim().toLowerCase();
-            const psw = document.getElementById('reg-password').value;
+            const nome = document.getElementById('reg-nominativo').value.trim();
+            const user = document.getElementById('reg-username').value.trim().toLowerCase();
+            const pass = document.getElementById('reg-password').value.trim();
 
-            if(!nom || !usr || !psw) return alert("Compila tutti i campi!");
-            if(DB.utenti[usr]) return alert("Questo username è già registrato!");
-
-            DB.utenti[usr] = { nominativo: nom, username: usr, password: psw };
-            salvaNelTempo();
-            alert("🎉 Registrazione completata con successo! Ora puoi accedere.");
-            switchAuthMode('login');
-            document.getElementById('username').value = usr;
-        }
-
-      async function login() {
-    const userIn = document.getElementById('username').value.trim();
-    const passIn = document.getElementById('password').value.trim();
-
-    if (!userIn || !passIn) {
-        alert("Per favore, inserisci sia lo username che la password.");
-        return;
-    }
-
-    console.log("Tentativo di accesso per:", userIn);
-
-    if (window.supabase) {
-        // Interroghiamo la tabella per controllare le credenziali
-        const { data, error } = await window.supabase
-            .from('registri_docenti') 
-            .select('*')
-            .eq('username', userIn)
-            .eq('password', passIn);
-
-        if (error) {
-            console.error("Errore Supabase in login:", error.message);
-            alert("Errore di connessione a Supabase: " + error.message);
-            return;
-        }
-
-        // Se l'utente viene trovato nel database cloud
-        if (data && data.length > 0) {
-            document.getElementById('login-error').style.display = 'none';
-            
-            // Prendiamo il primo utente valido trovato
-            const rigaUtente = data[0];
-            
-            utenteConnesso = {
-                username: rigaUtente.username,
-                nominativo: rigaUtente.nominativo || rigaUtente.username,
-                dataLavoro: document.getElementById('login-session-date').value
-            };
-            
-            // Salviamo la sessione locale nel browser
-            localStorage.setItem('classeviva_docente_session', JSON.stringify({
-                username: utenteConnesso.username,
-                dataLavoro: utenteConnesso.dataLavoro
-            }));
-            
-            // Gestione sicura del caricamento dati senza usare funzioni esterne fallimentari
-            try {
-                if (rigaUtente.dati_registro) {
-                    // Se ci sono dati strutturati nel database, li carichiamo
-                    DB = typeof rigaUtente.dati_registro === 'string' 
-                        ? JSON.parse(rigaUtente.dati_registro) 
-                        : rigaUtente.dati_registro;
-                } else {
-                    // Se la colonna dati_registro è vuota, inizializziamo un registro pulito
-                    DB = { utenti: {}, classi: {}, orarioDocente: {}, agenda: [], firmeLibere: [], scrutini: {} };
-                }
-                salvaNelTempo();
-            } catch (e) {
-                console.error("Errore nel parsing dei dati registro:", e);
-                // Fallback di emergenza per non bloccare la pagina
-                DB = { utenti: {}, classi: {}, orarioDocente: {}, agenda: [], firmeLibere: [], scrutini: {} };
+            if (!nome || !user || !pass) {
+                alert("Compilare tutti i campi di registrazione.");
+                return;
             }
 
-            // Forza l'avvio dell'applicazione superando il blocco
-            console.log("Accesso eseguito! Avvio interfaccia...");
-            avviaApplicazioneDettaglio();
-            return;
+            if (DB.utenti[user]) {
+                alert("Questo username è già in uso sul database locale.");
+                return;
+            }
+
+            DB.utenti[user] = {
+                username: user,
+                password: pass,
+                nominativo: nome
+            };
+
+            salvaNelTempo();
+            alert("🎉 Registrazione completata! Adesso puoi effettuare l'accesso.");
+            switchAuthMode('login');
+            document.getElementById('username').value = user;
+            document.getElementById('password').value = pass;
         }
-    }
 
-    // Se non trova corrispondenze su Supabase, mostra l'errore a schermo
-    document.getElementById('login-error').style.display = 'block';
-    alert("Credenziali errate o utente non trovato nel database.");
-}
+        // FUNZIONE LOGIN DEFINITIVA E CORRETTA SU TABELLA REGISTRI_DOCENTI
+        async function login() {
+            const userIn = document.getElementById('username').value.trim().toLowerCase();
+            const passIn = document.getElementById('password').value.trim();
 
-        function logout() {
-            utenteConnesso = null;
-            localStorage.removeItem('classeviva_docente_session');
-            document.getElementById('app-view').classList.add('hidden');
-            document.getElementById('login-view').classList.remove('hidden');
+            if (!userIn || !passIn) {
+                alert("Inserire sia lo username che la password.");
+                return;
+            }
+
+            console.log("Richiesta autenticazione cloud per utente:", userIn);
+
+            if (window.supabase) {
+                // Interroga la tabella remota corretta di Supabase: registri_docenti
+                const { data, error } = await window.supabase
+                    .from('registri_docenti')
+                    .select('*')
+                    .eq('username', userIn)
+                    .eq('password', passIn);
+
+                if (error) {
+                    console.error("Errore di rete/connessione Supabase:", error.message);
+                    alert("Errore di connessione a Supabase: " + error.message);
+                    return;
+                }
+
+                // Corrispondenza utente trovata su cloud
+                if (data && data.length > 0) {
+                    document.getElementById('login-error').style.display = 'none';
+                    const rigaServer = data[0];
+
+                    utenteConnesso = {
+                        username: rigaServer.username,
+                        nominativo: rigaServer.nominativo || rigaServer.username,
+                        dataLavoro: document.getElementById('login-session-date').value
+                    };
+
+                    localStorage.setItem('classeviva_docente_session', JSON.stringify({
+                        username: utenteConnesso.username,
+                        dataLavoro: utenteConnesso.dataLavoro
+                    }));
+
+                    // Caricamento sicuro dati_registro bypassando funzioni esterne bloccanti
+                    try {
+                        if (rigaServer.dati_registro) {
+                            DB = typeof rigaServer.dati_registro === 'string'
+                                ? JSON.parse(rigaServer.dati_registro)
+                                : rigaServer.dati_registro;
+                        } else {
+                            DB = { utenti: {}, classi: {}, orarioDocente: {}, agenda: [], firmeLibere: [], scrutini: {} };
+                        }
+                        
+                        // Aggiorna la copia di cache locale
+                        localStorage.setItem('classeviva_docente_db', JSON.stringify(DB));
+                    } catch (errParse) {
+                        console.error("Errore decodifica dati_registro cloud:", errParse);
+                        DB = { utenti: {}, classi: {}, orarioDocente: {}, agenda: [], firmeLibere: [], scrutini: {} };
+                    }
+
+                    console.log("Accesso cloud validato!");
+                    avviaApplicazioneDettaglio();
+                    return;
+                }
+            }
+
+            // CONTROLLO FALLBACK LOCALE: Se il cloud fallisce o non trova corrispondenza
+            if (DB.utenti && DB.utenti[userIn]) {
+                if (DB.utenti[userIn].password === passIn) {
+                    document.getElementById('login-error').style.display = 'none';
+                    
+                    utenteConnesso = {
+                        username: userIn,
+                        nominativo: DB.utenti[userIn].nominativo || userIn,
+                        dataLavoro: document.getElementById('login-session-date').value
+                    };
+
+                    localStorage.setItem('classeviva_docente_session', JSON.stringify({
+                        username: utenteConnesso.username,
+                        dataLavoro: utenteConnesso.dataLavoro
+                    }));
+
+                    avviaApplicazioneDettaglio();
+                    return;
+                }
+            }
+
+            // Nessun utente valido trovato
+            document.getElementById('login-error').style.display = 'block';
+            alert("Credenziali errate o account non esistente.");
         }
 
+        // Avvio interfaccia applicativa ed elementi top bar
         function avviaApplicazioneDettaglio() {
             document.getElementById('login-view').classList.add('hidden');
             document.getElementById('app-view').classList.remove('hidden');
-            
+
             document.getElementById('label-nome-docente-connesso').innerText = utenteConnesso.nominativo;
             
-            const annoAttivo = calcolaAnnoScolasticoAttuale(utenteConnesso.dataLavoro);
-            document.getElementById('label-anno-attivo').innerText = annoAttivo;
-            document.querySelectorAll('.placeholder-anno-testo').forEach(el => el.innerText = annoAttivo);
+            // Estrazione Anno Scolastico Attivo
+            const dataSess = new Date(utenteConnesso.dataLavoro);
+            let annoScolastico = "";
+            if (dataSess.getMonth() >= 8) {
+                annoScolastico = dataSess.getFullYear() + "/" + (dataSess.getFullYear() + 1);
+            } else {
+                annoScolastico = (dataSess.getFullYear() - 1) + "/" + dataSess.getFullYear();
+            }
+            
+            document.getElementById('label-anno-active').innerText = "A.S. " + annoScolastico;
+            const placeholders = document.querySelectorAll('.placeholder-anno-testo');
+            placeholders.forEach(el => el.innerText = "A.S. " + annoScolastico);
 
-            const parti = utenteConnesso.dataLavoro.split('-');
-            document.getElementById('header-date-display').innerText = `${parti[2]}/${parti[1]}/${parti[0]}`;
+            // Formattazione data italiana per display header
+            const pezziData = utenteConnesso.dataLavoro.split('-');
+            document.getElementById('header-date-display').innerText = `${pezziData[2]}/${pezziData[1]}/${pezziData[0]}`;
 
             showView('dashboard-view');
-            inizializzaSelectFormGlobali();
-            renderOrarioDashboard();
         }
 
-        function calcolaAnnoScolasticoAttuale(dataStr) {
-            const d = new Date(dataStr);
-            const anno = d.getFullYear();
-            const mese = d.getMonth() + 1; // 1-12
-            if(mese >= 9) {
-                return `${anno}/${anno+1}`;
-            } else {
-                return `${anno-1}/${anno}`;
-            }
-        }
-
+        // Navigazione e gestione viste principali pannello
         function showView(viewId) {
             const views = ['dashboard-view', 'classes-view', 'agenda-view', 'tutte-classi-view', 'settings-view', 'class-detail-view'];
             views.forEach(v => {
                 const el = document.getElementById(v);
-                if(el) el.classList.add('hidden');
+                if (el) el.classList.add('hidden');
             });
+
             document.getElementById(viewId).classList.remove('hidden');
 
-            if(viewId === 'classes-view') renderElencoClassi();
-            if(viewId === 'dashboard-view') renderOrarioDashboard();
+            if (viewId === 'dashboard-view') renderOrarioDashboard();
+            if (viewId === 'classes-view') renderElencoClassiAssegnate();
         }
 
-        /* === CONFIGURAZIONE CLASSI NELLE IMPOSTAZIONI === */
+        // SALVATAGGIO POTENZIATO CON COPERTURA ANTI LOOP CLOUD
+        function salvaNelTempo() {
+            if (!DB) return;
+            
+            // 1. Scrittura immediata nella memoria del browser corrente
+            localStorage.setItem('classeviva_docente_db', JSON.stringify(DB));
+            console.log("Salvataggio locale eseguito.");
+
+            // 2. Invio automatico a Supabase evitando i crash di chiamata circolare
+            if (utenteConnesso && utenteConnesso.username && !inSincronizzazione) {
+                inSincronizzazione = true;
+                
+                sincronizzaSupabase()
+                    .then(() => {
+                        console.log("Cloud auto-sync completato.");
+                        inSincronizzazione = false;
+                    })
+                    .catch(err => {
+                        console.error("Errore auto-sync cloud:", err);
+                        inSincronizzazione = false;
+                    });
+            }
+        }
+
+        // FUNZIONE DI SINCRONIZZAZIONE ESENTE DA RICHIAMI A SALVANELTEMPO
+        async function sincronizzaSupabase() {
+            if (!window.supabase || !utenteConnesso) return;
+
+            const stringDB = JSON.stringify(DB);
+            
+            // Aggiornamento o inserimento riga basato su vincolo univoco username
+            const { error } = await window.supabase
+                .from('registri_docenti')
+                .upsert({
+                    username: utenteConnesso.username,
+                    dati_registro: stringDB,
+                    ultimo_aggiornamento: new Date().toISOString()
+                }, { onConflict: 'username' });
+
+            if (error) {
+                console.error("Errore durante upsert su Supabase:", error.message);
+                throw error;
+            }
+        }
+
+        // Scarico manuale/forzato dei dati da database remoto cloud
+        async function scaricaDaSupabase(username) {
+            if (!window.supabase) return;
+
+            const { data, error } = await window.supabase
+                .from('registri_docenti')
+                .select('dati_registro')
+                .eq('username', username);
+
+            if (error) {
+                console.error("Errore scaricamento dati Supabase:", error.message);
+                return;
+            }
+
+            if (data && data.length > 0 && data[0].dati_registro) {
+                try {
+                    DB = typeof data[0].dati_registro === 'string' 
+                        ? JSON.parse(data[0].dati_registro) 
+                        : data[0].dati_registro;
+                    localStorage.setItem('classeviva_docente_db', JSON.stringify(DB));
+                } catch (e) {
+                    console.error("Errore parsing dati scaricati:", e);
+                }
+            }
+        }
+
+        // Chiusura Sessione Utente (Logout)
+        function logout() {
+            localStorage.removeItem('classeviva_docente_session');
+            utenteConnesso = null;
+            classeAttivaId = null;
+            materiaAttiva = "";
+            location.reload();
+        }
+
+        // --- GESTIONE CLASSI E IMPOSTAZIONI ---
+        function openSettingsView() {
+            showView('settings-view');
+            renderClassiSettings();
+            renderListaAvanzamentoAnno();
+        }
+
         function creaNuovaClasse() {
-            const clsId = document.getElementById('set-classe-id').value.trim().toUpperCase();
+            const classId = document.getElementById('set-classe-id').value.trim().toUpperCase();
             const materieStr = document.getElementById('set-classe-materie').value.trim();
             const isCoord = document.getElementById('set-classe-coord').checked;
 
-            if(!clsId || !materieStr) return alert("Compila tutti i campi obbligatori!");
+            if (!classId || !materieStr) return;
 
-            const listaMaterie = materieStr.split(',').map(m => m.trim()).filter(m => m.length > 0);
-            
-            if(!DB.classi[utenteConnesso.username]) DB.classi[utenteConnesso.username] = [];
-            
-            // Evita duplicati della stessa classe per lo stesso docente
-            const indexEsistente = DB.classi[utenteConnesso.username].findIndex(c => c.id === clsId);
-            if(indexEsistente > -1) {
-                DB.classi[utenteConnesso.username][indexEsistente].materie = listaMaterie;
-                DB.classi[utenteConnesso.username][indexEsistente].coordinatore = isCoord;
+            const elencoMaterie = materieStr.split(',').map(m => m.trim()).filter(m => m.length > 0);
+
+            if (!DB.classi[classId]) {
+                DB.classi[classId] = {
+                    id: classId,
+                    materie: elencoMaterie,
+                    coordinatore: isCoord,
+                    alunni: [],
+                    giornaleFirme: [],
+                    appelli: {},
+                    voti: []
+                };
             } else {
-                DB.classi[utenteConnesso.username].push({ id: clsId, materie: listaMaterie, coordinatore: isCoord });
+                DB.classi[classId].materie = Array.from(new Set([...DB.classi[classId].materie, ...elencoMaterie]));
+                DB.classi[classId].coordinatore = isCoord;
             }
 
             salvaNelTempo();
-            renderClassiConfigurateSettings();
-            inizializzaSelectFormGlobali();
+            renderClassiSettings();
+            renderListaAvanzamentoAnno();
             
             document.getElementById('set-classe-id').value = "";
             document.getElementById('set-classe-materie').value = "";
             document.getElementById('set-classe-coord').checked = false;
-            alert("Classe configurata con successo!");
+            
+            alert(`Classe ${classId} aggiunta/aggiornata correttamente.`);
         }
 
-        function renderClassiConfigurateSettings() {
+        function renderClassiSettings() {
             const container = document.getElementById('set-elenco-classi-configurate');
             container.innerHTML = "";
-            const mieClassi = DB.classi[utenteConnesso.username] || [];
 
-            if(mieClassi.length === 0) {
+            const chiaviClassi = Object.keys(DB.classi).sort();
+            if (chiaviClassi.length === 0) {
                 container.innerHTML = "<p style='color:#64748B; font-style:italic;'>Nessuna classe configurata.</p>";
                 return;
             }
 
-            mieClassi.forEach(c => {
+            chiaviClassi.forEach(k => {
+                const cls = DB.classi[k];
                 const item = document.createElement('div');
                 item.className = "class-list-item";
                 item.innerHTML = `
                     <div>
-                        <strong>Classe ${c.id}</strong> ${c.coordinatore ? '<span class="badge-coord" style="position:static; margin-left:10px;">Coordinatore</span>' : ''}
-                        <div style="font-size:13px; color:#64748B;">Materie: ${c.materie.join(', ')}</div>
+                        <strong>Classe ${cls.id}</strong> - ${cls.materie.join(', ')}
+                        ${cls.coordinatore ? '<span class="badge-coord" style="position:static; margin-left:10px;">COORD</span>' : ''}
+                        <br><small style="color:#64748B;">Alunni iscritti: ${cls.alunni ? cls.alunni.length : 0}</small>
                     </div>
-                    <button class="btn-danger" onclick="eliminaClasseConfigurata('${c.id}')">Rimuovi</button>
+                    <button class="btn-danger" onclick="eliminaClasseIntera('${cls.id}')">Elimina</button>
                 `;
                 container.appendChild(item);
             });
-
-            // Popola anche la scheda di avanzamento d'anno scolastico
-            const divAvanzamento = document.getElementById('passaggio-anno-classi-list');
-            divAvanzamento.innerHTML = mieClassi.map(c => `<div>📌 Classe <strong>${c.id}</strong> (${c.materie.join(', ')})</div>`).join('');
         }
 
-        function eliminaClasseConfigurata(clsId) {
-            if(!confirm(`Vuoi davvero rimuovere la classe ${clsId}? I registri e i voti non verranno cancellati ma non vedrai più la classe nel menu.`)) return;
-            DB.classi[utenteConnesso.username] = (DB.classi[utenteConnesso.username] || []).filter(c => c.id !== clsId);
-            salvaNelTempo();
-            renderClassiConfigurateSettings();
-            inizializzaSelectFormGlobali();
-        }
-
-        function openSettingsView() {
-            showView('settings-view');
-            renderClassiConfigurateSettings();
-        }
-
-        function confermaPassaggioAnno() {
-            if(!confirm("⚠️ ATTENZIONE! L'avanzamento d'anno sposterà tutte le classi correnti in avanti (le classi 1^ diventeranno 2^, le 2^ diventeranno 3^, ecc.). Le quinte verranno archiviate. Tutti i voti, le firme e gli appelli attuali verranno azzerati per l'inizio del nuovo anno. Vuoi procedere?")) return;
-            
-            const mieClassi = DB.classi[utenteConnesso.username] || [];
-            let nuoveClassi = [];
-
-            mieClassi.forEach(c => {
-                const match = c.id.match(/^(\d+)(.*)$/);
-                if(match) {
-                    const livelloCorrente = parseInt(match[1]);
-                    const sezione = match[2];
-                    if(livelloCorrente < 5) {
-                        c.id = `${livelloCorrente + 1}${sezione}`;
-                        nuoveClassi.push(c);
+        function eliminaClasseIntera(classId) {
+            if (confirm(`Sei sicuro di voler eliminare interamente la classe ${classId}? Questa operazione rimuoverà definitivamente alunni, voti e registri.`)) {
+                delete DB.classi[classId];
+                
+                // Pulisce anche l'orario docente dalle ore associate
+                if (DB.orarioDocente) {
+                    for (let g in DB.orarioDocente) {
+                        for (let o in DB.orarioDocente[g]) {
+                            if (DB.orarioDocente[g][o] === classId) {
+                                delete DB.orarioDocente[g][o];
+                            }
+                        }
                     }
-                } else {
-                    nuoveClassi.push(c);
                 }
-            });
 
-            DB.classi[utenteConnesso.username] = nuoveClassi;
-            
-            // Svuota i registri legati all'utente per ricominciare il nuovo anno pulito
-            DB.appelli = {};
-            DB.firme = {};
-            DB.voti = {};
-            DB.scrutini = {};
-            DB.agenda = [];
-            
-            salvaNelTempo();
-            alert("🚀 Avanzamento anno completato con successo! Le classi sono state aggiornate e i registri svuotati per il nuovo anno.");
-            avviaApplicazioneDettaglio();
+                salvaNelTempo();
+                renderClassiSettings();
+                renderListaAvanzamentoAnno();
+            }
         }
 
-        function inizializzaSelectFormGlobali() {
-            const mieClassi = DB.classi[utenteConnesso.username] || [];
-            
-            // Select agenda
-            const ageSelect = document.getElementById('age-classe-select');
-            ageSelect.innerHTML = '<option value="Tutte">Tutte le mie classi</option>';
-            mieClassi.forEach(c => ageSelect.innerHTML += `<option value="${c.id}">Classe ${c.id}</option>`);
-
-            // Filtro agenda
-            const filAgeSelect = document.getElementById('filtro-agenda-classe');
-            filAgeSelect.innerHTML = '<option value="Tutte">Tutte le classi</option>';
-            mieClassi.forEach(c => filAgeSelect.innerHTML += `<option value="${c.id}">Classe ${c.id}</option>`);
-
-            // Select Istituto per supplenze libere
-            const tcSelect = document.getElementById('tc-classe');
-            tcSelect.innerHTML = "";
-            const classiStandardIstituto = ['1A','2A','3A','4A','5A','1B','2B','3B','4B','5B','1C','2C','3C','4C','5C','1AS','2AS','3AS','4AS','5AS'];
-            classiStandardIstituto.forEach(c => tcSelect.innerHTML += `<option value="${c}">${c}</option>`);
-        }
-
-        /* === COSTRUZIONE DELLE CLASSI E ACCESSO REGISTRO === */
-        function renderElencoClassi() {
+        // Rendering delle classi nel modulo principale
+        function renderElencoClassiAssegnate() {
             const container = document.getElementById('container-elenco-classi');
             container.innerHTML = "";
-            const mieClassi = DB.classi[utenteConnesso.username] || [];
 
-            if(mieClassi.length === 0) {
-                container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:30px; background:white; border-radius:8px; border:1px dashed #CBD5E1;">
-                    <p style="margin:0; color:#64748B; font-weight:600;">Nessuna classe assegnata nel tuo profilo.</p>
-                    <button class="btn-primary" style="width:auto; margin-top:10px;" onclick="openSettingsView()">Configura Classi Adesso</button>
-                </div>`;
+            const chiaviClassi = Object.keys(DB.classi).sort();
+            if (chiaviClassi.length === 0) {
+                container.innerHTML = "<p style='color:#64748B; font-style:italic; grid-column: 1/-1;'>Nessuna classe configurata. Vai nelle Impostazioni per aggiungerle.</p>";
                 return;
             }
 
-            mieClassi.forEach(c => {
+            chiaviClassi.forEach(k => {
+                const cls = DB.classi[k];
                 const card = document.createElement('div');
                 card.className = "menu-card";
-                card.onclick = function() { apriDettaglioClasseCompleto(c.id); };
+                card.onclick = () => apriDettaglioClasse(cls.id);
                 card.innerHTML = `
-                    ${c.coordinatore ? '<span class="badge-coord">Coordinatore</span>' : ''}
-                    <h3>Classe ${c.id}</h3>
-                    <p>${c.materie.join(', ')}</p>
+                    <h3>Classe ${cls.id}</h3>
+                    <p>${cls.materie.join(', ')}</p>
+                    <p style="margin-top:10px; font-size:12px; font-weight:600; color:var(--primary-dark);">👨‍🎓 Studenti: ${cls.alunni ? cls.alunni.length : 0}</p>
+                    ${cls.coordinatore ? '<span class="badge-coord">COORD</span>' : ''}
                 `;
                 container.appendChild(card);
             });
         }
 
-        function apriDettaglioClasseCompleto(classId) {
-            classeAttiva = classId;
-            const mieClassi = DB.classi[utenteConnesso.username] || [];
-            const infoC = mieClassi.find(c => c.id === classId);
-            
-            if(!infoC) return;
-            
-            materiaAttiva = infoC.materie[0] || "Generale";
+        // --- DETTAGLIO CLASSE E SOTTO-REGISTRI ---
+        function apriDettaglioClasse(classId) {
+            classeAttivaId = classId;
+            const cls = DB.classi[classId];
 
-            document.getElementById('detail-classe-titolo').innerText = `Classe ${classeAttiva}`;
-            document.getElementById('detail-classe-materie').innerText = `Materie assegnate: ${infoC.materie.join(', ')}`;
+            showView('class-detail-view');
+            
+            document.getElementById('detail-classe-titolo').innerText = `Classe ${cls.id}`;
+            document.getElementById('detail-classe-materie').innerText = `Materie: ${cls.materie.join(', ')}`;
 
-            // Banner coordinatore
+            // Banner Coordinatore di Classe
             const bannerCoord = document.getElementById('container-banner-coordinatore');
-            if(infoC.coordinatore) {
-                bannerCoord.innerHTML = `<div class="banner-coord-dettaglio">🛡️ Sei Docente Coordinatore della Classe ${classeAttiva} (Accesso Scrutini e stampe totali)</div>`;
+            if (cls.coordinatore) {
+                bannerCoord.innerHTML = `<div class="banner-coord-dettaglio">👑 Sei Coordinatore di questa classe (Accesso abilitato agli Scrutini Finali e Tabellone)</div>`;
             } else {
                 bannerCoord.innerHTML = "";
             }
 
-            // Popola il selettore materia in alto nel registro
-            const selectMat = document.getElementById('select-materia-classe-attiva');
-            selectMat.innerHTML = "";
-            infoC.materie.forEach(m => {
-                selectMat.innerHTML += `<option value="${m}" ${m === materiaAttiva ? 'selected' : ''}>${m}</option>`;
+            // Popola selettore materie del registro
+            const selMateria = document.getElementById('select-materia-classe-attiva');
+            selMateria.innerHTML = "";
+            cls.materie.forEach((m, idx) => {
+                const opt = document.createElement('option');
+                opt.value = m;
+                opt.innerText = m;
+                selMateria.appendChild(opt);
+                if (idx === 0) materiaAttiva = m;
             });
 
-            // Sincronizza i selettori nei moduli interni
-            popolaSelezionaMaterieFirme();
-
-            switchClassTab('tab-firme');
-            showView('class-detail-view');
+            if (cls.materie.length > 0) {
+                cambiaMateriaAttivaRegistro(selMateria.value);
+            } else {
+                materiaAttiva = "";
+                switchClassTab('tab-alunni');
+            }
         }
 
-        function cambiaMateriaAttivaRegistro(nuovaMateria) {
-            materiaAttiva = nuevaMateria;
-            document.querySelectorAll('.placeholder-materia-testo').forEach(el => el.innerText = materiaAttiva);
+        function cambiaMateriaAttivaRegistro(mat) {
+            materiaAttiva = mat;
+            console.log("Materia attiva cambiata in:", materiaAttiva);
             
-            // Ricarica le schede sensibili alla materia attiva
-            renderFirmeClasse();
-            renderVotiClasse();
-            renderScrutiniClasse();
-        }
-
-        function popolaSelezionaMaterieFirme() {
-            const mieClassi = DB.classi[utenteConnesso.username] || [];
-            const infoC = mieClassi.find(c => c.id === classeAttiva);
-            if(!infoC) return;
-
-            // Aggiorna filtri e selettori nella pagina delle firme
-            const fSel = document.getElementById('filtro-firme-materia');
-            fSel.innerHTML = '<option value="Tutte">Tutte le mie materie</option>';
-            infoC.materie.forEach(m => fSel.innerHTML += `<option value="${m}">${m}</option>`);
-
-            // Aggiorna tutte le righe di selezione materia esistenti nell'interfaccia delle firme multiple
-            document.querySelectorAll('.f-multi-materia').forEach(selectElement => {
-                const valorePrecedente = selectElement.value;
-                selectElement.innerHTML = "";
-                infoC.materie.forEach(m => {
-                    selectElement.innerHTML += `<option value="${m}">${m}</option>`;
-                });
-                if(valorePrecedente) selectElement.value = valorePrecedente;
-                else selectElement.value = materiaAttiva;
+            // Aggiorna anche le materie nei form di inserimento rapido firme
+            const multiMaterieSelects = document.querySelectorAll('.f-multi-materia');
+            multiMaterieSelects.forEach(sel => {
+                sel.innerHTML = `<option value="${materiaAttiva}">${materiaAttiva}</option>`;
             });
+
+            // Rinfresca il tab correntemente aperto
+            const tabAttivo = document.querySelector('.tab-btn.active').id;
+            if (tabAttivo === 'btn-tab-firme') renderFirmeClasse();
+            if (tabAttivo === 'btn-tab-appello') renderAppelloGiorno();
+            if (tabAttivo === 'btn-tab-voti') renderVotiClasse();
+            if (tabAttivo === 'btn-tab-scrutini') renderScrutini();
+            if (tabAttivo === 'btn-tab-alunni') renderAlunniClasse();
         }
 
         function switchClassTab(tabId) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            const btns = document.querySelectorAll('.tab-btn');
+            btns.forEach(b => b.classList.remove('active'));
+            
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(c => c.classList.remove('active'));
 
-            if(tabId === 'tab-firme') { document.getElementById('btn-tab-firme').classList.add('active'); renderFirmeClasse(); }
-            if(tabId === 'tab-appello') { document.getElementById('btn-tab-appello').classList.add('active'); renderAppelloGiornaliero(); }
-            if(tabId === 'tab-voti') { document.getElementById('btn-tab-voti').classList.add('active'); switchModalitaVoti('singolo'); renderVotiClasse(); }
-            if(tabId === 'tab-scrutini') { document.getElementById('btn-tab-scrutini').classList.add('active'); renderScrutiniClasse(); }
-            if(tabId === 'tab-alunni') { document.getElementById('btn-tab-alunni').classList.add('active'); renderAlunniClasse(); }
-
+            document.getElementById(`btn-${tabId}`).classList.add('active');
             document.getElementById(tabId).classList.add('active');
+
+            if (tabId === 'tab-firme') renderFirmeClasse();
+            if (tabId === 'tab-appello') renderAppelloGiorno();
+            if (tabId === 'tab-voti') renderVotiClasse();
+            if (tabId === 'tab-scrutini') renderScrutini();
+            if (tabId === 'tab-alunni') renderAlunniClasse();
         }
 
-        /* === 👥 LOGICA GESTIONE ALUNNI (CON IMPORT FLASH) === */
+        // --- GESTIONE ALUNNI INTERFACCIA ---
         function renderAlunniClasse() {
             const tbody = document.getElementById('table-alunni-body');
             tbody.innerHTML = "";
-            const alunni = DB.alunni[classeAttiva] || [];
+            const cls = DB.classi[classeAttivaId];
 
-            if(alunni.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#64748B; font-style:italic;">Nessun alunno presente. Usa i moduli a destra per caricarli.</td></tr>`;
+            if (!cls.alunni || cls.alunni.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="color:#64748B; font-style:italic; text-align:center;">Nessun alunno presente. Inseriscili usando il box di testo soprastante.</td></tr>`;
                 return;
             }
 
-            alunni.forEach((al, idx) => {
+            // Ordinamento alfabetico alunni
+            cls.alunni.sort();
+
+            cls.alunni.forEach((al, idx) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${idx+1}</td>
+                    <td><span class="num-registro">${idx + 1}</span></td>
                     <td><strong>${al}</strong></td>
-                    <td style="text-align:center;"><button class="btn-danger" style="padding:4px 8px;" onclick="rimuoviSingoloAlunno(${idx})">❌</button></td>
+                    <td><button class="btn-danger" style="padding: 4px 8px;" onclick="eliminaSingoloAlunno('${al}')">Rimuovi</button></td>
                 `;
                 tbody.appendChild(tr);
             });
+
+            // Sincronizza anche i selettori nei moduli valutazioni
+            const votoSel = document.getElementById('voto-alunno-select');
+            votoSel.innerHTML = "";
+            cls.alunni.forEach(al => {
+                const opt = document.createElement('option');
+                opt.value = al;
+                opt.innerText = al;
+                votoSel.appendChild(opt);
+            });
         }
 
-        function aggiungiSingoloAlunno() {
-            const nome = document.getElementById('add-alunno-nome').value.trim();
-            if(!nome) return alert("Inserisci il nome dell'alunno!");
+        function importaAlunniBulk() {
+            const testo = document.getElementById('alunni-bulk-textarea').value.trim();
+            if (!testo) return;
 
-            if(!DB.alunni[classeAttiva]) DB.alunni[classeAttiva] = [];
-            DB.alunni[classeAttiva].push(nome);
-            DB.alunni[classeAttiva].sort();
+            const righe = testo.split('\n').map(r => r.trim()).filter(r => r.length > 0);
+            if (righe.length === 0) return;
 
-           function salvaNelTempo() {
-    if (!DB) return;
-    
-    // 1. Salva sempre nel browser locale (come sicurezza)
-    localStorage.setItem('classeviva_docente_db', JSON.stringify(DB));
-    console.log("Dati salvati in locale nel localStorage.");
+            const cls = DB.classi[classeAttivaId];
+            if (!cls.alunni) cls.alunni = [];
 
-    // 2. NOVITÀ: Salva AUTOMATICAMENTE su Supabase se l'utente è loggato
-    if (utenteConnesso && utenteConnesso.username) {
-        console.log("Rilevato utente connesso. Avvio sincronizzazione automatica su cloud...");
-        
-        // Chiamiamo la funzione di sincronizzazione esistente nel codice
-        sincronizzaSupabase()
-            .then(() => console.log("Sincronizzazione cloud automatica completata con successo!"))
-            .catch(err => console.error("Errore nel salvataggio automatico cloud:", err));
-    }
-}
-
-        // FUNZIONE FLASH: CARICAMENTO RAPIDO COPIA E INCOLLA INTERA CLASSE
-        function salvaAlunniFlash() {
-            const testo = document.getElementById('flash-alunni-textarea').value.trim();
-            if(!testo) return alert("Incolla o inserisci almeno un nome di un alunno!");
-
-            // Divide il testo riga per riga, ripulisce numeri iniziali e spazi bianchi
-            const linee = testo.split('\n')
-                               .map(l => l.replace(/^\d+[\s\.\-\)]*/, '').trim())
-                               .filter(l => l.length > 0);
-
-            if(linee.length === 0) return alert("Nessun nominativo valido trovato nel testo.");
-
-            if(!DB.alunni) DB.alunni = {};
-            if(!DB.alunni[classeAttiva]) DB.alunni[classeAttiva] = [];
-
-            let inseriti = 0;
-            linee.forEach(nominativo => {
-                if(!DB.alunni[classeAttiva].includes(nominativo)) {
-                    DB.alunni[classeAttiva].push(nominativo);
-                    inseriti++;
+            righe.forEach(r => {
+                if (!cls.alunni.includes(r)) {
+                    cls.alunni.push(r);
                 }
             });
 
-            DB.alunni[classeAttiva].sort();
             salvaNelTempo();
             renderAlunniClasse();
-            
-            document.getElementById('flash-alunni-textarea').value = "";
-            alert(`⚡ Importazione completata! Aggiunti con successo ${inseriti} alunni alla classe ${classeAttiva}.`);
+            document.getElementById('alunni-bulk-textarea').value = "";
+            alert(`${righe.length} alunni importati e inseriti nell'elenco.`);
         }
 
-        function rimuoviSingoloAlunno(idx) {
-            if(!confirm("Sei sicuro di voler cancellare l'alunno selezionato? Questo non rimuoverà i suoi voti passati dallo storico.")) return;
-            DB.alunni[classeAttiva].splice(idx, 1);
-            salvaNelTempo();
-            renderAlunniClasse();
+        function eliminaSingoloAlunno(alunnoNome) {
+            if (confirm(`Rimuovere lo studente ${alunnoNome} dalla classe? Verranno rimossi anche i suoi voti e registri giornalieri.`)) {
+                const cls = DB.classi[classeAttivaId];
+                cls.alunni = cls.alunni.filter(a => a !== alunnoNome);
+                
+                // Rimozione a cascata dei voti dell'alunno
+                if (cls.voti) {
+                    cls.voti = cls.voti.filter(v => v.alunno !== alunnoNome);
+                }
+                
+                // Rimozione registri presenze appelli
+                if (cls.appelli) {
+                    for (let d in cls.appelli) {
+                        if (cls.appelli[d][alunnoNome]) delete cls.appelli[d][alunnoNome];
+                    }
+                }
+
+                salvaNelTempo();
+                renderAlunniClasse();
+            }
         }
 
-        /* === 🖋️ LOGICA FIRME E GIORNALE (CON FIRME MULTIPLE) === */
+        // --- GESTIONE GIORNALE DELLE FIRME MULTIPLE ---
         function aggiungiRigaFirmaInterfaccia() {
             const container = document.getElementById('container-righe-firme-multiple');
-            const primaRiga = container.querySelector('.riga-firma-multipla');
-            const nuovaRiga = primaRiga.cloneNode(true);
+            const dataDefault = document.querySelector('.f-multi-data').value || utenteConnesso.dataLavoro;
             
-            // Pulisce il testo e resetta i campi
-            nuovaRiga.querySelector('.f-multi-argomento').value = "";
-            
-            // Crea un pulsante rapido per cancellare la riga in eccesso
-            const btnDelete = document.createElement('button');
-            btnDelete.innerText = "❌";
-            btnDelete.className = "action-icon-btn";
-            btnDelete.style.marginTop = "25px";
-            btnDelete.onclick = function() { nuovaRiga.remove(); };
-            nuovaRiga.appendChild(btnDelete);
-            
+            const nuovaRiga = document.createElement('div');
+            nuovaRiga.className = "riga-firma-multipla";
+            nuovaRiga.style = "display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #CBD5E1;";
+            nuovaRiga.innerHTML = `
+                <div class="form-group" style="margin-bottom:0;">
+                    <label>Data Lezione</label>
+                    <input type="date" class="f-multi-data" value="${dataDefault}">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label>Materia</label>
+                    <select class="f-multi-materia"><option value="${materiaAttiva}">${materiaAttiva}</option></select>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label>Ora</label>
+                    <select class="f-multi-ora">
+                        <option value="1^ ora">1^ ora</option><option value="2^ ora">2^ ora</option>
+                        <option value="3^ ora">3^ ora</option><option value="4^ ora">4^ ora</option>
+                        <option value="5^ ora">5^ ora</option><option value="6^ ora">6^ ora</option>
+                        <option value="7^ ora">7^ ora</option><option value="8^ ora">8^ ora</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom:0; flex-grow: 1;">
+                    <label>Argomento Svolto / Compiti Assegnati</label>
+                    <input type="text" class="f-multi-argomento" placeholder="Es: Spiegazione capitolo 5..." style="width: 100%;">
+                </div>
+                <button class="btn-danger" style="align-self: flex-end; margin-bottom: 2px;" onclick="this.parentElement.remove()">X</button>
+            `;
             container.appendChild(nuovaRiga);
-            popolaSelezionaMaterieFirme();
         }
 
         function salvaTutteLeFirmeMultiple() {
-            const righe = document.querySelectorAll('.riga-firma-multipla');
-            if(!DB.firme) DB.firme = {};
-            if(!DB.firme[classeAttiva]) DB.firme[classeAttiva] = [];
+            const container = document.getElementById('container-righe-firme-multiple');
+            const righe = container.querySelectorAll('.riga-firma-multipla');
+            const cls = DB.classi[classeAttivaId];
+            
+            if (!cls.giornaleFirme) cls.giornaleFirme = [];
+            const idxModifica = document.getElementById('firma-index-modifica').value;
 
-            let contatorefirme = 0;
+            // Logica Modifica Record Singolo Esistente
+            if (idxModifica !== "") {
+                const riga = righe[0];
+                const index = parseInt(idxModifica);
+                cls.giornaleFirme[index] = {
+                    data: riga.querySelector('.f-multi-data').value,
+                    materia: riga.querySelector('.f-multi-materia').value,
+                    ora: riga.querySelector('.f-multi-ora').value,
+                    argomento: riga.querySelector('.f-multi-argomento').value.trim()
+                };
+                document.getElementById('firma-index-modifica').value = "";
+                document.getElementById('btn-annulla-firma').classList.add('hidden');
+                document.getElementById('titolo-form-firma').innerText = "🖋️ Apponi Firme Giornale di Classe (Singole o Multiple)";
+                document.getElementById('btn-salva-firma').innerText = "Invia e Registra Tutte le Lezioni";
+            } else {
+                // Logica Inserimento Multiplo di Gruppo
+                righe.forEach(riga => {
+                    const dataVal = riga.querySelector('.f-multi-data').value;
+                    const matVal = riga.querySelector('.f-multi-materia').value;
+                    const oraVal = riga.querySelector('.f-multi-ora').value;
+                    const argVal = riga.querySelector('.f-multi-argomento').value.trim();
 
-            righe.forEach(riga => {
-                const data = riga.querySelector('.f-multi-data').value;
-                const materia = riga.querySelector('.f-multi-materia').value;
-                const ora = riga.querySelector('.f-multi-ora').value;
-                const argomento = riga.querySelector('.f-multi-argomento').value.trim();
+                    if (!dataVal || !argVal) return;
 
-                if(data && argomento) {
-                    DB.firme[classeAttiva].push({
-                        data: data,
-                        materia: materia,
-                        ora: ora,
-                        argomento: argomento,
-                        docente: utenteConnesso.nominativo
+                    cls.giornaleFirme.push({
+                        data: dataVal,
+                        materia: matVal,
+                        ora: oraVal,
+                        argomento: argVal
                     });
-                    contatorefirme++;
-                }
-            });
+                });
+            }
 
-            if(contatorefirme === 0) return alert("Compila almeno la data e la descrizione della lezione in una riga prima di inviare!");
-
-            // Ordina lo storico decrescente per data
-            DB.firme[classeAttiva].sort((a,b) => new Date(b.data) - new Date(a.data));
             salvaNelTempo();
             renderFirmeClasse();
-
-            // Ripristina l'interfaccia a una sola riga pulita
-            const container = document.getElementById('container-righe-firme-multiple');
+            
+            // Resetta l'interfaccia a riga singola pulita
             container.innerHTML = `
                 <div class="riga-firma-multipla" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #CBD5E1;">
                     <div class="form-group" style="margin-bottom:0;">
                         <label>Data Lezione</label>
-                        <input type="date" class="f-multi-data">
+                        <input type="date" class="f-multi-data" value="${utenteConnesso.dataLavoro}">
                     </div>
                     <div class="form-group" style="margin-bottom:0;">
                         <label>Materia</label>
-                        <select class="f-multi-materia"></select>
+                        <select class="f-multi-materia"><option value="${materiaAttiva}">${materiaAttiva}</option></select>
                     </div>
                     <div class="form-group" style="margin-bottom:0;">
                         <label>Ora</label>
@@ -1366,597 +1944,569 @@ function salvaNelTempo() {
                     </div>
                 </div>
             `;
-            container.querySelector('.f-multi-data').value = utenteConnesso.dataLavoro;
-            popolaSelezionaMaterieFirme();
-
-            alert(`📝 Registrate con successo ${contatorefirme} lezioni nel giornale di classe!`);
+            alert("Giornale di classe aggiornato con successo.");
         }
 
         function renderFirmeClasse() {
             const tbody = document.getElementById('table-firme-body');
             tbody.innerHTML = "";
-            const filtroMat = document.getElementById('filtro-firme-materia').value;
-            let elenco = DB.firme[classeAttiva] || [];
+            const cls = DB.classi[classeAttivaId];
 
-            if(filtroMat !== "Tutte") {
-                elenco = elenco.filter(f => f.materia === filtroMat);
-            }
-
-            if(elenco.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748B;">Nessuna firma apposta in questo registro con i filtri attuali.</td></tr>`;
+            if (!cls.giornaleFirme || cls.giornaleFirme.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="color:#64748B; font-style:italic; text-align:center;">Nessuna firma registrata in questo giornale.</td></tr>`;
                 return;
             }
 
-            elenco.forEach((f, indexOriginale) => {
+            // Ordinamento cronologico decrescente (lezione più recente in alto)
+            const copieFirme = cls.giornaleFirme.map((f, i) => ({...f, originalIndex: i}));
+            copieFirme.sort((a, b) => new Date(b.data) - new Date(a.data));
+
+            copieFirme.forEach(f => {
                 const tr = document.createElement('tr');
-                const pData = f.data.split('-');
+                const pz = f.data.split('-');
                 tr.innerHTML = `
-                    <td><strong>${pData[2]}/${pData[1]}/${pData[0]}</strong></td>
-                    <td><span class="badge-media pass" style="background:#E0F2FE; color:#0369A1; border-radius:4px; padding:3px 6px;">${f.ora}</span></td>
-                    <td><span style="font-weight:600; color:var(--primary-dark);">${f.materia}</span></td>
-                    <td>${f.argomento} <br><small style="color:#94A3B8;">Firmato da: ${f.docente}</small></td>
-                    <td style="text-align:center;">
-                        <button class="action-icon-btn" onclick="rimuoviFirmaAssoluta(${indexOriginale})">🗑️</button>
+                    <td><strong>${pz[2]}/${pz[1]}/${pz[0]}</strong></td>
+                    <td><span class="badge-date-top" style="color:var(--dark-grey); font-weight:600;">${f.ora}</span></td>
+                    <td><span style="color:var(--primary-dark); font-weight:bold;">${f.materia}</span></td>
+                    <td>${f.argomento}</td>
+                    <td>
+                        <button class="action-icon-btn" onclick="attivaModificaFirma(${f.originalIndex})">✏️</button>
+                        <button class="action-icon-btn" style="color:var(--red-fail);" onclick="eliminaFirmaLezione(${f.originalIndex})">🗑️</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function rimuoviFirmaAssoluta(idx) {
-            if(!confirm("Sicuro di voler rimuovere questa firma dal giornale?")) return;
-            DB.firme[classeAttiva].splice(idx, 1);
-            salvaNelTempo();
-            renderFirmeClasse();
+        function attivaModificaFirma(index) {
+            const cls = DB.classi[classeAttivaId];
+            const f = cls.giornaleFirme[index];
+
+            document.getElementById('firma-index-modifica').value = index;
+            document.getElementById('titolo-form-firma').innerText = "✏️ Modifica Dettagli Lezione Selezionata";
+            document.getElementById('btn-salva-firma').innerText = "Salva Modifica Record";
+            document.getElementById('btn-annulla-firma').classList.remove('hidden');
+
+            const container = document.getElementById('container-righe-firme-multiple');
+            container.innerHTML = `
+                <div class="riga-firma-multipla" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Data Lezione</label>
+                        <input type="date" class="f-multi-data" value="${f.data}">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Materia</label>
+                        <select class="f-multi-materia"><option value="${f.materia}">${f.materia}</option></select>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Ora</label>
+                        <select class="f-multi-ora" id="edit-f-ora"></select>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0; flex-grow: 1;">
+                        <label>Argomento Svolto / Compiti Assegnati</label>
+                        <input type="text" class="f-multi-argomento" value="${f.argomento}" style="width: 100%;">
+                    </div>
+                </div>
+            `;
+
+            const ore = ["1^ ora", "2^ ora", "3^ ora", "4^ ora", "5^ ora", "6^ ora", "7^ ora", "8^ ora"];
+            const oSel = document.getElementById('edit-f-ora');
+            ore.forEach(oraStr => {
+                const opt = document.createElement('option');
+                opt.value = oraStr; opt.innerText = oraStr;
+                if (oraStr === f.ora) opt.selected = true;
+                oSel.appendChild(opt);
+            });
         }
 
-        /* === 📋 REGISTRO GIORNALIERO ED APPELLO === */
-        function renderAppelloGiornaliero() {
-            const dataLavoro = utenteConnesso.dataLavoro;
-            const parti = dataLavoro.split('-');
-            document.getElementById('label-data-appello-attiva').innerText = `${parti[2]}/${parti[1]}/${parti[0]}`;
+        function annullaModificaFirma() {
+            document.getElementById('firma-index-modifica').value = "";
+            document.getElementById('btn-annulla-firma').classList.add('hidden');
+            document.getElementById('titolo-form-firma').innerText = "🖋️ Apponi Firme Giornale di Classe (Singole o Multiple)";
+            document.getElementById('btn-salva-firma').innerText = "Invia e Registra Tutte le Lezioni";
+            cambiaMateriaAttivaRegistro(materiaAttiva);
+        }
 
+        function eliminaFirmaLezione(index) {
+            if (confirm("Cancellare definitivamente la firma di questa lezione dal registro storico?")) {
+                const cls = DB.classi[classeAttivaId];
+                cls.giornaleFirme.splice(index, 1);
+                salvaNelTempo();
+                renderFirmeClasse();
+            }
+        }
+
+        // --- GESTIONE APPELLO REGISTRO GIORNALIERO ---
+        function renderAppelloGiorno() {
             const tbody = document.getElementById('table-appello-body');
             tbody.innerHTML = "";
-            
-            const alunni = DB.alunni[classeAttiva] || [];
-            if(alunni.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4">Carica gli alunni nel tab per visualizzare l'appello.</td></tr>`;
+            const cls = DB.classi[classeAttivaId];
+            const dataSess = document.getElementById('appello-data-selezionata').value;
+
+            if (!cls.alunni || cls.alunni.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="color:#64748B; font-style:italic; text-align:center;">Nessun alunno configurato in classe.</td></tr>`;
                 return;
             }
 
-            if(!DB.appelli[classeAttiva]) DB.appelli[classeAttiva] = {};
-            if(!DB.appelli[classeAttiva][dataLavoro]) DB.appelli[classeAttiva][dataLavoro] = {};
+            if (!cls.appelli) cls.appelli = {};
+            if (!cls.appelli[dataSess]) cls.appelli[dataSess] = {};
 
-            alunni.forEach((al, idx) => {
-                // Stato di default Presente se non salvato
-                if(!DB.appelli[classeAttiva][dataLavoro][al]) {
-                    DB.appelli[classeAttiva][dataLavoro][al] = { stato: 'P', nota: '' };
-                }
+            cls.alunni.sort();
 
-                const infoApp = DB.appelli[classeAttiva][dataLavoro][al];
+            cls.alunni.forEach((al, idx) => {
+                const statoSalvato = cls.appelli[dataSess][al] ? cls.appelli[dataSess][al].stato : "P";
+                const notaSalvata = cls.appelli[dataSess][al] ? cls.appelli[dataSess][al].nota : "";
+
                 const tr = document.createElement('tr');
-
-                let btnP = `<button class="filter-pill ${infoApp.stato==='P'?'active':''}" style="${infoApp.stato==='P'?'background:#166534;':''}" onclick="cambiaStatoAppello('${al}','P')">P</button>`;
-                let btnA = `<button class="filter-pill ${infoApp.stato==='A'?'active':''}" style="${infoApp.stato==='A'?'background:#991B1B;':''}" onclick="cambiaStatoAppello('${al}','A')">A</button>`;
-                let btnR = `<button class="filter-pill ${infoApp.stato==='R'?'active':''}" style="${infoApp.stato==='R'?'background:#D97706;':''}" onclick="cambiaStatoAppello('${al}','R')">R</button>`;
-                let btnU = `<button class="filter-pill ${infoApp.stato==='U'?'active':''}" style="${infoApp.stato==='U'?'background:#475569;':''}" onclick="cambiaStatoAppello('${al}','U')">U</button>`;
-
                 tr.innerHTML = `
-                    <td>${idx+1}</td>
+                    <td><span class="num-registro">${idx + 1}</span></td>
                     <td><strong>${al}</strong></td>
                     <td>
-                        <div class="filter-pill-container">${btnP} ${btnA} ${btnR} ${btnU}</div>
+                        <select onchange="salvaStatoAppelloSingolo('${al}', this.value)" style="font-weight:bold; width:130px;">
+                            <option value="P" ${statoSalvato === "P" ? "selected" : ""}>🟢 PRESENTE</option>
+                            <option value="A" ${statoSalvato === "A" ? "selected" : ""}>🔴 ASSENTE</option>
+                            <option value="I" ${statoSalvato === "I" ? "selected" : ""}>🟡 RITARDO</option>
+                            <option value="U" ${statoSalvato === "U" ? "selected" : ""}>🔵 USCITA ANT.</option>
+                        </select>
                     </td>
                     <td>
-                        <input type="text" value="${infoApp.nota}" onchange="salvaNotaAppello('${al}', this.value)" placeholder="Giustificazione, ore di ritardo..." style="width:100%; padding:4px 8px;">
+                        <input type="text" placeholder="Giustificazione, ore ritardo..." value="${notaSalvata}" 
+                               onchange="salvaNotaAppelloSingolo('${al}', this.value)" style="width:100%;">
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function cambiaStatoAppello(alunno, nuovoStato) {
-            const dataLavoro = utenteConnesso.dataLavoro;
-            DB.appelli[classeAttiva][dataLavoro][alunno].stato = nuovoStato;
-            salvaNelTempo();
-            renderAppelloGiornaliero();
-        }
-
-        function salvaNotaAppello(alunno, testoNota) {
-            const dataLavoro = utenteConnesso.dataLavoro;
-            DB.appelli[classeAttiva][dataLavoro][alunno].nota = testoNota.trim();
+        function salvaStatoAppelloSingolo(alunno, stato) {
+            const cls = DB.classi[classeAttivaId];
+            const dataSess = document.getElementById('appello-data-selezionata').value;
+            
+            if (!cls.appelli[dataSess][alunno]) cls.appelli[dataSess][alunno] = { stato: "P", nota: "" };
+            cls.appelli[dataSess][alunno].stato = stato;
             salvaNelTempo();
         }
 
-        /* === 📝 LOGICA REGISTRO DEI VOTI E VERIFICA FLASH === */
-        function switchModalitaVoti(modo) {
-            if(modo === 'singolo') {
-                document.getElementById('voti-singolo-container').classList.remove('hidden');
-                document.getElementById('voti-flash-container').classList.add('hidden');
-                document.getElementById('btn-voto-singolo-toggle').style.backgroundColor = "var(--primary-dark)";
-                document.getElementById('btn-voto-flash-toggle').style.backgroundColor = "var(--accent-color)";
-                
-                // Popola la select alunni nel form singolo
-                const sel = document.getElementById('voto-alunno-select');
-                sel.innerHTML = "";
-                const alunni = DB.alunni[classeAttiva] || [];
-                alunni.forEach(al => sel.innerHTML += `<option value="${al}">${al}</option>`);
-                document.getElementById('voto-data').value = utenteConnesso.dataLavoro;
-            } else {
-                document.getElementById('voti-singolo-container').classList.add('hidden');
-                document.getElementById('voti-flash-container').classList.remove('hidden');
-                document.getElementById('btn-voto-singolo-toggle').style.backgroundColor = "var(--primary-red)";
-                document.getElementById('btn-voto-flash-toggle').style.backgroundColor = "var(--primary-dark)";
-                
-                // Disegna e renderizza la griglia flash intera verifica
-                renderTabellaVotiFlash();
-            }
+        function salvaNotaAppelloSingolo(alunno, nota) {
+            const cls = DB.classi[classeAttivaId];
+            const dataSess = document.getElementById('appello-data-selezionata').value;
+            
+            if (!cls.appelli[dataSess][alunno]) cls.appelli[dataSess][alunno] = { stato: "P", nota: "" };
+            cls.appelli[dataSess][alunno].nota = nota.trim();
+            salvaNelTempo();
         }
 
-        // COSTRUZIONE DELLA TABELLA EXCEL PER L'INSERIMENTO FLASH DEI VOTI
-        function renderTabellaVotiFlash() {
-            const alunni = DB.alunni[classeAttiva] || [];
-            const tbody = document.getElementById('table-voti-flash-body');
-            tbody.innerHTML = "";
+        function impostaTuttiPresenti() {
+            const cls = DB.classi[classeAttivaId];
+            const dataSess = document.getElementById('appello-data-selezionata').value;
+            
+            cls.alunni.forEach(al => {
+                if (!cls.appelli[dataSess][al]) cls.appelli[dataSess][al] = { stato: "P", nota: "" };
+                cls.appelli[dataSess][al].stato = "P";
+            });
 
-            if(alunni.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:15px; color:#64748B;">Nessun alunno presente in questa classe.</td></tr>`;
+            salvaNelTempo();
+            renderAppelloGiorno();
+        }
+
+        // --- GESTIONE REGISTRO DELE VALUTAZIONI (VOTI) ---
+        function aggiungiVoto() {
+            const alunno = document.getElementById('voto-alunno-select').value;
+            const dataVal = document.getElementById('voto-data').value;
+            const tipoVal = document.getElementById('voto-tipo').value;
+            const val = parseFloat(document.getElementById('voto-valore').value);
+            const comm = document.getElementById('voto-commento').value.trim();
+
+            if (!alunno || !dataVal) {
+                alert("Verificare i campi di inserimento valutazione.");
                 return;
             }
 
-            alunni.forEach((al, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td style="text-align:left; font-weight:600;">${al}</td>
-                    <td><input type="text" class="input-voto-flash-valore" data-alunno="${al}" placeholder="Voto" style="width:85px; text-align:center; font-weight:bold; border-color:var(--accent-color);"></td>
-                    <td><input type="text" class="input-voto-flash-nota" placeholder="Es. Ottima prova scritta" style="width:100%;"></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
+            const cls = DB.classi[classeAttivaId];
+            if (!cls.voti) cls.voti = [];
 
-        function salvaVerificaFlashCompleta() {
-            const dataV = document.getElementById('flash-voto-data').value;
-            const tipoV = document.getElementById('flash-voto-tipo').value;
-            const descV = document.getElementById('flash-voto-descrizione').value.trim();
-
-            if(!dataV || !descV) return alert("Inserisci la data e la descrizione/argomento generale della verifica!");
-
-            if(!DB.voti) DB.voti = {};
-            if(!DB.voti[classeAttiva]) DB.voti[classeAttiva] = [];
-
-            const righe = document.querySelectorAll('#table-voti-flash-body tr');
-            let contatoreInseriti = 0;
-
-            righe.forEach(riga => {
-                const inputValore = riga.querySelector('.input-voto-flash-valore');
-                const inputNota = riga.querySelector('.input-voto-flash-nota');
-
-                if(inputValore && inputValore.value.trim() !== "") {
-                    const nominativoAlunno = inputValore.getAttribute('data-alunno');
-                    const votoScritto = inputValore.value.trim();
-                    const notaScritta = inputNota ? inputNota.value.trim() : "";
-
-                    DB.voti[classeAttiva].push({
-                        alunno: nominativoAlunno,
-                        materia: materiaAttiva,
-                        data: dataV,
-                        tipo: tipoV,
-                        voto: votoScritto,
-                        commento: notaScritta
-                    });
-                    contatoreInseriti++;
-                }
-            });
-
-            if(contatoreInseriti === 0) return alert("Nessun voto inserito nelle caselle del tabellone!");
-
-            salvaNelTempo();
-            renderVotiClasse();
-            
-            // Svuota e resetta i campi grafici per sicurezza
-            document.getElementById('flash-voto-descrizione').value = "";
-            document.querySelectorAll('.input-voto-flash-valore').forEach(i => i.value = "");
-            document.querySelectorAll('.input-voto-flash-nota').forEach(i => i.value = "");
-            
-            alert(`⚡ Sincronizzati con successo ${contatoreInseriti} voti per la verifica di ${materiaAttiva}!`);
-        }
-
-        function salvaVotoSingolo() {
-            const alunno = document.getElementById('voto-alunno-select').value;
-            const valore = document.getElementById('voto-valore').value.trim();
-            const data = document.getElementById('voto-data').value;
-            const tipo = document.getElementById('voto-tipo').value;
-            const comm = document.getElementById('voto-commento').value.trim();
-
-            if(!valore || !data) return alert("Inserisci il voto e la data della prova!");
-
-            if(!DB.voti[classeAttiva]) DB.voti[classeAttiva] = [];
-            DB.voti[classeAttiva].push({
+            cls.voti.push({
                 alunno: alunno,
+                data: dataVal,
                 materia: materiaAttiva,
-                data: data,
-                tipo: tipo,
-                voto: valore,
+                tipo: tipoVal,
+                valore: val,
                 commento: comm
             });
 
             salvaNelTempo();
             renderVotiClasse();
-            document.getElementById('voto-valore').value = "";
             document.getElementById('voto-commento').value = "";
         }
 
         function renderVotiClasse() {
-            document.querySelectorAll('.placeholder-materia-testo').forEach(el => el.innerText = materiaAttiva);
-            const tbody = document.getElementById('table-voti-riepilogo-body');
+            const tbody = document.getElementById('table-voti-body');
             tbody.innerHTML = "";
+            const cls = DB.classi[classeAttivaId];
 
-            const alunni = DB.alunni[classeAttiva] || [];
-            const tuttiVoti = DB.voti[classeAttiva] || [];
-
-            if(alunni.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4">Nessun alunno configurato.</td></tr>`;
+            if (!cls.alunni || cls.alunni.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="color:#64748B; font-style:italic; text-align:center;">Nessun alunno inserito in archivio.</td></tr>`;
                 return;
             }
 
-            alunni.forEach((al, idx) => {
-                // Filtra solo i voti dell'alunno per la materia selezionata
-                const votiAl = tuttiVoti.filter(v => v.alunno === al && v.materia === materiaAttiva);
+            cls.alunni.sort();
+
+            cls.alunni.forEach((al, idx) => {
                 const tr = document.createElement('tr');
-
-                let htmlVoti = "";
+                
+                // Filtra voti relativi all'alunno e alla materia attiva di sessione
+                const votiAlMat = (cls.voti || []).filter(v => v.alunno === al && v.materia === materiaAttiva);
+                
+                // Generazione quadratini grafici per ogni voto
+                let cellVoti = "";
                 let somma = 0;
-                let validi = 0;
 
-                votiAl.forEach((v, indexInterno) => {
-                    // Trova l'indice assoluto nell'array generale per poterlo rimuovere
-                    const idxAssoluto = tuttiVoti.findIndex(x => x === v);
+                votiAlMat.forEach((v, vIdx) => {
+                    const colClasse = v.valore >= 6 ? "voto-verde" : "voto-rosso";
+                    // Trova l'indice assoluto reale nel DB per la rimozione
+                    const realIndex = cls.voti.findIndex(orig => orig === v);
                     
-                    // Pulizia del voto per calcolare la media aritmetica (es: 6.5, 7+, 6-)
-                    let votoPulito = v.voto.replace('+', '.25').replace('-', '.75').replace('/9', '.5').replace('/7', '.5').replace('/6', '.5').replace('/8', '.5');
-                    let num = parseFloat(votoPulito);
-                    if(!isNaN(num)) { somma += num; validi++; }
-
-                    let classeColore = "voto-verde";
-                    let n = parseFloat(votoPulito);
-                    if(!isNaN(n) && n < 6) classeColore = "voto-rosso";
-
-                    htmlVoti += `
-                        <div class="voto-box">
-                            <span class="${classeColore}">${v.voto}</span>
-                            <small>(${v.tipo.substring(0,3)} - ${v.data.substring(5)})</small>
-                            <span class="btn-delete-voto" onclick="rimuoviVotoAssoluto(${idxAssoluto})">×</span>
+                    cellVoti += `
+                        <div class="voto-box" title="${v.data} - Tipo: ${v.tipo} ${v.commento ? '\nNote: ' + v.commento : ''}">
+                            <span class="${colClasse}"><strong>${v.valore}</strong></span>
+                            <small>(${v.tipo[0]})</small>
+                            <span class="btn-delete-voto" onclick="rimuoviSingoloVoto(${realIndex})">×</span>
                         </div>
                     `;
+                    somma += v.valore;
                 });
 
-                let mediaStr = "--";
-                let classeMedia = "pass";
-                if(validi > 0) {
-                    let media = sommapuliziaMedia(somma / validi);
-                    mediaStr = media.toFixed(2);
-                    if(media < 6) classeMedia = "fail";
+                // Calcolo media matematica aritmetica
+                let cellMedia = "--";
+                if (votiAlMat.length > 0) {
+                    const mediaVal = (somma / votiAlMat.length).toFixed(2);
+                    const bCls = mediaVal >= 6 ? "pass" : "fail";
+                    cellMedia = `<span class="badge-media ${bCls}">${mediaVal}</span>`;
                 }
 
                 tr.innerHTML = `
-                    <td>${idx+1}</td>
+                    <td><span class="num-registro">${idx + 1}</span></td>
                     <td><strong>${al}</strong></td>
-                    <td><div style="display:flex; flex-wrap:wrap;">${htmlVoti || '<span style="color:#94A3B8; font-style:italic; font-size:13px;">Nessun voto registrato</span>'}</div></td>
-                    <td style="text-align:center;"><span class="badge-media ${classeMedia}">${mediaStr}</span></td>
+                    <td>${cellVoti || "<span style='color:#94A3B8; font-size:13px;'>Nessun voto assegnato</span>"}</td>
+                    <td>${cellMedia}</td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function sommapuliziaMedia(val) { return val; }
-
-        function rimuoviVotoAssoluto(idx) {
-            if(!confirm("Vuoi cancellare definitivamente questa valutazione dal registro?")) return;
-            DB.voti[classeAttiva].splice(idx, 1);
-            salvaNelTempo();
-            renderVotiClasse();
+        function rimuoviSingoloVoto(index) {
+            if (confirm("Eliminare definitivamente questa valutazione dal registro?")) {
+                const cls = DB.classi[classeAttivaId];
+                cls.voti.splice(index, 1);
+                salvaNelTempo();
+                renderVotiClasse();
+            }
         }
 
-        /* === 🎓 LOGICA SCRUTINI QUADRIMESTRALI === */
-        function renderScrutiniClasse() {
-            const periodo = document.getElementById('select-scrutinio-periodo').value;
+        // --- GESTIONE SCRUTINI QUADRIMESTRALI ---
+        function renderScrutini() {
             const tbody = document.getElementById('table-scrutini-body');
             tbody.innerHTML = "";
+            const cls = DB.classi[classeAttivaId];
+            const q = document.getElementById('scrutinio-quadrimestre').value;
 
-            const alunni = DB.alunni[classeAttiva] || [];
-            const tuttiVoti = DB.voti[classeAttiva] || [];
+            if (!cls.alunni || cls.alunni.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="color:#64748B; font-style:italic; text-align:center;">Nessun alunno presente.</td></tr>`;
+                return;
+            }
 
-            if(!DB.scrutini[classeAttiva]) DB.scrutini[classeAttiva] = {};
-            if(!DB.scrutini[classeAttiva][periodo]) DB.scrutini[classeAttiva][periodo] = {};
-            if(!DB.scrutini[classeAttiva][periodo][materiaAttiva]) DB.scrutini[classeAttiva][periodo][materiaAttiva] = {};
+            // Inizializzazione chiavi strutturali per scrutini nel DB
+            if (!DB.scrutini) DB.scrutini = {};
+            if (!DB.scrutini[classeAttivaId]) DB.scrutini[classeAttivaId] = {};
+            if (!DB.scrutini[classeAttivaId][materiaAttiva]) DB.scrutini[classeAttivaId][materiaAttiva] = {};
+            if (!DB.scrutini[classeAttivaId][materiaAttiva][q]) DB.scrutini[classeAttivaId][materiaAttiva][q] = {};
 
-            alunni.forEach((al, idx) => {
-                const votiAl = tuttiVoti.filter(v => v.alunno === al && v.materia === materiaAttiva);
-                let somma = 0, validi = 0;
-                votiAl.forEach(v => {
-                    let votoPulito = v.voto.replace('+', '.25').replace('-', '.75');
-                    let num = parseFloat(votoPulito);
-                    if(!isNaN(num)) { somma += num; validi++; }
-                });
+            cls.alunni.sort();
+
+            cls.alunni.forEach((al, idx) => {
+                // Calcola media matematica di riferimento periodico
+                const votiAlMat = (cls.voti || []).filter(v => v.alunno === al && v.materia === materiaAttiva);
+                let mediaArStr = "--";
+                if (votiAlMat.length > 0) {
+                    let s = 0; votiAlMat.forEach(v => s += v.valore);
+                    mediaArStr = (s / votiAlMat.length).toFixed(2);
+                }
+
+                // Conta assenze dell'alunno calcolate storicamente dalle ore di appello
+                let contAssenze = 0;
+                if (cls.appelli) {
+                    for (let d in cls.appelli) {
+                        if (cls.appelli[d][al] && cls.appelli[d][al].stato === "A") {
+                            contAssenze++;
+                        }
+                    }
+                }
+
+                const dScrut = DB.scrutini[classeAttivaId][materiaAttiva][q][al] || { votoScrutinio: "", assenze: contAssenze, giudizio: "" };
                 
-                let mediaStr = "--";
-                let mediaArrotondata = "";
-                if(validi > 0) {
-                    let med = somma / validi;
-                    mediaStr = med.toFixed(2);
-                    mediaArrotondata = Math.round(med);
-                }
-
-                if(!DB.scrutini[classeAttiva][periodo][materiaAttiva][al]) {
-                    DB.scrutini[classeAttiva][periodo][materiaAttiva][al] = { votoProposto: mediaArrotondata, note: '' };
-                }
-
-                const dScrut = DB.scrutini[classeAttiva][periodo][materiaAttiva][al];
-
+                // Creazione della riga di immissione voti bloccati di scrutinio
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${idx+1}</td>
+                    <td><span class="num-registro">${idx + 1}</span></td>
                     <td><strong>${al}</strong></td>
-                    <td style="text-align:center; font-weight:bold; color:var(--primary-dark);">${mediaStr}</td>
+                    <td><span class="badge-media" style="background:#E2E8F0; color:#334155;">${mediaArStr}</span></td>
                     <td>
-                        <input type="number" min="1" max="10" value="${dScrut.votoProposto}" class="scrut-voto-input" data-alunno="${al}" style="width:75px; font-weight:bold; text-align:center;">
+                        <input type="number" min="1" max="10" step="1" id="scrut-voto-${idx}" value="${dScrut.votoScrutinio || ''}" 
+                               style="width:85px; font-weight:bold; text-align:center; border-color:var(--primary-red);">
                     </td>
                     <td>
-                        <input type="text" value="${dScrut.note}" class="scrut-note-input" data-alunno="${al}" placeholder="Note di comportamento, giudizio analitico o assenze..." style="width:100%;">
+                        <input type="number" min="0" id="scrut-ass-${idx}" value="${dScrut.assenze ?? contAssenze}" style="width:75px; text-align:center;">
+                    </td>
+                    <td>
+                        <input type="text" id="scrut-giud-${idx}" value="${dScrut.giudizio || ''}" placeholder="Note di consiglio o livello..." style="width:100%;">
                     </td>
                 `;
                 tbody.appendChild(tr);
+            });
+        }
+
+        function proponiVotiScrutinioDalleMedie() {
+            const cls = DB.classi[classeAttivaId];
+            cls.alunni.sort().forEach((al, idx) => {
+                const votiAlMat = (cls.voti || []).filter(v => v.alunno === al && v.materia === materiaAttiva);
+                if (votiAlMat.length > 0) {
+                    let s = 0; votiAlMat.forEach(v => s += v.valore);
+                    const arrotondato = Math.round(s / votiAlMat.length);
+                    document.getElementById(`scrut-voto-${idx}`).value = arrotondato;
+                }
             });
         }
 
         function salvaScrutiniClasse() {
-            const periodo = document.getElementById('select-scrutinio-periodo').value;
-            const righeVoto = document.querySelectorAll('.scrut-voto-input');
-            const righeNote = document.querySelectorAll('.scrut-note-input');
+            const cls = DB.classi[classeAttivaId];
+            const q = document.getElementById('scrutinio-quadrimestre').value;
+            
+            cls.alunni.sort().forEach((al, idx) => {
+                const vScr = document.getElementById(`scrut-voto-${idx}`).value;
+                const assScr = document.getElementById(`scrut-ass-${idx}`).value;
+                const giuScr = document.getElementById(`scrut-giud-${idx}`).value.trim();
 
-            righeVoto.forEach(input => {
-                const al = input.getAttribute('data-alunno');
-                DB.scrutini[classeAttiva][periodo][materiaAttiva][al].votoProposto = input.value;
-            });
-
-            righeNote.forEach(input => {
-                const al = input.getAttribute('data-alunno');
-                DB.scrutini[classeAttiva][periodo][materiaAttiva][al].note = input.value.trim();
+                DB.scrutini[classeAttivaId][materiaAttiva][q][al] = {
+                    votoScrutinio: vScr ? parseInt(vScr) : "",
+                    assenze: assScr ? parseInt(assScr) : 0,
+                    giudizio: giuScr
+                };
             });
 
             salvaNelTempo();
-            alert(`🎓 Tabellone scrutini per il ${periodo} in ${materiaAttiva} salvato correttamente!`);
+            alert("💾 Voti e giudizi di scrutinio salvati in archivio e bloccati.");
+            renderScrutini();
         }
 
-        /* === 📅 GESTIONE AGENDA INTEGRATA ED INTERATTIVA === */
+        // --- CALENDARIO AGENDA GESTIONE INTERFACCIA ---
         function openAgendaView() {
             showView('agenda-view');
             
-            // Popola le select materie dell'agenda
-            const mieClassi = DB.classi[utenteConnesso.username] || [];
-            const matSelect = document.getElementById('age-materia-select');
-            matSelect.innerHTML = '<option value="Generale/Agenda">Generale / Agenda</option>';
+            // Popola filtri classi agenda
+            const clsSelect = document.getElementById('age-classe-select');
+            const filtroSelect = document.getElementById('filtro-agenda-classe');
             
-            let tutteLeMaterieUnite = [];
-            mieClassi.forEach(c => {
-                c.materie.forEach(m => { if(!tutteLeMaterieUnite.includes(m)) tutteLeMaterieUnite.push(m); });
-            });
-            tutteLeMaterieUnite.forEach(m => matSelect.innerHTML += `<option value="${m}">${m}</option>`);
+            clsSelect.innerHTML = '<option value="Tutte">Tutte le mie classi</option>';
+            filtroSelect.innerHTML = '<option value="Tutte">Tutte le Classi</option>';
 
+            Object.keys(DB.classi).sort().forEach(k => {
+                const opt1 = document.createElement('option'); opt1.value = k; opt1.innerText = "Classe " + k;
+                const opt2 = document.createElement('option'); opt2.value = k; opt2.innerText = "Classe " + k;
+                clsSelect.appendChild(opt1);
+                filtroSelect.appendChild(opt2);
+            });
+
+            onAgendaClasseChange();
             renderAgenda();
         }
 
         function onAgendaClasseChange() {
-            const cls = document.getElementById('age-classe-select').value;
-            const matSelect = document.getElementById('age-materia-select');
-            matSelect.innerHTML = '<option value="Generale/Agenda">Generale / Agenda</option>';
-            
-            if(cls === "Tutte") {
-                const mieClassi = DB.classi[utenteConnesso.username] || [];
-                let u = [];
-                mieClassi.forEach(c => c.materie.forEach(m => { if(!u.includes(m)) u.push(m); }));
-                u.forEach(m => matSelect.innerHTML += `<option value="${m}">${m}</option>`);
-            } else {
-                const mieClassi = DB.classi[utenteConnesso.username] || [];
-                const c = mieClassi.find(x => x.id === cls);
-                if(c) c.materie.forEach(m => matSelect.innerHTML += `<option value="${m}">${m}</option>`);
+            const cId = document.getElementById('age-classe-select').value;
+            const matSel = document.getElementById('age-materia-select');
+            matSel.innerHTML = '<option value="Generale/Agenda">Generale / Agenda</option>';
+
+            if (cId !== "Tutte" && DB.classi[cId]) {
+                DB.classi[cId].materie.forEach(m => {
+                    const opt = document.createElement('option'); opt.value = m; opt.innerText = m;
+                    matSel.appendChild(opt);
+                });
             }
-        }
-
-        function addAgendaEvent() {
-            const idMod = document.getElementById('age-id-modifica').value;
-            const data = document.getElementById('age-data').value;
-            const classe = document.getElementById('age-classe-select').value;
-            const tipo = document.getElementById('age-tipo').value;
-            const mat = document.getElementById('age-materia-select').value;
-            const tit = document.getElementById('age-titolo').value.trim();
-
-            if(!data || !tit) return alert("Compila la data e la descrizione dell'evento!");
-
-            const ev = { id: idMod || Date.now().toString(), data: data, classe: classe, tipo: tipo, materia: mat, titolo: tit, docente: utenteConnesso.nominativo };
-
-            if(idMod) {
-                const idx = DB.agenda.findIndex(x => x.id === idMod);
-                if(idx > -1) DB.agenda[idx] = ev;
-            } else {
-                DB.agenda.push(ev);
-            }
-
-            salvaNelTempo();
-            annullaModificaAgenda();
-            renderAgenda();
-        }
-
-        function annullaModificaAgenda() {
-            document.getElementById('age-id-modifica').value = "";
-            document.getElementById('age-titolo').value = "";
-            document.getElementById('agenda-form-title').innerText = "➕ Aggiungi un nuovo impegno in Agenda";
-            document.getElementById('btn-salva-agenda').innerText = "Inserisci in Agenda";
-            document.getElementById('btn-annulla-agenda').classList.add('hidden');
         }
 
         function setAgendaModoVisualizzazione(modo) {
-            agendaModoVisualizzazione = modo;
-            document.querySelectorAll('.filter-pill').forEach(p => { if(p.id.startsWith('pill-cal-')) p.classList.remove('active'); });
-            
-            if(modo === 'mese') document.getElementById('pill-cal-mese').classList.add('active');
-            if(modo === 'settimana') document.getElementById('pill-cal-settimana').classList.add('active');
-            if(modo === 'giorno') document.getElementById('pill-cal-giorno').classList.add('active');
-            if(modo === 'lista') document.getElementById('pill-cal-lista').classList.add('active');
-
+            agendaModoVista = modo;
+            const pills = ['pill-cal-mese', 'pill-cal-settimana', 'pill-cal-giorno', 'pill-cal-lista'];
+            pills.forEach(p => document.getElementById(p).classList.remove('active'));
+            document.getElementById(`pill-cal-${modo}`).classList.add('active');
             renderAgenda();
         }
 
         function navigaCalendario(direzione) {
-            if(agendaModoVisualizzazione === 'mese') dataCorrenteCalendario.setMonth(dataCorrenteCalendario.getMonth() + direzione);
-            if(agendaModoVisualizzazione === 'settimana') dataCorrenteCalendario.setDate(dataCorrenteCalendario.getDate() + (direzione * 7));
-            if(agendaModoVisualizzazione === 'giorno') dataCorrenteCalendario.setDate(dataCorrenteCalendario.getDate() + direzione);
+            if (agendaModoVista === 'mese') {
+                agendaDataCorrente.setMonth(agendaDataCorrente.getMonth() + direzione);
+            } else if (agendaModoVista === 'settimana') {
+                agendaDataCorrente.setDate(agendaDataCorrente.getDate() + (direzione * 7));
+            } else if (agendaModoVista === 'giorno') {
+                agendaDataCorrente.setDate(agendaDataCorrente.getDate() + direzione);
+            }
             renderAgenda();
         }
 
-        // MOTORE DI CALCOLO E DISEGNO DEL CALENDARIO MENSILE E SETTIMANALE REALE
+        function addAgendaEvent() {
+            const dataVal = document.getElementById('age-data').value;
+            const clsVal = document.getElementById('age-classe-select').value;
+            const tipoVal = document.getElementById('age-tipo').value;
+            const matVal = document.getElementById('age-materia-select').value;
+            const titVal = document.getElementById('age-titolo').value.trim();
+            const idModifica = document.getElementById('age-id-modifica').value;
+
+            if (!dataVal || !titVal) {
+                alert("Compilare i campi data e descrizione.");
+                return;
+            }
+
+            if (!DB.agenda) DB.agenda = [];
+
+            if (idModifica !== "") {
+                const idx = parseInt(idModifica);
+                DB.agenda[idx] = { data: dataVal, classe: clsVal, tipo: tipoVal, materia: matVal, titolo: titVal };
+                annullaModificaAgenda();
+            } else {
+                DB.agenda.push({
+                    data: dataVal,
+                    classe: clsVal,
+                    tipo: tipoVal,
+                    materia: matVal,
+                    titolo: titVal
+                });
+            }
+
+            salvaNelTempo();
+            renderAgenda();
+            document.getElementById('age-titolo').value = "";
+        }
+
         function renderAgenda() {
             const target = document.getElementById('calendar-render-target');
-            if(!target) return;
+            const titoloPeriodo = document.getElementById('calendar-period-title');
+            const filtroCls = document.getElementById('filtro-agenda-classe').value;
+            const cercaTesto = document.getElementById('search-agenda-input').value.trim().toLowerCase();
 
-            const filtroClasse = document.getElementById('filtro-agenda-classe').value;
-            const filtroCerca = document.getElementById('search-agenda-input').value.trim().toLowerCase();
+            // Filtra eventi in base ai parametri impostati
+            const eventiFiltrati = (DB.agenda || []).filter(ev => {
+                const matchClasse = (filtroCls === "Tutte" || ev.classe === "Tutte" || ev.classe === filtroCls);
+                const matchTesto = (!cercaTesto || ev.titolo.toLowerCase().includes(cercaTesto) || ev.materia.toLowerCase().includes(cercaTesto) || ev.tipo.toLowerCase().includes(cercaTesto));
+                return matchClasse && matchTesto;
+            });
 
-            // Applica filtri sugli eventi memorizzati
-            let eventiFiltrati = DB.agenda || [];
-            if(filtroClasse !== "Tutte") eventiFiltrati = eventiFiltrati.filter(e => e.classe === filtroClasse || e.classe === "Tutte");
-            if(filtroCerca) eventiFiltrati = eventiFiltrati.filter(e => e.titolo.toLowerCase().includes(filtroCerca) || e.materia.toLowerCase().includes(filtroCerca));
-
-            const anno = dataCorrenteCalendario.getFullYear();
-            const mese = dataCorrenteCalendario.getMonth();
-            const mesiNomi = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
-
-            if(agendaModoVisualizzazione === 'mese') {
-                document.getElementById('calendar-period-title').innerText = `${mesiNomi[mese]} ${anno}`;
+            // VISTA AGENDA IN MODALITÀ TABELLA LISTA COMPLETA
+            if (agendaModoVista === 'lista') {
+                titoloPeriodo.innerText = "Tutti gli Impegni in Lista";
                 
-                const primoGiornoMese = new Date(anno, mese, 1).getDay(); // 0=Dom, 1=Lun...
+                if (eventiFiltrati.length === 0) {
+                    target.innerHTML = "<p style='padding:20px; color:#64748B; font-style:italic;'>Nessun impegno trovato con i filtri attivi.</p>";
+                    return;
+                }
+
+                eventiFiltrati.sort((a, b) => new Date(a.data) - new Date(b.data));
+
+                let html = `<table><thead><tr><th>Data</th><th>Destinatario</th><th>Tipo</th><th>Materia</th><th>Impegno Descrizione</th><th>Azioni</th></tr></thead><tbody>`;
+                eventiFiltrati.forEach(ev => {
+                    const idxReale = DB.agenda.findIndex(orig => orig === ev);
+                    const pz = ev.data.split('-');
+                    html += `
+                        <tr>
+                            <td><strong>${pz[2]}/${pz[1]}/${pz[0]}</strong></td>
+                            <td><span class="badge-date-top">${ev.classe === "Tutte" ? "Tutte le Classi" : "Classe " + ev.classe}</span></td>
+                            <td>${ev.tipo}</td>
+                            <td><em>${ev.materia}</em></td>
+                            <td><strong>${ev.titolo}</strong></td>
+                            <td>
+                                <button class="action-icon-btn" onclick="attivaModificaAgenda(${idxReale})">✏️</button>
+                                <button class="action-icon-btn" style="color:var(--red-fail);" onclick="eliminaEventoAgenda(${idxReale})">🗑️</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                html += `</tbody></table>`;
+                target.innerHTML = html;
+                return;
+            }
+
+            // VISTA AGENDA IN MODALITÀ CALENDARIO MENSILE standard grafico
+            if (agendaModoVista === 'mese') {
+                const mesiNomi = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
+                titoloPeriodo.innerText = `${mesiNomi[agendaDataCorrente.getMonth()]} ${agendaDataCorrente.getFullYear()}`;
+
+                const anno = agendaDataCorrente.getFullYear();
+                const mese = agendaDataCorrente.getMonth();
+
+                const primoGiornoMese = new Date(anno, mese, 1).getDay();
                 const giorniNelMese = new Date(anno, mese + 1, 0).getDate();
-                const giorniMesePrecedente = new Date(anno, mese, 0).getDate();
-                
-                let giornoInizioSettimana = primoGiornoMese === 0 ? 6 : primoGiornoMese - 1;
+                const offsetInizio = primoGiornoMese === 0 ? 6 : primoGiornoMese - 1;
 
-                let htmlStruttura = `
+                let gridHtml = `
                     <div class="calendar-grid-header">
-                        <div>Lun</div><div>Mar</div><div>Mer</div><div>Gio</div><div>Ven</div><div>Sab</div><div>Dom</div>
+                        <div>LUN</div><div>MAR</div><div>MER</div><div>GIO</div><div>VEN</div><div>SAB</div><div>DOM</div>
                     </div>
                     <div class="calendar-days">
                 `;
 
-                // 1. Giorni mese precedente grigi
-                for(let i = giornoInizioSettimana - 1; i >= 0; i--) {
-                    htmlStruttura += `<div class="calendar-day-cell other-month"><span class="calendar-day-num">${giorniMesePrecedente - i}</span></div>`;
+                // Renderizza celle giorni del mese precedente (vuote o disattivate)
+                for (let i = 0; i < offsetInizio; i++) {
+                    gridHtml += `<div class="calendar-day-cell other-month"></div>`;
                 }
 
-                // 2. Giorni mese corrente
-                for(let giorno = 1; giorno <= giorniNelMese; giorno++) {
-                    const dataIso = `${anno}-${String(mese + 1).padStart(2,'0')}-${String(giorno).padStart(2,'0')}`;
-                    
-                    const oggi = new Date();
-                    const IsOggi = oggi.getDate() === giorno && oggi.getMonth() === mese && oggi.getFullYear() === anno;
-                    const classeOggi = IsOggi ? "today-cell" : "";
+                // Renderizza giorni correnti del mese attivo
+                const dataOggiConfronto = new Date().toISOString().split('T')[0];
 
-                    const eventiDelGiorno = eventiFiltrati.filter(e => e.data === dataIso);
-                    let htmlEventi = "";
+                for (let giorno = 1; giorno <= giorniNelMese; giorno++) {
+                    const dataCellaStr = `${anno}-${String(mese + 1).padStart(2, '0')}-${String(giorno).padStart(2, '0')}`;
+                    const isOggi = dataCellaStr === dataOggiConfronto ? "today-cell" : "";
 
-                    eventiDelGiorno.forEach(ev => {
-                        let col = "var(--primary-red)";
-                        if(ev.tipo.includes("AGENDA")) col = "var(--accent-color)";
-                        if(ev.tipo.includes("Consiglio")) col = "var(--amber-coord)";
-                        if(ev.tipo.includes("Scadenza")) col = "#475569";
+                    // Filtra impegni relativi a questo giorno specifico
+                    const evDelGiorno = eventiFiltrati.filter(e => e.data === dataCellaStr);
 
-                        htmlEventi += `
-                            <div class="calendar-event-badge" style="background-color:${col};" title="${ev.classe} - ${ev.titolo}" onclick="caricaModificaImpegno('${ev.id}')">
-                                <strong>${ev.classe}</strong>: ${ev.titolo}
-                            </div>
+                    let htmlBadgeEventi = "";
+                    evDelGiorno.forEach(ev => {
+                        let coloreSfondo = "#0284C7"; // Colore default azzurro
+                        if (ev.tipo.includes("COMPITO")) coloreSfondo = "var(--primary-red)";
+                        if (ev.tipo.includes("VERIFICA")) coloreSfondo = "var(--amber-coord)";
+                        if (ev.tipo.includes("Consiglio")) coloreSfondo = "var(--dark-grey)";
+
+                        const idxReale = DB.agenda.findIndex(orig => orig === ev);
+                        htmlBadgeEventi += `
+                            <span class="calendar-event-badge" style="background-color:${coloreSfondo};" 
+                                  onclick="mostraDettaglioImpegnoNotifica(${idxReale})" 
+                                  title="${ev.tipo} - [${ev.classe}]: ${ev.titolo}">
+                                [${ev.classe}] ${ev.titolo}
+                            </span>
                         `;
                     });
 
-                    htmlStruttura += `
-                        <div class="calendar-day-cell ${classeOggi}">
+                    gridHtml += `
+                        <div class="calendar-day-cell ${isOggi}">
                             <span class="calendar-day-num">${giorno}</span>
-                            <div class="calendar-events-wrap">${htmlEventi}</div>
+                            <div class="calendar-events-wrap">${htmlBadgeEventi}</div>
                         </div>
                     `;
                 }
 
-                htmlStruttura += `</div>`;
-                target.innerHTML = htmlStruttura;
-
-            } else if(agendaModoVisualizzazione === 'settimana' || agendaModoVisualizzazione === 'giorno') {
-                // Vista a righe/pannello per settimana e singolo giorno
-                document.getElementById('calendar-period-title').innerText = `Vista ${agendaModoVisualizzazione.toUpperCase()} (${mesiNomi[mese]} ${anno})`;
-                let htmlStruttura = `<div class="calendar-view-panel">`;
-
-                let eventiOrdinati = [...eventiFiltrati].sort((a,b) => new Date(a.data) - new Date(b.data));
-                
-                if(agendaModoVisualizzazione === 'giorno') {
-                    const isoOggi = dataCorrenteCalendario.toISOString().split('T')[0];
-                    eventiOrdinati = eventiOrdinati.filter(e => e.data === isoOggi);
-                }
-
-                if(eventiOrdinati.length === 0) {
-                    htmlStruttura += `<p style="text-align:center; padding:20px; color:#64748B; font-style:italic;">Nessun impegno pianificato per questo intervallo di tempo.</p>`;
-                }
-
-                eventiOrdinati.forEach(ev => {
-                    const parti = ev.data.split('-');
-                    htmlStruttura += `
-                        <div class="calendar-row-item">
-                            <div class="calendar-row-date">📅 ${parti[2]}/${parti[1]}</div>
-                            <div class="calendar-row-content">
-                                <span class="badge-media pass" style="background:#F1F5F9; color:var(--primary-dark); margin-bottom:5px; border-radius:4px;">${ev.classe} - ${ev.materia}</span>
-                                <strong style="display:block; margin-top:4px; font-size:15px;">${ev.tipo}: ${ev.titolo}</strong>
-                                <small style="color:#64748B;">Autore: ${ev.docente}</small>
-                                <div style="margin-top:8px;">
-                                    <button class="btn-secondary" style="padding:3px 8px; font-size:12px;" onclick="caricaModificaImpegno('${ev.id}')">Modifica</button>
-                                    <button class="btn-danger" style="padding:3px 8px; font-size:12px;" onclick="eliminaImpegnoAgenda('${ev.id}')">Rimuovi</button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                htmlStruttura += `</div>`;
-                target.innerHTML = htmlStruttura;
-
-            } else {
-                // Modalità lista completa di controllo
-                document.getElementById('calendar-period-title').innerText = "Lista Completa Impegni";
-                let htmlStruttura = `<div class="calendar-view-panel">`;
-                
-                if(eventiFiltrati.length === 0) {
-                    htmlStruttura += `<p style="text-align:center; padding:20px; color:#64748B; font-style:italic;">Nessun impegno trovato nello storico.</p>`;
-                }
-
-                eventiFiltrati.forEach(ev => {
-                    const p = ev.data.split('-');
-                    htmlStruttura += `
-                        <div class="calendar-row-item" style="border-left: 5px solid var(--primary-red);">
-                            <div class="calendar-row-date">${p[2]}/${p[1]}/${p[2]}</div>
-                            <div class="calendar-row-content">
-                                <strong>${ev.classe} - ${ev.tipo}</strong>: ${ev.titolo} (${ev.materia})
-                                <div style="margin-top:5px;"><a style="color:var(--accent-color); cursor:pointer;" onclick="caricaModificaImpegno('${ev.id}')">Modifica voce</a> | <a style="color:var(--red-fail); cursor:pointer;" onclick="eliminaImpegnoAgenda('${ev.id}')">Elimina</a></div>
-                            </div>
-                        </div>`;
-                });
-                htmlStruttura += `</div>`;
-                target.innerHTML = htmlStruttura;
+                gridHtml += `</div>`;
+                target.innerHTML = gridHtml;
             }
         }
 
-        function caricaModificaImpegno(id) {
-            const ev = DB.agenda.find(x => x.id === id);
-            if(!ev) return;
+        function mostraDettaglioImpegnoNotifica(index) {
+            const ev = DB.agenda[index];
+            if (confirm(`📌 DETTAGLI IMPEGNO:\n---------------------------\nData: ${ev.data}\nTipo: ${ev.tipo}\nClasse: ${ev.classe}\nMateria: ${ev.materia}\nDescrizione: ${ev.titolo}\n\nClicca su OK se desideri MODIFICARE questo record, oppure ANNULLA per chiudere.`)) {
+                attivaModificaAgenda(index);
+            }
+        }
 
-            document.getElementById('age-id-modifica').value = ev.id;
+        function attivaModificaAgenda(index) {
+            const ev = DB.agenda[index];
+            document.getElementById('age-id-modifica').value = index;
             document.getElementById('age-data').value = ev.data;
             document.getElementById('age-classe-select').value = ev.classe;
             onAgendaClasseChange();
@@ -1964,22 +2514,43 @@ function salvaNelTempo() {
             document.getElementById('age-materia-select').value = ev.materia;
             document.getElementById('age-titolo').value = ev.titolo;
 
-            document.getElementById('agenda-form-title').innerText = "📝 Modifica l'impegno selezionato";
+            document.getElementById('agenda-form-title').innerText = "✏️ Modifica l'impegno selezionato";
             document.getElementById('btn-salva-agenda').innerText = "Salva Modifiche";
             document.getElementById('btn-annulla-agenda').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function eliminaImpegnoAgenda(id) {
-            if(!confirm("Vuoi cancellare questa scadenza dall'agenda scolastica?")) return;
-            DB.agenda = DB.agenda.filter(x => x.id !== id);
-            salvaNelTempo();
-            renderAgenda();
+        function annullaModificaAgenda() {
+            document.getElementById('age-id-modifica').value = "";
+            document.getElementById('agenda-form-title').innerText = "➕ Aggiungi un nuovo impegno in Agenda";
+            document.getElementById('btn-salva-agenda').innerText = "Inserisci in Agenda";
+            document.getElementById('btn-annulla-agenda').classList.add('hidden');
+            document.getElementById('age-titolo').value = "";
         }
 
-        /* === 🏫 REGISTRO REGIONALE D'ISTITUTO E SUPPLENZE === */
+        function eliminaEventoAgenda(index) {
+            if (confirm("Eliminare definitivamente questo impegno dall'agenda d'istituto?")) {
+                DB.agenda.splice(index, 1);
+                salvaNelTempo();
+                renderAgenda();
+                annullaModificaAgenda();
+            }
+        }
+
+        // --- FIRME LIBERE / RECAP SUPPLENZE ---
         function openTutteClassiView() {
             showView('tutte-classi-view');
+            const sel = document.getElementById('tc-classe');
+            sel.innerHTML = "";
+
+            // Popola l'elenco classi d'Istituto generandole anche se vuote
+            const classiDefault = ["1A","2A","3A","4A","5A","1B","2B","3B","4B","5B","1C","2C","3C","4C","5C","1AS","2AS","3AS","4AS","5AS"];
+            const tutteCls = Array.from(new Set([...classiDefault, ...Object.keys(DB.classi)])).sort();
+
+            tutteCls.forEach(c => {
+                const opt = document.createElement('option'); opt.value = c; opt.innerText = c;
+                sel.appendChild(opt);
+            });
+
             renderFirmeLibereIstituto();
         }
 
@@ -1987,129 +2558,195 @@ function salvaNelTempo() {
             const cls = document.getElementById('tc-classe').value;
             const dat = document.getElementById('tc-data').value;
             const ore = document.getElementById('tc-num-ore').value;
-            const lezOra = document.getElementById('tc-ora-lezione').value;
+            const oraLez = document.getElementById('tc-ora-lezione').value;
             const mat = document.getElementById('tc-materia').value.trim();
+            const supp = document.getElementById('tc-supplenza').checked;
             const arg = document.getElementById('tc-argomento').value.trim();
-            const isSup = document.getElementById('tc-supplenza').checked;
 
-            if(!dat || !mat || !arg) return alert("Compila tutti i campi obbligatori per convalidare la compresenza o supplenza!");
+            if (!dat || !mat || !arg) {
+                alert("Compilare i campi essenziali (Materia, Data e Argomento).");
+                return;
+            }
+
+            if (!DB.firmeLibere) DB.firmeLibere = [];
 
             DB.firmeLibere.push({
-                data: dat,
-                classe: cls,
-                oreSvolte: ore,
-                oraInizio: lezOra,
-                materia: mat,
-                argomento: arg,
-                tipo: isSup ? "SUPPLENZA" : "FIRMA LIBERA",
-                docente: utenteConnesso.nominativo
+                classe: cls, data: dat, oreSvolte: ore, oraInizio: oraLez, materia: mat, isSupplenza: supp, argomento: arg
             });
-
-            // Ordina per data decrescente
-            DB.firmeLibere.sort((a,b) => new Date(b.data) - new Date(a.data));
 
             salvaNelTempo();
             renderFirmeLibereIstituto();
-
+            
             document.getElementById('tc-materia').value = "";
             document.getElementById('tc-argomento').value = "";
             document.getElementById('tc-supplenza').checked = false;
-            alert("Firma d'Istituto registrata con successo!");
+            alert("Lezione registrata sul server centrale.");
         }
 
         function renderFirmeLibereIstituto() {
             const tbody = document.getElementById('tc-firme-body');
             tbody.innerHTML = "";
-            const elenco = DB.firmeLibere || [];
 
-            if(elenco.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748B;">Nessuna supplenza o firma extra inserita.</td></tr>`;
+            if (!DB.firmeLibere || DB.firmeLibere.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="color:#64748B; font-style:italic; text-align:center;">Nessuna lezione fuori orario inserita.</td></tr>`;
                 return;
             }
 
-            elenco.forEach(f => {
-                const p = f.data.split('-');
-                const badgeTipo = f.tipo === "SUPPLENZA" ? `<span class="badge-supplenza" style="margin:0;">SUPPLENZA</span>` : `<span class="badge-media pass" style="background:#EFF6FF; color:#1E40AF; border-radius:4px;">NORMALE</span>`;
-                tr = document.createElement('tr');
+            // Ordinamento cronologico decrescente
+            DB.firmeLibere.sort((a,b) => new Date(b.data) - new Date(a.data));
+
+            DB.firmeLibere.forEach(f => {
+                const tr = document.createElement('tr');
+                const pz = f.data.split('-');
+                const badg = f.isSupplenza ? '<span class="badge-supplenza">SUPPLENZA</span>' : '<span class="badge-date-top">LIBERA</span>';
+                
                 tr.innerHTML = `
-                    <td><strong>${p[2]}/${p[1]}/${p[0]}</strong></td>
-                    <td><span style="font-weight:bold; color:var(--primary-red)">${f.classe}</span></td>
-                    <td><strong>${f.materia}</strong> <br><small style="color:#64748B;">${f.oraInizio} (${f.oreSvolte} ore consecutive)</small></td>
-                    <td>${f.argomento} <br> <small style="color:#94A3B8;">Firma di: ${f.docente}</small></td>
-                    <td>${badgeTipo}</td>
+                    <td><strong>${pz[2]}/${pz[1]}/${pz[0]}</strong></td>
+                    <td><span class="badge-media" style="background:#E2E8F0; color:#1E293B; font-weight:700;">${f.classe}</span></td>
+                    <td><strong>${f.materia}</strong> <br><small style="color:#64748B;">Ore: ${f.oreSvolte} (${f.oraInizio} lezione)</small></td>
+                    <td>${f.argomento}</td>
+                    <td>${badg}</td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        /* === 📅 TIMETABLE: ORARIO SETTIMANALE INTERATTIVO === */
+        // --- TIMETABLE: ORARIO SETTIMANALE DOCENTE ---
         function renderOrarioDashboard() {
-            const tbody = document.getElementById('dashboard-timetable-body');
-            tbody.innerHTML = "";
-            
-            const giorni = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
-            const oreLezione = ['1^ ora', '2^ ora', '3^ ora', '4^ ora', '5^ ora', '6^ ora'];
+            const body = document.getElementById('dashboard-timetable-body');
+            body.innerHTML = "";
 
-            if(!DB.orarioDocente[utenteConnesso.username]) {
-                DB.orarioDocente[utenteConnesso.username] = {};
-            }
-            const mioOrario = DB.orarioDocente[utenteConnesso.username];
+            const giorni = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+            const oreLezione = ["1^ Ora (08:00 - 09:00)", "2^ Ora (09:00 - 10:00)", "3^ Ora (10:00 - 11:00)", "4^ Ora (11:00 - 12:00)", "5^ Ora (12:00 - 13:00)", "6^ Ora (13:00 - 14:00)"];
 
-            oreLezione.forEach(ora => {
+            if (!DB.orarioDocente) DB.orarioDocente = {};
+
+            oreLezione.forEach((oraTesto, oIdx) => {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td style="background:var(--light-grey); font-weight:bold;">${ora}</td>`;
+                tr.innerHTML = `<td style="background:#F8FAFC; font-weight:600; font-size:12px;">${oraTesto.split(' ')[0]}</td>`;
+                
+                giorni.forEach(g => {
+                    const cellVal = DB.orarioDocente[g] ? (DB.orarioDocente[g][oIdx] || "") : "";
+                    const td = document.createElement('td');
 
-                giorni.forEach(giorno => {
-                    const chiaveCella = `${giorno}_${ora}`;
-                    const classeAssegnata = mioOrario[chiaveCella] || "";
-
-                    // Genera selettore dinamico per configurare l'orario al volo
-                    const mieClassiConfigurate = DB.classi[utenteConnesso.username] || [];
-                    let opzioniSelect = `<option value="">--</option>`;
-                    mieClassiConfigurate.forEach(c => {
-                        opzioniSelect += `<option value="${c.id}" ${c.id === classeAssegnata ? 'selected' : ''}>${c.id}</option>`;
-                    });
-
-                    let htmlCella = "";
-                    if(classeAssegnata) {
-                        htmlCella = `<div class="timetable-cell-active" onclick="apriDettaglioClasseCompleto('${classeAssegnata}')">Classe ${classeAssegnata}</div>`;
+                    if (cellVal !== "") {
+                        // Cella attiva configurata con classe: cliccandoci si apre il registro
+                        td.innerHTML = `<div class="timetable-cell-active" onclick="apriDettaglioClasse('${cellVal}')">Classe ${cellVal}</div>`;
+                    } else {
+                        // Cella libera: permette l'associazione rapida a una classe
+                        const sel = document.createElement('select');
+                        sel.className = "timetable-select";
+                        sel.onchange = (e) => assegnaClasseAOrarioLezione(g, oIdx, e.target.value);
+                        sel.innerHTML = '<option value="">--</option>';
+                        
+                        Object.keys(DB.classi).sort().forEach(k => {
+                            const opt = document.createElement('option'); opt.value = k; opt.innerText = k;
+                            if (k === cellVal) opt.selected = true;
+                            sel.appendChild(opt);
+                        });
+                        td.appendChild(sel);
                     }
-
-                    tr.innerHTML += `
-                        <td>
-                            ${htmlCella}
-                            <select class="timetable-select ${classeAssegnata?'hidden':''}" onchange="salvaCellaOrario('${chiaveCella}', this.value)" style="font-size:12px;">
-                                ${opzioniSelect}
-                            </select>
-                            ${classeAssegnata ? `<span class="action-icon-btn" style="font-size:10px; color:#94A3B8; display:block; margin-top:2px;" onclick="liberaCellaOrario('${chiaveCella}')">Modifica</span>` : ''}
-                        </td>
-                    `;
+                    tr.appendChild(td);
                 });
-                tbody.appendChild(tr);
+                body.appendChild(tr);
             });
         }
 
-        function salvaCellaOrario(chiave, classeId) {
-            DB.orarioDocente[utenteConnesso.username][chiave] = classeId;
+        function assegnaClasseAOrarioLezione(giorno, oraIndex, classeId) {
+            if (!DB.orarioDocente[giorno]) DB.orarioDocente[giorno] = {};
+            
+            if (classeId === "") {
+                delete DB.orarioDocente[giorno][oraIndex];
+            } else {
+                DB.orarioDocente[giorno][oraIndex] = classeId;
+            }
+
             salvaNelTempo();
             renderOrarioDashboard();
         }
 
-        function liberaCellaOrario(chiave) {
-            DB.orarioDocente[utenteConnesso.username][chiave] = "";
-            salvaNelTempo();
-            renderOrarioDashboard();
+        // --- AVANZAMENTO ANNO SCOLASTICO ---
+        function renderListaAvanzamentoAnno() {
+            const listContainer = document.getElementById('passaggio-anno-classi-list');
+            listContainer.innerHTML = "";
+
+            const chiavi = Object.keys(DB.classi).sort();
+            if (chiavi.length === 0) {
+                listContainer.innerHTML = "<p style='color:#64748B; font-style:italic;'>Nessuna classe attiva in elenco.</p>";
+                return;
+            }
+
+            chiavi.forEach(k => {
+                let destinazioneFutura = "Rimossa (Fine ciclo)";
+                const numMatch = k.match(/\d+/);
+                if (numMatch) {
+                    const annoCorrenteNum = parseInt(numMatch[0]);
+                    if (annoCorrenteNum < 5) {
+                        destinazioneFutura = "Diventa " + k.replace(numMatch[0], annoCorrenteNum + 1);
+                    }
+                }
+                
+                const div = document.createElement('div');
+                div.style = "padding:6px; border-bottom:1px solid var(--border-color); font-size:13px;";
+                div.innerHTML = `➡️ Classe <strong>${k}</strong> <span style='color:var(--amber-coord); font-weight:bold;'>➔ ${destinazioneFutura}</span>`;
+                listContainer.appendChild(div);
+            });
         }
 
-        /* === 🔒 CRITTOGRAFIA E BACKUP COMPLETO IN LOCALE === */
+        function confermaPassaggioAnno() {
+            if (!confirm("⚠️ ATTENZIONE: Questa procedura sposterà in avanti di un anno tutte le classi attuali. I registri intermedi, i voti, i registri presenze e le firme correnti verranno DEFINITIVAMENTE cancellati per fare spazio al nuovo anno scolastico. Desideri procedere?")) return;
+            if (!confirm("CONFERMA FINALE: Sei veramente sicuro? L'operazione non è revocabile.")) return;
+
+            let nuoveClassi = {};
+
+            for (let k in DB.classi) {
+                const clsVecchia = DB.classi[k];
+                const numMatch = k.match(/\d+/);
+                
+                if (numMatch) {
+                    const numeroAnno = parseInt(numMatch[0]);
+                    if (numeroAnno < 5) {
+                        // Avanza l'anno (es: da 1A a 2A)
+                        const nuovoIdClasse = k.replace(numMatch[0], numeroAnno + 1);
+                        nuoveClassi[nuovoIdClasse] = {
+                            id: nuovoIdClasse,
+                            materie: clsVecchia.materie,
+                            coordinatore: clsVecchia.coordinatore,
+                            alunni: clsVecchia.alunni, // Gli alunni rimangono iscritti avanzando di corso
+                            giornaleFirme: [],
+                            appelli: {},
+                            voti: []
+                        };
+                    }
+                    // Le classi quinte (diplomati) vengono escluse, cessando il ciclo scolastico
+                } else {
+                    // Record senza numero rimangono invariati resettando i registri interni
+                    nuoveClassi[k] = { ...clsVecchia, giornaleFirme: [], appelli: {}, voti: [] };
+                }
+            }
+
+            DB.classi = nuoveClassi;
+            DB.agenda = [];
+            DB.firmeLibere = [];
+            DB.scrutini = {};
+            DB.orarioDocente = {}; // Resetta l'orario delle lezioni per il nuovo anno
+
+            salvaNelTempo();
+            alert("🚀 Cambio anno scolastico eseguito con successo! I registri sono stati puliti e aggiornati.");
+            openSettingsView();
+        }
+
+        // --- SISTEMA DI SICUREZZA: BACKUP CIFRATO AES-GCM COMPLETO ---
         async function esportaDatiCifrati() {
-            const password = prompt("🔒 Imposta una password di sicurezza per cifrare e blindare questo file di backup:");
-            if(!password) return alert("Esportazione annullata. La password è obbligatoria per proteggere la privacy degli alunni.");
+            const password = prompt("Inserisci una Password sicura per cifrare il file di backup:");
+            if (!password) { alert("Esportazione annullata. Password richiesta per conformità GDPR."); return; }
 
             try {
+                const stringDati = JSON.stringify(DB);
                 const encoder = new TextEncoder();
-                const dataBuffer = encoder.encode(JSON.stringify(DB));
+                const datiBuffer = encoder.encode(stringDati);
 
+                // Generazione Salt e IV casuali di sicurezza crittografica
                 const salt = window.crypto.getRandomValues(new Uint8Array(16));
                 const iv = window.crypto.getRandomValues(new Uint8Array(12));
 
@@ -2123,45 +2760,70 @@ function salvaNelTempo() {
                     passwordKey, { name: "AES-GCM", length: 256 }, false, ["encrypt"]
                 );
 
-                const encryptedPayload = await window.crypto.subtle.encrypt(
-                    { name: "AES-GCM", iv: iv }, cryptoKey, dataBuffer
+                const bufferCifrato = await window.crypto.subtle.encrypt(
+                    { name: "AES-GCM", iv: iv }, cryptoKey, datiBuffer
                 );
 
-                // Compila l'oggetto strutturato finale in formato testo sicuro
-                const backupCompleto = {
-                    salt: btoa(String.fromCharCode(...salt)),
-                    iv: btoa(String.fromCharCode(...iv)),
-                    payload: btoa(String.fromCharCode(...new Uint8Array(encryptedPayload)))
+                // Pacchetto dati combinato (Salt + IV + Payload cifrato)
+                const backupCompletoBuffer = new Uint8Array(salt.length + iv.length + bufferCifrato.byteLength);
+                backupCompletoBuffer.set(salt, 0);
+                backupCompletoBuffer.set(iv, salt.length);
+                backupCompletoBuffer.set(new Uint8Array(bufferCifrato), salt.length + iv.length);
+
+                // Conversione in formato leggibile stringa Base64
+                let stringaBinaria = "";
+                backupCompletoBuffer.forEach(b => stringaBinaria += String.fromCharCode(b));
+                const base64Contenuto = btoa(stringaBinaria);
+
+                const oggettoEsportazione = {
+                    tipo: "CLASSEVIVA_DOCENTE_SECURE_BACKUP",
+                    versione: "2.0",
+                    dataEsportazione: new Date().toISOString(),
+                    payload: base64Contenuto
                 };
 
-                const blob = new Blob([JSON.stringify(backupCompleto)], { type: "application/json" });
+                // Generazione automatica download del file .json
+                const blob = new Blob([JSON.stringify(oggettoEsportazione, null, 2)], { type: "application/json" });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `backup_registro_classeviva_${utenteConnesso.username}.json`;
+                a.download = `backup_registro_cifrato_${new Date().toISOString().split('T')[0]}.json`;
                 a.click();
-            } catch(err) {
+                URL.revokeObjectURL(url);
+                
+                alert("🔒 Backup cifrato scaricato correttamente. Conserva con cura la password.");
+            } catch (err) {
                 console.error(err);
-                alert("Errore tecnico durante la cifratura dei dati.");
+                alert("Errore tecnico durante la cifratura del file.");
             }
         }
 
-        function importaDatiCifrati(event) {
+        async function importaDatiCifrati(event) {
             const file = event.target.files[0];
             if (!file) return;
 
+            const password = prompt("Inserisci la Password usata per cifrare questo file di backup:");
+            if (!password) { event.target.value = ""; return; }
+
             const reader = new FileReader();
             reader.onload = async function(e) {
-                const password = prompt("🔓 Inserisci la password impostata durante l'esportazione per decifrare il file:");
-                if (!password) return;
-
                 try {
                     const jsonBackup = JSON.parse(e.target.result);
-                    
-                    // Decodifica i componenti in base64
-                    const salt = new Uint8Array(atob(jsonBackup.salt).split("").map(c => c.charCodeAt(0)));
-                    const iv = new Uint8Array(atob(jsonBackup.iv).split("").map(c => c.charCodeAt(0)));
-                    const encryptedPayload = new Uint8Array(atob(jsonBackup.payload).split("").map(c => c.charCodeAt(0)));
+                    if (jsonBackup.tipo !== "CLASSEVIVA_DOCENTE_SECURE_BACKUP") {
+                        throw new Error("Formato file non supportato o non riconosciuto.");
+                    }
+
+                    // Ricostruzione buffer binario dalla stringa Base64
+                    const stringaBinaria = atob(jsonBackup.payload);
+                    const arrayBufferTotale = new Uint8Array(stringaBinaria.length);
+                    for (let i = 0; i < stringaBinaria.length; i++) {
+                        arrayBufferTotale[i] = stringaBinaria.charCodeAt(i);
+                    }
+
+                    // Estrazione dei segmenti Salt, IV e Payload cifrato effettivo
+                    const salt = arrayBufferTotale.slice(0, 16);
+                    const iv = arrayBufferTotale.slice(16, 28);
+                    const encryptedPayload = arrayBufferTotale.slice(28);
 
                     const encoder = new TextEncoder();
                     const passwordBuffer = encoder.encode(password);
@@ -2175,23 +2837,25 @@ function salvaNelTempo() {
                         passwordKey, { name: "AES-GCM", length: 256 }, false, ["decrypt"]
                     );
 
-                    const decryptedBuffer = await window.crypto.subtle.decrypt(
+                    const bufferDecifrato = await window.crypto.subtle.decrypt(
                         { name: "AES-GCM", iv: iv }, cryptoKey, encryptedPayload
                     );
 
                     const decoder = new TextDecoder();
-                    const decryptedData = JSON.parse(decoder.decode(decryptedBuffer));
+                    const datiDecodificati = JSON.parse(decoder.decode(bufferDecifrato));
 
-                    // Sovrascrive il database locale con i dati del backup importato
-                    DB = decryptedData;
+                    // Sovrascrittura dati e allineamento strutture
+                    DB = datiDecodificati;
                     salvaNelTempo();
                     
-                    alert("🔒 Backup decifrato e importato con successo! L'applicazione verrà rinfrescata.");
-                    avviaApplicazioneDettaglio();
-                } catch(err) {
+                    alert("🔓 Backup decifrato e importato con successo! L'applicazione verrà aggiornata.");
+                    if (utenteConnesso) avviaApplicazioneDettaglio();
+                    else location.reload();
+                } catch (err) {
                     console.error(err);
                     alert("❌ Errore durante la decifratura: Password errata o file danneggiato.");
                 }
+                event.target.value = "";
             };
             reader.readAsText(file);
         }
