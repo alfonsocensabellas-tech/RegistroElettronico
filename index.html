@@ -836,30 +836,56 @@
         }
 
         async function login() {
-    const userIn = document.getElementById('username').value;
-    const passIn = document.getElementById('password').value;
+    try {
+        const userIn = document.getElementById('username').value;
+        const passIn = document.getElementById('password').value;
 
-    // Interroghiamo la tabella corretta su Supabase
-    const { data, error } = await window.supabase
-        .from('registri_utenti')
-        .select('*')
-        .eq('username', userIn)
-        .eq('password', passIn)
-        .single();
+        // Verifica che i campi non siano vuoti prima di inviare
+        if (!userIn || !passIn) {
+            alert("Per favore, inserisci sia lo username che la password.");
+            return;
+        }
 
-    // Se non trova corrispondenze o c'è un errore di rete
-    if (error || !data) {
-        document.getElementById('login-error').style.display = 'block';
-        alert("Credenziali errate o utente non trovato nel database.");
-    } else {
-        // Se l'utente esiste ed è corretto, effettua l'accesso
-        document.getElementById('login-error').style.display = 'none';
-        
-        // Mostra il nome dell'utente connesso (usa il nominativo o lo username)
-        document.getElementById('label-nome-docente-connesso').innerText = data.nominativo || data.username;
-        
-        // Avvia le funzioni del registro
-        inizializzaApp(); 
+        // Interroghiamo la tabella corretta su Supabase
+        const { data, error } = await window.supabase
+            .from('registri_utenti')
+            .select('*')
+            .eq('username', userIn)
+            .eq('password', passIn)
+            .maybeSingle(); // Usa maybeSingle per evitare crash se trova 0 o più righe
+
+        if (error) {
+            console.error("Errore Supabase:", error);
+            alert("Errore di connessione al database: " + error.message);
+            return;
+        }
+
+        // Se non trova corrispondenze
+        if (!data) {
+            const errLabel = document.getElementById('login-error');
+            if (errLabel) errLabel.style.display = 'block';
+            alert("Credenziali errate o utente non trovato nel database.");
+        } else {
+            // Se l'utente esiste ed è corretto, effettua l'accesso
+            const errLabel = document.getElementById('login-error');
+            if (errLabel) errLabel.style.display = 'none';
+            
+            // Mostra il nome dell'utente connesso
+            const nameLabel = document.getElementById('label-nome-docente-connesso');
+            if (nameLabel) {
+                nameLabel.innerText = data.nominativo || data.username;
+            }
+            
+            // Avvia le funzioni del registro
+            if (typeof inizializzaApp === "function") {
+                inizializzaApp(); 
+            } else {
+                console.error("La funzione inizializzaApp non è definita.");
+            }
+        }
+    } catch (e) {
+        console.error("Errore generico nel login:", e);
+        alert("Si è verificato un errore imprevisto nel codice: " + e.message);
     }
 }
 
