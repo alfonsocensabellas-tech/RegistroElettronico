@@ -759,21 +759,32 @@
             }
         };
 
-        function salvaNelTempo() {
-            localStorage.setItem('classeviva_docenti_database_cifrato_local', JSON.stringify(DB));
-            sincronizzaSupabase();
-        }
+      
+let inSincronizzazione = false;
 
-        function caricaDaTempo() {
-            const stor = localStorage.getItem('classeviva_docenti_database_cifrato_local');
-            if(stor) {
-                DB = JSON.parse(stor);
-                if(!DB.firmeLibere) DB.firmeLibere = [];
-                if(!DB.agenda) DB.agenda = [];
-                if(!DB.scrutini) DB.scrutini = {};
-                if(!DB.orarioDocente) DB.orarioDocente = {};
-            }
-        }
+function salvaNelTempo() {
+    if (!DB) return;
+    
+    // 1. Salva sempre nel browser locale
+    localStorage.setItem('classeviva_docente_db', JSON.stringify(DB));
+    console.log("Dati salvati in locale nel localStorage.");
+
+    // 2. Salva su Supabase in modo sicuro (solo se non è già in corso un salvataggio)
+    if (utenteConnesso && utenteConnesso.username && !inSincronizzazione) {
+        inSincronizzazione = true; // Blocca temporaneamente altri salvataggi simultanei
+        console.log("Avvio sincronizzazione cloud sicura...");
+        
+        sincronizzaSupabase()
+            .then(() => {
+                console.log("Sincronizzazione completata.");
+                inSincronizzazione = false; // Sblocca al termine
+            })
+            .catch(err => {
+                console.error("Errore nel salvataggio cloud:", err);
+                inSincronizzazione = false; // Sblocca anche in caso di errore
+            });
+    }
+}
 
         async function sincronizzaSupabase() {
             if(!window.supabase || !utenteConnesso) return;
