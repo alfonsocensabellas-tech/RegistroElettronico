@@ -839,26 +839,26 @@
     const userIn = document.getElementById('username').value;
     const passIn = document.getElementById('password').value;
 
-    // 1. Chiediamo direttamente al database di Supabase se esiste il professore
+    // Interroghiamo la tabella corretta su Supabase
     const { data, error } = await window.supabase
-        .from('professori') // Assicurati che la tabella su Supabase si chiami così
+        .from('registri_utenti')
         .select('*')
         .eq('username', userIn)
         .eq('password', passIn)
         .single();
 
-    // 2. Se Supabase non trova nulla o dà errore, l'accesso fallisce
+    // Se non trova corrispondenze o c'è un errore di rete
     if (error || !data) {
         document.getElementById('login-error').style.display = 'block';
         alert("Credenziali errate o utente non trovato nel database.");
     } else {
-        // 3. Se lo trova, puliamo l'errore e carichiamo i dati dell'account
+        // Se l'utente esiste ed è corretto, effettua l'accesso
         document.getElementById('login-error').style.display = 'none';
         
-        // Impostiamo il nome del docente connesso usando i dati presi dal cloud
+        // Mostra il nome dell'utente connesso (usa il nominativo o lo username)
         document.getElementById('label-nome-docente-connesso').innerText = data.nominativo || data.username;
         
-        // Sblocchiamo l'applicazione per mostrare il registro
+        // Avvia le funzioni del registro
         inizializzaApp(); 
     }
 }
