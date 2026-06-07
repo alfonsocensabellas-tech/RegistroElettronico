@@ -1219,10 +1219,23 @@
             DB.alunni[classeAttiva].push(nome);
             DB.alunni[classeAttiva].sort();
 
-            salvaNelTempo();
-            renderAlunniClasse();
-            document.getElementById('add-alunno-nome').value = "";
-        }
+           function salvaNelTempo() {
+    if (!DB) return;
+    
+    // 1. Salva sempre nel browser locale (come sicurezza)
+    localStorage.setItem('classeviva_docente_db', JSON.stringify(DB));
+    console.log("Dati salvati in locale nel localStorage.");
+
+    // 2. NOVITÀ: Salva AUTOMATICAMENTE su Supabase se l'utente è loggato
+    if (utenteConnesso && utenteConnesso.username) {
+        console.log("Rilevato utente connesso. Avvio sincronizzazione automatica su cloud...");
+        
+        // Chiamiamo la funzione di sincronizzazione esistente nel codice
+        sincronizzaSupabase()
+            .then(() => console.log("Sincronizzazione cloud automatica completata con successo!"))
+            .catch(err => console.error("Errore nel salvataggio automatico cloud:", err));
+    }
+}
 
         // FUNZIONE FLASH: CARICAMENTO RAPIDO COPIA E INCOLLA INTERA CLASSE
         function salvaAlunniFlash() {
