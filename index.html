@@ -784,46 +784,90 @@
             return (m >= 8) ? `${y}/${y+1}` : `${y-1}/${y}`;
         }
 
-        function login() {
+        async function login() {
             let u = document.getElementById('username').value.trim().toLowerCase();
             let p = document.getElementById('password').value;
             let d = document.getElementById('login-session-date').value;
 
             if(!u || !p || !d) return;
 
-            let keyUser = `cv_user_auth_${u}`;
-            let storedProfile = localStorage.getItem(keyUser);
+            console.log("Verifica credenziali sul Cloud...");
+            
+            try {
+                // 1. Cerchiamo l'utente direttamente su Supabase Cloud
+                const { data: utenteCloud, error: errUtente } = await supabase
+                    .from('registri_utenti')
+                    .select('*')
+                    .eq('username', u)
+                    .single();
 
-            if(!storedProfile) {
-                document.getElementById('login-error').style.display = 'block';
-                return;
+                // Se c'è un errore di rete o database (diverso da "utente non trovato")
+                if (errUtente && errUtente.code !== 'PGRST116') throw errUtente;
+
+                let prof;
+                let datiRegistroCaricati;
+
+                if (!utenteCloud) {
+                    // SE L'UTENTE NON ESISTE SUL CLOUD: Lo creiamo al volo con la password inserita
+                    console.log("Nuovo utente rilevato. Creazione account cloud...");
+                    
+                    prof = { username: u, password: p };
+                    
+                    // Struttura iniziale pulita del database (inclusi i campi speciali che usa la tua app)
+                    datiRegistroCaricati = {
+                        studenti: [], classi: [], materie: [], orario: {}, registroGiornaliero: {}, note: [],
+                        agenda: [], scrutini: {}, orarioDocente: {}
+                    };
+
+                    // Salviamo il nuovo utente online
+                    const { error: errInsert } = await supabase
+                        .from('registri_utenti')
+                        .insert([{ username: u, password: p, dati_registro: datiRegistroCaricati }]);
+
+                    if (errInsert) throw errInsert;
+                    
+                    alert("Benvenuto! Nuovo account Cloud creato con successo.");
+                } else {
+                    // SE L'UTENTE ESISTE: Verifichiamo la password
+                    if (utenteCloud.password !== p) {
+                        document.getElementById('login-error').style.display = 'block';
+                        return;
+                    }
+                    
+                    prof = { username: utenteCloud.username, password: utenteCloud.password };
+                    datiRegistroCaricati = utenteCloud.dati_registro;
+                }
+
+                // 2. Impostiamo le variabili dell'applicazione con i dati presi dal Cloud
+                currentUser = prof;
+                DB = datiRegistroCaricati;
+
+                // 3. Salviamo comunque una copia locale nel browser per sicurezza/velocità futura
+                localStorage.setItem(`cv_user_auth_${u}`, JSON.stringify(prof));
+                localStorage.setItem('cv_last_user', u);
+                localStorage.setItem(`cv_last_date_${u}`, d);
+                localStorage.setItem(`cv_database_user_${u}`, JSON.stringify(DB));
+
+                // 4. Controlli di sicurezza sulle tabelle della tua app
+                if(!DB.agenda) DB.agenda = [];
+                if(!DB.scrutini) DB.scrutini = {};
+                if(!DB.orarioDocente) DB.orarioDocente = {};
+
+                // 5. Nascondiamo l'errore (se era presente) e puliamo i campi di testo
+                document.getElementById('login-error').style.display = 'none';
+                document.getElementById('username').value = "";
+                document.getElementById('password').value = "";
+
+                // 6. Avviamo l'interfaccia grafica del registro
+                inizializzaApp();
+                showView('dashboard-view');
+                document.getElementById('login-view').classList.add('hidden');
+                document.getElementById('app-view').classList.remove('hidden');
+
+            } catch (error) {
+                console.error("Errore durante il login:", error);
+                alert("Errore di connessione al database Cloud. Controlla internet o le chiavi inserite.");
             }
-
-            let prof = JSON.parse(storedProfile);
-            if(prof.password !== p) {
-                document.getElementById('login-error').style.display = 'block';
-                return;
-            }
-
-            currentUser = prof;
-            localStorage.setItem('cv_last_user', u);
-            localStorage.setItem(`cv_last_date_${u}`, d);
-
-            let dbStr = localStorage.getItem(`cv_database_user_${u}`);
-            DB = JSON.parse(dbStr);
-
-            if(!DB.agenda) DB.agenda = [];
-            if(!DB.scrutini) DB.scrutini = {};
-            if(!DB.orarioDocente) DB.orarioDocente = {};
-
-            document.getElementById('login-error').style.display = 'none';
-            document.getElementById('username').value = "";
-            document.getElementById('password').value = "";
-
-            inizializzaApp();
-            showView('dashboard-view');
-            document.getElementById('login-view').classList.add('hidden');
-            document.getElementById('app-view').classList.remove('hidden');
         }
 
         function logout() {
