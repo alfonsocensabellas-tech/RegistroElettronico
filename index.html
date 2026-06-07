@@ -844,32 +844,69 @@
         return;
     }
 
-    // Interroghiamo la tabella dei registri utenti su Supabase
-    const { data, error } = await window.supabase
-        .from('registri_utenti')
-        .select('*')
-        .eq('username', userIn)
-        .eq('password', passIn);
+    console.log("Tentativo di accesso per:", userIn);
 
-    if (error) {
-        alert("Errore di connessione a Supabase: " + error.message);
-        return;
+    if (window.supabase) {
+        // Interroghiamo la tabella per controllare le credenziali
+        const { data, error } = await window.supabase
+            .from('registri_docenti') 
+            .select('*')
+            .eq('username', userIn)
+            .eq('password', passIn);
+
+        if (error) {
+            console.error("Errore Supabase in login:", error.message);
+            alert("Errore di connessione a Supabase: " + error.message);
+            return;
+        }
+
+        // Se l'utente viene trovato nel database cloud
+        if (data && data.length > 0) {
+            document.getElementById('login-error').style.display = 'none';
+            
+            // Prendiamo il primo utente valido trovato
+            const rigaUtente = data[0];
+            
+            utenteConnesso = {
+                username: rigaUtente.username,
+                nominativo: rigaUtente.nominativo || rigaUtente.username,
+                dataLavoro: document.getElementById('login-session-date').value
+            };
+            
+            // Salviamo la sessione locale nel browser
+            localStorage.setItem('classeviva_docente_session', JSON.stringify({
+                username: utenteConnesso.username,
+                dataLavoro: utenteConnesso.dataLavoro
+            }));
+            
+            // Gestione sicura del caricamento dati senza usare funzioni esterne fallimentari
+            try {
+                if (rigaUtente.dati_registro) {
+                    // Se ci sono dati strutturati nel database, li carichiamo
+                    DB = typeof rigaUtente.dati_registro === 'string' 
+                        ? JSON.parse(rigaUtente.dati_registro) 
+                        : rigaUtente.dati_registro;
+                } else {
+                    // Se la colonna dati_registro è vuota, inizializziamo un registro pulito
+                    DB = { utenti: {}, classi: {}, orarioDocente: {}, agenda: [], firmeLibere: [], scrutini: {} };
+                }
+                salvaNelTempo();
+            } catch (e) {
+                console.error("Errore nel parsing dei dati registro:", e);
+                // Fallback di emergenza per non bloccare la pagina
+                DB = { utenti: {}, classi: {}, orarioDocente: {}, agenda: [], firmeLibere: [], scrutini: {} };
+            }
+
+            // Forza l'avvio dell'applicazione superando il blocco
+            console.log("Accesso eseguito! Avvio interfaccia...");
+            avviaApplicazioneDettaglio();
+            return;
+        }
     }
 
-    // Se troviamo l'utente corrispondente nel database
-    if (data && data.length > 0) {
-        document.getElementById('login-error').style.display = 'none';
-        
-        const utenteConnesso = data[0];
-        // Mostra il nome del docente
-        document.getElementById('label-nome-docente-connesso').innerText = utenteConnesso.nominativo || utenteConnesso.username;
-        
-        // Avvia l'applicazione caricando i dati dal cloud
-        inizializzaApp();
-    } else {
-        document.getElementById('login-error').style.display = 'block';
-        alert("Credenziali errate o utente non trovato nel database.");
-    }
+    // Se non trova corrispondenze su Supabase, mostra l'errore a schermo
+    document.getElementById('login-error').style.display = 'block';
+    alert("Credenziali errate o utente non trovato nel database.");
 }
 
         function logout() {
