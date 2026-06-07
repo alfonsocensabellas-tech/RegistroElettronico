@@ -2087,22 +2087,24 @@
 
         function importaDatiCifrati(event) {
             const file = event.target.files[0];
-            if(!file) return;
-
-            const password = prompt("🔓 Inserisci la password di sicurezza corretta per decifrare il file di backup:");
-            if(!password) return;
+            if (!file) return;
 
             const reader = new FileReader();
             reader.onload = async function(e) {
+                const password = prompt("🔓 Inserisci la password impostata durante l'esportazione per decifrare il file:");
+                if (!password) return;
+
                 try {
-                    const backupCompleto = JSON.parse(e.target.result);
+                    const jsonBackup = JSON.parse(e.target.result);
                     
-                    const salt = new Uint8Array(atob(backupCompleto.salt).split("").map(c => c.charCodeAt(0)));
-                    const iv = new Uint8Array(atob(backupCompleto.iv).split("").map(c => c.charCodeAt(0)));
-                    const payload = new Uint8Array(atob(backupCompleto.payload).split("").map(c => c.charCodeAt(0)));
+                    // Decodifica i componenti in base64
+                    const salt = new Uint8Array(atob(jsonBackup.salt).split("").map(c => c.charCodeAt(0)));
+                    const iv = new Uint8Array(atob(jsonBackup.iv).split("").map(c => c.charCodeAt(0)));
+                    const encryptedPayload = new Uint8Array(atob(jsonBackup.payload).split("").map(c => c.charCodeAt(0)));
 
                     const encoder = new TextEncoder();
                     const passwordBuffer = encoder.encode(password);
+                    
                     const passwordKey = await window.crypto.subtle.importKey(
                         "raw", passwordBuffer, { name: "PBKDF2" }, false, ["deriveKey"]
                     );
@@ -2113,26 +2115,22 @@
                     );
 
                     const decryptedBuffer = await window.crypto.subtle.decrypt(
-                        { name: "AES-GCM", iv: iv }, cryptoKey, payload
+                        { name: "AES-GCM", iv: iv }, cryptoKey, encryptedPayload
                     );
 
                     const decoder = new TextDecoder();
-                    DB = JSON.parse(decoder.decode(decryptedBuffer));
+                    const decryptedData = JSON.parse(decoder.decode(decryptedBuffer));
 
-                    if(!DB.agenda) DB.agenda = [];
-                    if(!DB.scrutini) DB.scrutini = {};
-                    if(!DB.orarioDocente) DB.orarioDocente = {};
-                    if(!DB.firmeLibere) DB.firmeLibere = [];
-
+                    // Sovrascrive il database locale con i dati del backup importato
+                    DB = decryptedData;
                     salvaNelTempo();
-                    alert("🔓 Chiave corretta! Dati decifrati e registro di istituto ripristinato con successo.");
-                    if(utenteConnesso) avviaApplicazioneDettaglio();
-                    else location.reload();
+                    
+                    alert("🔒 Backup decifrato e importato con successo! L'applicazione verrà rinfrescata.");
+                    avviaApplicazioneDettaglio();
                 } catch(err) {
                     console.error(err);
-                    alert("❌ Chiave di Sicurezza Errata o file di backup corrotto.");
+                    alert("❌ Errore durante la decifratura: Password errata o file danneggiato.");
                 }
-                event.target.value = "";
             };
             reader.readAsText(file);
         }
