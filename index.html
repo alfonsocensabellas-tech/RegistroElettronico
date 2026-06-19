@@ -823,7 +823,7 @@
     <div id="app-view" class="hidden">
         <header>
             <div id="user-info">
-                <span><span id="label-nome-docente-connesso">Prof. Alfonso Censabella</span> (<span id="label-anno-attivo">---</span>)</span>
+                <span><span id="label-nome-docente-connesso">---</span> (<span id="label-anno-attivo">---</span>)</span>
                 <span class="badge-date-top">📅 Data di Lavoro: <strong id="header-date-display">--/--/----</strong></span>
             </div>
             <button class="logout-btn" onclick="logout()">Esci</button>
@@ -891,7 +891,7 @@
                         </div>
                         <div class="form-group" style="margin-bottom:0;">
                             <label>Classe Interessata</label>
-                            <select id="age-classe-select" onchange="onAgendaClasseChange()">
+                            <select id="age-classe-select">
                                 <option value="Tutte">Tutte le mie classi</option>
                             </select>
                         </div>
@@ -1049,11 +1049,11 @@
                             </div>
                             <button type="submit" class="btn-primary" style="width: auto;">Aggiungi Classe</button>
                         </form>
-
+                        
                         <h3 style="margin-top: 25px;">📋 Classi Attualmente Configurate</h3>
                         <div id="set-elenco-classi-configurate"></div>
                     </div>
-
+                    
                     <div class="settings-card">
                         <h3 style="margin-top: 0;">📅 Avanzamento d'Anno Scolastico</h3>
                         <p style="font-size: 13px; color:#64748B;">L'avanzamento d'anno sposta le classi inferiori all'anno successivo (es: dalla 1^ alla 2^), svuotando registri, firme e voti passati. Le classi quinte verranno rimosse dall'elenco attivo.</p>
@@ -1065,7 +1065,6 @@
 
             <div id="class-detail-view" class="hidden">
                 <button class="back-btn" onclick="showView('classes-view')">🡠 Torna all'elenco classi</button>
-                
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom: 20px;">
                     <div>
                         <h2 style="margin:0;" id="detail-classe-titolo">Classe X</h2>
@@ -1091,6 +1090,7 @@
                     <div style="background:#F8FAFC; padding:20px; border-radius:8px; border:1px solid var(--border-color); margin-bottom: 25px;">
                         <h3 style="margin-top:0; color:var(--primary-dark)" id="titolo-form-firma">🖋️ Apponi Firme Giornale di Classe (Singole o Multiple)</h3>
                         <input type="hidden" id="firma-index-modifica" value="">
+                        
                         <div id="container-righe-firme-multiple">
                             <div class="riga-firma-multipla" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #CBD5E1;">
                                 <div class="form-group" style="margin-bottom:0;">
@@ -1110,8 +1110,6 @@
                                         <option value="4^ ora">4^ ora</option>
                                         <option value="5^ ora">5^ ora</option>
                                         <option value="6^ ora">6^ ora</option>
-                                        <option value="7^ ora">7^ ora</option>
-                                        <option value="8^ ora">8^ ora</option>
                                     </select>
                                 </div>
                                 <div class="form-group" style="margin-bottom:0; flex-grow: 1;">
@@ -1120,15 +1118,15 @@
                                 </div>
                             </div>
                         </div>
+                        
                         <div style="display: flex; gap:10px; margin-top: 15px;">
                             <button class="btn-secondary" onclick="aggiungiRigaFirmaInterfaccia()">➕ Aggiungi un'altra lezione</button>
                             <button class="btn-primary" style="width: auto; margin:0;" id="btn-salva-firma" onclick="salvaTutteLeFirmeMultiple()">Invia e Registra Tutte le Lezioni</button>
                             <button class="btn-secondary hidden" id="btn-annulla-firma" onclick="annullaModificaFirma()">Annulla Modifica</button>
                         </div>
                     </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <h3>Storico Lezioni in questa classe</h3>
-                    </div>
+
+                    <h3>Storico Lezioni in questa classe</h3>
                     <table>
                         <thead>
                             <tr>
@@ -1187,22 +1185,19 @@
                                 <option value="8.5">8½</option><option value="8">8</option><option value="7.5">7½</option>
                                 <option value="7">7</option><option value="6.5">6½</option><option value="6">6</option>
                                 <option value="5.5">5½</option><option value="5">5</option><option value="4.5">4½</option>
-                                <option value="4">4</option><option value="3">3</option><option value="2">2</option>
+                                <option value="4">4</option><option value="3">3</option>
                             </select>
                         </div>
-                        <div class="form-group" style="margin-bottom:0; flex-grow:1;">
-                            <label>Commento / Descrizione (Opzionale)</label>
-                            <input type="text" id="voto-commento" placeholder="Es. Verifica equazioni..." style="width:100%;">
-                        </div>
-                        <button class="btn-primary" style="width:auto; margin:0;" onclick="aggiungiVoto()">Inserisci Voto</button>
+                        <button class="btn-primary" style="width:auto; margin:0;" onclick="aggiungiVoto()">Registra Voto</button>
                     </div>
+
+                    <h3>Registro Voti - Griglia Riassuntiva</h3>
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 50px;">N°</th>
                                 <th>Alunno</th>
-                                <th>Elenco Valutazioni Periodo Corrente</th>
-                                <th>Media Voti</th>
+                                <th>Voti registrati (<span class="placeholder-materia-voti-testo"></span>)</th>
+                                <th style="width:100px;">Media</th>
                             </tr>
                         </thead>
                         <tbody id="table-voti-body"></tbody>
@@ -1210,117 +1205,84 @@
                 </div>
 
                 <div id="tab-scrutini" class="tab-content">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background:#F8FAFC; padding:15px; border-radius:8px; border:1px solid var(--border-color);">
-                        <div>
-                            <label style="font-weight: bold; margin-right: 10px;">Quadrimestre Scrutinio:</label>
-                            <select id="scrutinio-quadrimestre" onchange="renderScrutini()">
-                                <option value="Q1">1° Quadrimestre</option>
-                                <option value="Q2">2° Quadrimestre (Scrutinio Finale)</option>
-                            </select>
-                        </div>
-                        <button class="btn-secondary" onclick="proponiVotiScrutinioDalleMedie()">📊 Proponi Voti da Medie Matematiche</button>
+                    <div style="background:#FFF5F5; border:1px solid #FED7D7; padding:15px; border-radius:8px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
+                        <p style="margin:0; font-weight:600; color:var(--primary-dark);">🎓 In questa sezione puoi bloccare i voti finali per il Tabellone Scrutini dei Quadrimestri.</p>
+                        <select id="scrutinio-quadrimestre-select" onchange="renderScrutini()" style="padding:6px 12px; font-weight:bold; border-color:var(--primary-red);">
+                            <option value="1Q">1° Quadrimestre (Fino a Gennaio)</option>
+                            <option value="2Q">2° Quadrimestre (Giudizio Finale)</option>
+                        </select>
                     </div>
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 50px;">N°</th>
                                 <th>Alunno</th>
-                                <th style="width: 120px;">Media Registro</th>
-                                <th style="width: 150px;">Voto Proposto Scrutinio</th>
-                                <th style="width: 150px;">Assenze Totali</th>
-                                <th>Giudizio Analitico / Note di Scrutinio</th>
+                                <th>Media Proposte Prova</th>
+                                <th style="width: 150px;">Voto Unico Scrutinio</th>
+                                <th>Note Intermedie / Giudizio di Flusso</th>
                             </tr>
                         </thead>
                         <tbody id="table-scrutini-body"></tbody>
                     </table>
-                    <button class="btn-primary" style="width: auto;" onclick="salvaScrutiniClasse()">💾 Salva e Blocca Voti Scrutinio</button>
+                    <button class="btn-primary" style="width:auto;" onclick="salvaScrutiniQuadrimestre()">💾 Blocca e Salva Voti Scrutinio</button>
                 </div>
 
                 <div id="tab-alunni" class="tab-content">
-                    <div style="background:#FFF5F5; padding:15px; border-radius:8px; border:1px solid #FECACA; margin-bottom:25px;">
-                        <h3 style="margin-top: 0; color:var(--primary-dark)">👥 Importa Elenco Alunni (Copia e Incolla Rapido)</h3>
-                        <p style="font-size:13px; color:#64748B; margin-top:0;">Incolla i nomi degli studenti, inserendo **un alunno per riga** (Formato preferito: *Cognome Nome*).</p>
-                        <textarea id="alunni-bulk-textarea" placeholder="Rossi Mario&#10;Bianchi Luigi&#10;Verdi Anna" style="height: 120px; margin-bottom:12px;"></textarea>
-                        <button class="btn-primary" style="width: auto; margin:0;" onclick="importaAlunniBulk()">Inizializza Elenco Alunni</button>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                        <div>
+                            <h3>➕ Inserisci un nuovo Alunno</h3>
+                            <form onsubmit="event.preventDefault(); aggiungiNuovoAlunno();">
+                                <div class="form-group">
+                                    <label>Cognome Alunno</label>
+                                    <input type="text" id="alunno-cognome" style="width:100%;" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Nome Alunno</label>
+                                    <input type="text" id="alunno-nome" style="width:100%;" required>
+                                </div>
+                                <button type="submit" class="btn-primary" style="width:auto;">Aggiungi all'Elenco</button>
+                            </form>
+                        </div>
+                        <div>
+                            <h3>👥 Elenco Alunni Iscritti (<span id="count-alunni-badge">0</span>)</h3>
+                            <div id="lista-alunni-rimozione-container" style="max-height: 300px; overflow-y:auto; border:1px solid var(--border-color); border-radius:6px; padding:10px; background:#F8FAFC;"></div>
+                        </div>
                     </div>
-                    <h3>Studenti Iscritti nel Registro</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th style="width: 80px;">N. Registro</th>
-                                <th>Cognome Nome Alunno</th>
-                                <th style="width: 100px;">Azioni</th>
-                            </tr>
-                        </thead>
-                        <tbody id="table-alunni-body"></tbody>
-                    </table>
                 </div>
             </div>
         </main>
     </div>
 
     <script>
-        // Inizializzazione Struttura Variabili Globali di Stato
-        let DB = { 
-            utenti: {}, 
-            classi: {}, 
-            orarioDocente: {}, 
-            agenda: [], 
-            firmeLibere: [], 
-            scrutini: {} 
-        };
-        
+        // === STATO APPLICAZIONE (IN-MEMORY DB) ===
+        let DB = { classes: {}, agenda: [], firmeLibere: [] };
         let utenteConnesso = null;
-        let classeAttivaId = null;
-        let materiaAttiva = "";
-        let inSincronizzazione = false; // Flag di prevenzione loop infiniti salvataggi cloud
-        
-        let agendaModoVista = 'mese';
-        let agendaDataCorrente = new Date();
+        let dataLavoroSelezionata = "";
+        let vistaAttiva = "dashboard-view";
+        let classeAttivaCodice = null;
+        let materiaAttivaSelezionata = "";
+        let modoVisualizzazioneCalendario = "mese";
+        let dataAncoraggioCalendario = new Date();
 
-        // Controllo automatico di sessioni attive all'avvio del browser
+        // Elenco fisso di tutte le classi dell'istituto fittizio per le supplenze libere
+        const CLASSI_ISTITUTO_TOTALI = ["1A","1B","1C","2A","2B","3A","3B","4A","4B","5A","5B","1AS","2AS","3AS","4AS","5AS"];
+
+        // === INIZIALIZZAZIONE ===
         window.addEventListener('DOMContentLoaded', () => {
-            const dataOggiStr = new Date().toISOString().split('T')[0];
-            document.getElementById('login-session-date').value = dataOggiStr;
-            document.getElementById('age-data').value = dataOggiStr;
-            document.getElementById('tc-data').value = dataOggiStr;
-            document.getElementById('appello-data-selezionata').value = dataOggiStr;
-
-            caricaDatabaseLocale();
-
-            const sessioneSalvata = localStorage.getItem('classeviva_docente_session');
-            if (sessioneSalvata) {
-                try {
-                    const dataSess = JSON.parse(sessioneSalvata);
-                    document.getElementById('username').value = dataSess.username;
-                    document.getElementById('login-session-date').value = dataSess.dataLavoro;
-                    console.log("Sessione precedente trovata, tentativo login automatico...");
-                } catch (e) {
-                    console.error("Errore lettura sessione precedente:", e);
-                }
-            }
+            const oggi = new Date().toISOString().split('T')[0];
+            document.getElementById('login-session-date').value = oggi;
+            document.getElementById('appello-data-selezionata').value = hoy = oggi;
+            document.getElementById('voto-data').value = oggi;
+            document.getElementById('age-data').value = oggi;
+            document.getElementById('tc-data').value = oggi;
+            
+            // Popola i selettori dell'istituto
+            const tcClasse = document.getElementById('tc-classe');
+            CLASSI_ISTITUTO_TOTALI.forEach(c => {
+                let opt = document.createElement('option'); opt.value = c; opt.innerText = c;
+                tcClasse.appendChild(opt);
+            });
         });
 
-        // Carica dati di fallback da localStorage locale
-        function caricaDatabaseLocale() {
-            const localeData = localStorage.getItem('classeviva_docente_db');
-            if (localeData) {
-                try {
-                    DB = JSON.parse(localeData);
-                    if (!DB.utenti) DB.utenti = {};
-                    if (!DB.classi) DB.classi = {};
-                    if (!DB.orarioDocente) DB.orarioDocente = {};
-                    if (!DB.agenda) DB.agenda = [];
-                    if (!DB.firmeLibere) DB.firmeLibere = [];
-                    if (!DB.scrutini) DB.scrutini = {};
-                    console.log("Database locale caricato con successo.");
-                } catch (e) {
-                    console.error("Errore parse database locale:", e);
-                }
-            }
-        }
-
-        // Cambio visualizzazione Login / Registrazione
         function switchAuthMode(mode) {
             if (mode === 'register') {
                 document.getElementById('auth-login-section').classList.add('hidden');
@@ -1331,545 +1293,482 @@
             }
         }
 
-        // Gestione Creazione Nuovo Utente Locale
-        function registraNuovoUtente() {
-            const nome = document.getElementById('reg-nominativo').value.trim();
-            const user = document.getElementById('reg-username').value.trim().toLowerCase();
-            const pass = document.getElementById('reg-password').value.trim();
+        // === AUTENTICAZIONE & SUPABASE CLOUD SYNC ===
+        async function registraNuovoUtente() {
+            const nominativo = document.getElementById('reg-nominativo').value.trim();
+            const username = document.getElementById('reg-username').value.trim().toLowerCase();
+            const password = document.getElementById('reg-password').value;
 
-            if (!nome || !user || !pass) {
-                alert("Compilare tutti i campi di registrazione.");
-                return;
+            if(!nominativo || !username || !password) return;
+
+            try {
+                // Controlla se l'utente esiste già su Supabase
+                const { data: utenteEsistente } = await window.supabase
+                    .from('docenti_registri')
+                    .select('username')
+                    .eq('username', username)
+                    .maybeSingle();
+
+                if (utenteEsistente) {
+                    alert("❌ Questo username è già utilizzato. Scegline un altro.");
+                    return;
+                }
+
+                const strutturaInizialeDB = { classes: {}, agenda: [], firmeLibere: [] };
+
+                // Inserimento utente su Supabase
+                const { error } = await window.supabase
+                    .from('docenti_registri')
+                    .insert([{ 
+                        nominativo: nominativo, 
+                        username: username, 
+                        password: password, // In un'applicazione reale la password va cifrata
+                        database_registro: strutturaInizialeDB
+                    }]);
+
+                if (error) throw error;
+
+                alert("🎉 Registrazione completata con successo! Ora puoi effettuare il login.");
+                switchAuthMode('login');
+                document.getElementById('username').value = username;
+            } catch (err) {
+                console.error(err);
+                alert("❌ Errore durante la registrazione nel Database Cloud Supabase.");
             }
-
-            if (DB.utenti[user]) {
-                alert("Questo username è già in uso sul database locale.");
-                return;
-            }
-
-            DB.utenti[user] = {
-                username: user,
-                password: pass,
-                nominativo: nome
-            };
-
-            salvaNelTempo();
-            alert("🎉 Registrazione completata! Adesso puoi effettuare l'accesso.");
-            switchAuthMode('login');
-            document.getElementById('username').value = user;
-            document.getElementById('password').value = pass;
         }
 
-        // FUNZIONE LOGIN DEFINITIVA E CORRETTA SU TABELLA REGISTRI_DOCENTI
         async function login() {
             const userIn = document.getElementById('username').value.trim().toLowerCase();
-            const passIn = document.getElementById('password').value.trim();
+            const passIn = document.getElementById('password').value;
+            dataLavoroSelezionata = document.getElementById('login-session-date').value;
 
-            if (!userIn || !passIn) {
-                alert("Inserire sia lo username che la password.");
-                return;
-            }
+            if(!userIn || !passIn || !dataLavoroSelezionata) return;
 
-            console.log("Richiesta autenticazione cloud per utente:", userIn);
-
-            if (window.supabase) {
-                // Interroga la tabella remota corretta di Supabase: registri_docenti
-                const { data, error } = await window.supabase
-                    .from('registri_docenti')
+            try {
+                const { data: utente, error } = await window.supabase
+                    .from('docenti_registri')
                     .select('*')
                     .eq('username', userIn)
-                    .eq('password', passIn);
+                    .eq('password', passIn)
+                    .maybeSingle();
 
-                if (error) {
-                    console.error("Errore di rete/connessione Supabase:", error.message);
-                    alert("Errore di connessione a Supabase: " + error.message);
+                if (error) throw error;
+
+                if (!utente) {
+                    document.getElementById('login-error').style.display = "block";
                     return;
                 }
 
-                // Corrispondenza utente trovata su cloud
-                if (data && data.length > 0) {
-                    document.getElementById('login-error').style.display = 'none';
-                    const rigaServer = data[0];
-
-                    utenteConnesso = {
-                        username: rigaServer.username,
-                        nominativo: rigaServer.nominativo || rigaServer.username,
-                        dataLavoro: document.getElementById('login-session-date').value
-                    };
-
-                    localStorage.setItem('classeviva_docente_session', JSON.stringify({
-                        username: utenteConnesso.username,
-                        dataLavoro: utenteConnesso.dataLavoro
-                    }));
-
-                    // Caricamento sicuro dati_registro bypassando funzioni esterne bloccanti
-                    try {
-                        if (rigaServer.dati_registro) {
-                            DB = typeof rigaServer.dati_registro === 'string'
-                                ? JSON.parse(rigaServer.dati_registro)
-                                : rigaServer.dati_registro;
-                        } else {
-                            DB = { utenti: {}, classi: {}, orarioDocente: {}, agenda: [], firmeLibere: [], scrutini: {} };
-                        }
-                        
-                        // Aggiorna la copia di cache locale
-                        localStorage.setItem('classeviva_docente_db', JSON.stringify(DB));
-                    } catch (errParse) {
-                        console.error("Errore decodifica dati_registro cloud:", errParse);
-                        DB = { utenti: {}, classi: {}, orarioDocente: {}, agenda: [], firmeLibere: [], scrutini: {} };
-                    }
-
-                    console.log("Accesso cloud validato!");
-                    avviaApplicazioneDettaglio();
-                    return;
-                }
+                // Autenticazione riuscita
+                utenteConnesso = { username: utente.username, nominativo: utente.nominativo };
+                DB = utente.database_registro || { classes: {}, agenda: [], firmeLibere: [] };
+                
+                allineaStrutturaDatiDatabase();
+                avviaApplicazioneDettaglio();
+            } catch (err) {
+                console.error(err);
+                alert("❌ Errore critico durante il collegamento al server di autenticazione.");
             }
-
-            // CONTROLLO FALLBACK LOCALE: Se il cloud fallisce o non trova corrispondenza
-            if (DB.utenti && DB.utenti[userIn]) {
-                if (DB.utenti[userIn].password === passIn) {
-                    document.getElementById('login-error').style.display = 'none';
-                    
-                    utenteConnesso = {
-                        username: userIn,
-                        nominativo: DB.utenti[userIn].nominativo || userIn,
-                        dataLavoro: document.getElementById('login-session-date').value
-                    };
-
-                    localStorage.setItem('classeviva_docente_session', JSON.stringify({
-                        username: utenteConnesso.username,
-                        dataLavoro: utenteConnesso.dataLavoro
-                    }));
-
-                    avviaApplicazioneDettaglio();
-                    return;
-                }
-            }
-
-            // Nessun utente valido trovato
-            document.getElementById('login-error').style.display = 'block';
-            alert("Credenziali errate o account non esistente.");
         }
 
-        // Avvio interfaccia applicativa ed elementi top bar
+        async function salvaNelTempo() {
+            if (!utenteConnesso) return;
+            try {
+                const { error } = await window.supabase
+                    .from('docenti_registri')
+                    .update({ database_registro: DB })
+                    .eq('username', utenteConnesso.username);
+
+                if (error) throw error;
+                console.log("☁️ Dati sincronizzati ed archiviati in modo persistente su Supabase cloud.");
+            } catch (err) {
+                console.error("Errore salvataggio Supabase:", err);
+            }
+        }
+
+        function logout() {
+            utenteConnesso = null;
+            DB = { classes: {}, agenda: [], firmeLibere: [] };
+            document.getElementById('app-view').classList.add('hidden');
+            document.getElementById('login-view').classList.remove('hidden');
+            document.getElementById('login-error').style.display = "none";
+            document.getElementById('password').value = "";
+        }
+
+        function allineaStrutturaDatiDatabase() {
+            if(!DB.classes) DB.classes = {};
+            if(!DB.agenda) DB.agenda = [];
+            if(!DB.firmeLibere) DB.firmeLibere = [];
+            
+            // Garantisce le sotto-strutture per ogni classe
+            Object.keys(DB.classes).forEach(cId => {
+                let c = DB.classes[cId];
+                if(!c.alunni) c.alunni = [];
+                if(!c.firme) c.firme = [];
+                if(!c.appelli) c.appelli = {};
+                if(!c.voti) c.voti = [];
+                if(!c.scrutini) c.scrutini = {};
+                if(!c.orarioSettimanale) c.orarioSettimanale = Array(6).fill(null).map(() => Array(6).fill(""));
+            });
+        }
+
         function avviaApplicazioneDettaglio() {
             document.getElementById('login-view').classList.add('hidden');
             document.getElementById('app-view').classList.remove('hidden');
-
+            
             document.getElementById('label-nome-docente-connesso').innerText = utenteConnesso.nominativo;
             
-            // Estrazione Anno Scolastico Attivo
-            const dataSess = new Date(utenteConnesso.dataLavoro);
-            let annoScolastico = "";
-            if (dataSess.getMonth() >= 8) {
-                annoScolastico = dataSess.getFullYear() + "/" + (dataSess.getFullYear() + 1);
-            } else {
-                annoScolastico = (dataSess.getFullYear() - 1) + "/" + dataSess.getFullYear();
-            }
-            
-            document.getElementById('label-anno-active').innerText = "A.S. " + annoScolastico;
-            const placeholders = document.querySelectorAll('.placeholder-anno-testo');
-            placeholders.forEach(el => el.innerText = "A.S. " + annoScolastico);
+            // Calcolo anno scolastico (es: 2025/2026)
+            let dObj = new Date(dataLavoroSelezionata);
+            let y = dObj.getFullYear();
+            let annoTesto = (dObj.getMonth() >= 8) ? `${y}/${y+1}` : `${y-1}/${y}`;
+            document.getElementById('label-anno-attivo').innerText = annoTesto;
+            document.querySelectorAll('.placeholder-anno-testo').forEach(e => e.innerText = annoTesto);
 
-            // Formattazione data italiana per display header
-            const pezziData = utenteConnesso.dataLavoro.split('-');
-            document.getElementById('header-date-display').innerText = `${pezziData[2]}/${pezziData[1]}/${pezziData[0]}`;
+            // Formatta data lavoro top bar
+            let pezzi = dataLavoroSelezionata.split('-');
+            document.getElementById('header-date-display').innerText = `${pezzi[2]}/${pezzi[1]}/${pezzi[0]}`;
 
             showView('dashboard-view');
         }
 
-        // Navigazione e gestione viste principali pannello
         function showView(viewId) {
-            const views = ['dashboard-view', 'classes-view', 'agenda-view', 'tutte-classi-view', 'settings-view', 'class-detail-view'];
-            views.forEach(v => {
-                const el = document.getElementById(v);
-                if (el) el.classList.add('hidden');
-            });
+            document.getElementById('dashboard-view').classList.add('hidden');
+            document.getElementById('classes-view').classList.add('hidden');
+            document.getElementById('agenda-view').classList.add('hidden');
+            document.getElementById('tutte-classi-view').classList.add('hidden');
+            document.getElementById('settings-view').classList.add('hidden');
+            document.getElementById('class-detail-view').classList.add('hidden');
 
             document.getElementById(viewId).classList.remove('hidden');
+            vistaAttiva = viewId;
 
-            if (viewId === 'dashboard-view') renderOrarioDashboard();
-            if (viewId === 'classes-view') renderElencoClassiAssegnate();
+            if(viewId === 'dashboard-view') renderDashboardTimetable();
+            if(viewId === 'classes-view') renderElencoClassiAssegnate();
         }
 
-       // --- FUNZIONE PER SALVARE (Chiama questa quando modifichi il registro) ---
-async function salvaSulDatabase() {
-    console.log("Salvataggio in corso...");
-    try {
-        const { data, error } = await window.supabase
-            .from('registro_dati') // Nome tabella dallo screenshot
-            .upsert({ 
-                id: 'configurazione_unica', // Identificativo fisso
-                data: DB                    // Salva tutto l'oggetto DB nella colonna 'data'
-            });
-
-        if (error) throw error;
-        console.log("✅ Dati salvati con successo su Supabase!");
-    } catch (err) {
-        console.error("❌ Errore durante il salvataggio:", err.message);
-        alert("Errore salvataggio: " + err.message);
-    }
-}
-
-// --- FUNZIONE PER CARICARE (Chiama questa all'avvio) ---
-async function caricaDalDatabase() {
-    try {
-        const { data, error } = await window.supabase
-            .from('registro_dati')
-            .select('data') // Legge solo la colonna 'data'
-            .eq('id', 'configurazione_unica')
-            .single();
-
-        if (error && error.code !== 'PGRST116') throw error; 
-        
-        if (data) {
-            DB = data.data; // Carica il JSON dentro la variabile DB
-            console.log("📂 Dati caricati correttamente da Supabase!");
-        }
-    } catch (err) {
-        console.error("❌ Errore durante il caricamento:", err.message);
-    }
-}
-        
-        // FUNZIONE DI SINCRONIZZAZIONE ESENTE DA RICHIAMI A SALVANELTEMPO
-        async function sincronizzaSupabase() {
-            if (!window.supabase || !utenteConnesso) return;
-
-            const stringDB = JSON.stringify(DB);
-            
-            // Aggiornamento o inserimento riga basato su vincolo univoco username
-            const { error } = await window.supabase
-                .from('registri_docenti')
-                .upsert({
-                    username: utenteConnesso.username,
-                    dati_registro: stringDB,
-                    ultimo_aggiornamento: new Date().toISOString()
-                }, { onConflict: 'username' });
-
-            if (error) {
-                console.error("Errore durante upsert su Supabase:", error.message);
-                throw error;
-            }
-        }
-
-        // Scarico manuale/forzato dei dati da database remoto cloud
-        async function scaricaDaSupabase(username) {
-            if (!window.supabase) return;
-
-            const { data, error } = await window.supabase
-                .from('registri_docenti')
-                .select('dati_registro')
-                .eq('username', username);
-
-            if (error) {
-                console.error("Errore scaricamento dati Supabase:", error.message);
-                return;
-            }
-
-            if (data && data.length > 0 && data[0].dati_registro) {
-                try {
-                    DB = typeof data[0].dati_registro === 'string' 
-                        ? JSON.parse(data[0].dati_registro) 
-                        : data[0].dati_registro;
-                    localStorage.setItem('classeviva_docente_db', JSON.stringify(DB));
-                } catch (e) {
-                    console.error("Errore parsing dati scaricati:", e);
-                }
-            }
-        }
-
-        // Chiusura Sessione Utente (Logout)
-        function logout() {
-            localStorage.removeItem('classeviva_docente_session');
-            utenteConnesso = null;
-            classeAttivaId = null;
-            materiaAttiva = "";
-            location.reload();
-        }
-
-        // --- GESTIONE CLASSI E IMPOSTAZIONI ---
-        function openSettingsView() {
-            showView('settings-view');
-            renderClassiSettings();
-            renderListaAvanzamentoAnno();
-        }
-
+        // === GESTIONE CLASSI (IMPOSTAZIONI) ===
         function creaNuovaClasse() {
-            const classId = document.getElementById('set-classe-id').value.trim().toUpperCase();
-            const materieStr = document.getElementById('set-classe-materie').value.trim();
-            const isCoord = document.getElementById('set-classe-coord').checked;
+            let id = document.getElementById('set-classe-id').value.trim().toUpperCase();
+            let materieTxt = document.getElementById('set-classe-materie').value;
+            let isCoord = document.getElementById('set-classe-coord').checked;
 
-            if (!classId || !materieStr) return;
+            if(!id || !materieTxt) return;
+            if(DB.classes[id]) { alert("Questa classe è già configurata."); return; }
 
-            const elencoMaterie = materieStr.split(',').map(m => m.trim()).filter(m => m.length > 0);
+            let elencoMaterie = materieTxt.split(',').map(m => m.trim()).filter(m => m.length > 0);
 
-            if (!DB.classi[classId]) {
-                DB.classi[classId] = {
-                    id: classId,
-                    materie: elencoMaterie,
-                    coordinatore: isCoord,
-                    alunni: [],
-                    giornaleFirme: [],
-                    appelli: {},
-                    voti: []
-                };
-            } else {
-                DB.classi[classId].materie = Array.from(new Set([...DB.classi[classId].materie, ...elencoMaterie]));
-                DB.classi[classId].coordinatore = isCoord;
-            }
+            DB.classes[id] = {
+                id: id,
+                materie: elencoMaterie,
+                coordinatore: isCoord,
+                alunni: [],
+                firme: [],
+                appelli: {},
+                voti: [],
+                scrutini: {},
+                orarioSettimanale: Array(6).fill(null).map(() => Array(6).fill(""))
+            };
 
-            salvaNelTempo();
-            renderClassiSettings();
-            renderListaAvanzamentoAnno();
-            
             document.getElementById('set-classe-id').value = "";
             document.getElementById('set-classe-materie').value = "";
             document.getElementById('set-classe-coord').checked = false;
-            
-            alert(`Classe ${classId} aggiunta/aggiornata correttamente.`);
+
+            salvaNelTempo();
+            renderSettingsClassiConfigurate();
         }
 
-        function renderClassiSettings() {
-            const container = document.getElementById('set-elenco-classi-configurate');
-            container.innerHTML = "";
+        function rimuoviClasseCompletamente(id) {
+            if(!confirm(`Sei sicuro di voler eliminare la classe ${id}? Perderai tutti gli alunni, voti e registrazioni di firme.`)) return;
+            delete DB.classes[id];
+            salvaNelTempo();
+            renderSettingsClassiConfigurate();
+        }
 
-            const chiaviClassi = Object.keys(DB.classi).sort();
-            if (chiaviClassi.length === 0) {
-                container.innerHTML = "<p style='color:#64748B; font-style:italic;'>Nessuna classe configurata.</p>";
-                return;
-            }
+        function openSettingsView() {
+            showView('settings-view');
+            renderSettingsClassiConfigurate();
+            
+            // Render passaggio d'anno list preview
+            let html = "<ul>";
+            Object.keys(DB.classes).sort().forEach(id => {
+                html += `<li>Classe ${id} ➔ Spostata all'anno successivo (Svuotata)</li>`;
+            });
+            html += "</ul>";
+            if(Object.keys(DB.classes).length === 0) html = "<p>Nessuna classe inserita.</p>";
+            document.getElementById('passaggio-anno-classi-list').innerHTML = html;
+        }
 
-            chiaviClassi.forEach(k => {
-                const cls = DB.classi[k];
-                const item = document.createElement('div');
-                item.className = "class-list-item";
-                item.innerHTML = `
+        function renderSettingsClassiConfigurate() {
+            let target = document.getElementById('set-elenco-classi-configurate');
+            target.innerHTML = "";
+            
+            let elenco = Object.keys(DB.classes).sort();
+            if(elenco.length === 0) { target.innerHTML = "<p>Nessuna classe configurata nel tuo registro.</p>"; return; }
+
+            elenco.forEach(id => {
+                let cl = DB.classes[id];
+                let div = document.createElement('div');
+                div.className = "class-list-item";
+                div.innerHTML = `
                     <div>
-                        <strong>Classe ${cls.id}</strong> - ${cls.materie.join(', ')}
-                        ${cls.coordinatore ? '<span class="badge-coord" style="position:static; margin-left:10px;">COORD</span>' : ''}
-                        <br><small style="color:#64748B;">Alunni iscritti: ${cls.alunni ? cls.alunni.length : 0}</small>
+                        <strong>Classe ${cl.id}</strong> ${cl.coordinatore ? '<span style="color:var(--amber-coord); font-weight:bold;">[Coord]</span>' : ''}
+                        <br><small style="color:#64748B;">Materie: ${cl.materie.join(', ')} | Alunni: ${cl.alunni.length}</small>
                     </div>
-                    <button class="btn-danger" onclick="eliminaClasseIntera('${cls.id}')">Elimina</button>
+                    <button class="btn-danger" onclick="rimuoviClasseCompletamente('${cl.id}')">Rimuovi</button>
                 `;
-                container.appendChild(item);
+                target.appendChild(div);
             });
         }
 
-        function eliminaClasseIntera(classId) {
-            if (confirm(`Sei sicuro di voler eliminare interamente la classe ${classId}? Questa operazione rimuoverà definitivamente alunni, voti e registri.`)) {
-                delete DB.classi[classId];
-                
-                // Pulisce anche l'orario docente dalle ore associate
-                if (DB.orarioDocente) {
-                    for (let g in DB.orarioDocente) {
-                        for (let o in DB.orarioDocente[g]) {
-                            if (DB.orarioDocente[g][o] === classId) {
-                                delete DB.orarioDocente[g][o];
-                            }
-                        }
-                    }
-                }
+        function confermaPassaggioAnno() {
+            if(!confirm("⚠️ ATTENZIONE! Questa operazione svuota tutti i registri, voti, appelli e lezioni di quest'anno per simulare l'avanzamento. Continuare?")) return;
+            
+            let vecchieClassi = JSON.parse(JSON.stringify(DB.classes));
+            let nuoveClassi = {};
 
-                salvaNelTempo();
-                renderClassiSettings();
-                renderListaAvanzamentoAnno();
+            Object.keys(vecchieClassi).forEach(id => {
+                let num = parseInt(id);
+                if(isNaN(num)) {
+                    nuoveClassi[id] = azzeraStrutturaClassePerNuovoAnno(vecchieClassi[id]);
+                } else if(num < 5) {
+                    let nuovoId = id.replace(num, num + 1);
+                    let clMod = azzeraStrutturaClassePerNuovoAnno(vecchieClassi[id]);
+                    clMod.id = nuovoId;
+                    nuoveClassi[nuovoId] = clMod;
+                }
+            });
+
+            DB.classes = nuoveClassi;
+            DB.agenda = [];
+            DB.firmeLibere = [];
+
+            salvaNelTempo();
+            alert("✨ Anno scolastico avanzato con successo!");
+            location.reload();
+        }
+
+        function azzeraStrutturaClassePerNuovoAnno(vecchiaCl) {
+            return {
+                id: vecchiaCl.id,
+                materie: vecchiaCl.materie,
+                coordinatore: vecchiaCl.coordinatore,
+                alunni: vecchiaCl.alunni.map(al => { al.noteIn Scrutinio = ""; return al; }), 
+                firme: [], appelli: {}, voti: [], scrutini: {},
+                orarioSettimanale: vecchiaCl.orarioSettimanale || Array(6).fill(null).map(() => Array(6).fill(""))
+            };
+        }
+
+        // === TIMETABLE / ORARIO SETTIMANALE ===
+        function renderDashboardTimetable() {
+            let body = document.getElementById('dashboard-timetable-body');
+            body.innerHTML = "";
+
+            const oreEtichette = ["1^ Ora (08:00)", "2^ Ora (09:00)", "3^ Ora (10:00)", "4^ Ora (11:00)", "5^ Ora (12:00)", "6^ Ora (13:00)"];
+
+            for(let oraIdx=0; oraIdx<6; oraIdx++) {
+                let tr = document.createElement('tr');
+                let tdOra = document.createElement('td');
+                tdOra.style.fontWeight = "600";
+                tdOra.innerText = oreEtichette[oraIdx];
+                tr.appendChild(tdOra);
+
+                for(let giornoIdx=0; giornoIdx<6; giornoIdx++) {
+                    let td = document.createElement('td');
+                    let cellValue = trovaClasseInOrarioGenerale(giornoIdx, oraIdx);
+
+                    if(cellValue) {
+                        td.className = "timetable-cell-active";
+                        td.innerText = `Classe ${cellValue}`;
+                        td.onclick = () => apreRegistroClasseDettaglio(cellValue);
+                    } else {
+                        // Creazione select rapida per configurare l'orario direttamente
+                        let sel = document.createElement('select');
+                        sel.className = "timetable-select";
+                        sel.onchange = (e) => salvaAssegnazioneOrarioRapido(giornoIdx, oraIdx, e.target.value);
+                        
+                        let op0 = document.createElement('option'); op0.value = ""; op0.innerText = "-";
+                        sel.appendChild(op0);
+
+                        Object.keys(DB.classes).sort().forEach(cId => {
+                            let op = document.createElement('option'); op.value = cId; op.innerText = cId;
+                            sel.appendChild(op);
+                        });
+                        sel.value = "";
+                        td.appendChild(sel);
+                    }
+                    tr.appendChild(td);
+                }
+                body.appendChild(tr);
             }
         }
 
-        // Rendering delle classi nel modulo principale
+        function trovaClasseInOrarioGenerale(g, o) {
+            let ris = null;
+            Object.keys(DB.classes).forEach(cId => {
+                let cl = DB.classes[cId];
+                if(cl.orarioSettimanale && cl.orarioSettimanale[g] && cl.orarioSettimanale[g][o] === "SI") {
+                    ris = cId;
+                }
+            });
+            return ris;
+        }
+
+        function salvaAssegnazioneOrarioRapido(g, o, classeSelezionata) {
+            if(!classeSelezionata) return;
+            
+            // Svuota quel blocco per le altre classi prima
+            Object.keys(DB.classes).forEach(cId => {
+                if(!DB.classes[cId].orarioSettimanale) DB.classes[cId].orarioSettimanale = Array(6).fill(null).map(() => Array(6).fill(""));
+                DB.classes[cId].orarioSettimanale[g][o] = "";
+            });
+
+            DB.classes[classeSelezionata].orarioSettimanale[g][o] = "SI";
+            salvaNelTempo();
+            renderDashboardTimetable();
+        }
+
+        // === LISTA CLASSI & DETTAGLIO CLASSE ===
         function renderElencoClassiAssegnate() {
-            const container = document.getElementById('container-elenco-classi');
+            let container = document.getElementById('container-elenco-classi');
             container.innerHTML = "";
 
-            const chiaviClassi = Object.keys(DB.classi).sort();
-            if (chiaviClassi.length === 0) {
-                container.innerHTML = "<p style='color:#64748B; font-style:italic; grid-column: 1/-1;'>Nessuna classe configurata. Vai nelle Impostazioni per aggiungerle.</p>";
+            let elenco = Object.keys(DB.classes).sort();
+            if(elenco.length === 0) {
+                container.innerHTML = "<p style='grid-column: 1/-1;'>Nessuna classe configurata. Vai in 'Impostazioni' per aggiungerle.</p>";
                 return;
             }
 
-            chiaviClassi.forEach(k => {
-                const cls = DB.classi[k];
-                const card = document.createElement('div');
+            elenco.forEach(cId => {
+                let cl = DB.classes[cId];
+                let card = document.createElement('div');
                 card.className = "menu-card";
-                card.onclick = () => apriDettaglioClasse(cls.id);
-                card.innerHTML = `
-                    <h3>Classe ${cls.id}</h3>
-                    <p>${cls.materie.join(', ')}</p>
-                    <p style="margin-top:10px; font-size:12px; font-weight:600; color:var(--primary-dark);">👨‍🎓 Studenti: ${cls.alunni ? cls.alunni.length : 0}</p>
-                    ${cls.coordinatore ? '<span class="badge-coord">COORD</span>' : ''}
+                if(cl.coordinatore) {
+                    card.innerHTML = `<span class="badge-coord">Coordinatore</span>`;
+                }
+                card.innerHTML += `
+                    <h3>Classe ${cl.id}</h3>
+                    <p>${cl.alunni.length} Alunni iscritti</p>
+                    <p style="font-size:12px; margin-top:10px; color:var(--primary-red); font-weight:600;">${cl.materie.join(' - ')}</p>
                 `;
+                card.onclick = () => apreRegistroClasseDettaglio(cl.id);
                 container.appendChild(card);
             });
         }
 
-        // --- DETTAGLIO CLASSE E SOTTO-REGISTRI ---
-        function apriDettaglioClasse(classId) {
-            classeAttivaId = classId;
-            const cls = DB.classi[classId];
+        function apreRegistroClasseDettaglio(cId) {
+            classeAttivaCodice = cId;
+            let cl = DB.classes[cId];
+
+            document.getElementById('detail-classe-titolo').innerText = `Registro di Classe - ${cl.id}`;
+            document.getElementById('detail-classe-materie').innerText = `Materie assegnate: ${cl.materie.join(', ')}`;
+
+            // Banner coordinatore
+            let bannerWrap = document.getElementById('container-banner-coordinatore');
+            bannerWrap.innerHTML = "";
+            if(cl.coordinatore) {
+                bannerWrap.innerHTML = `<div class="banner-coord-dettaglio">👑 Sei Coordinatore di questa Classe (Tab Scrutini sbloccato)</div>`;
+            }
+
+            // Popola selettore materia attiva del registro di classe
+            let selMat = document.getElementById('select-materia-classe-attiva');
+            selMat.innerHTML = "";
+            cl.materie.forEach(m => {
+                let op = document.createElement('option'); op.value = m; op.innerText = m;
+                selMat.appendChild(op);
+            });
+
+            materiaAttivaSelezionata = cl.materie[0] || "Generale";
+            document.querySelectorAll('.placeholder-materia-voti-testo').forEach(el => el.innerText = materiaAttivaSelezionata);
 
             showView('class-detail-view');
-            
-            document.getElementById('detail-classe-titolo').innerText = `Classe ${cls.id}`;
-            document.getElementById('detail-classe-materie').innerText = `Materie: ${cls.materie.join(', ')}`;
-
-            // Banner Coordinatore di Classe
-            const bannerCoord = document.getElementById('container-banner-coordinatore');
-            if (cls.coordinatore) {
-                bannerCoord.innerHTML = `<div class="banner-coord-dettaglio">👑 Sei Coordinatore di questa classe (Accesso abilitato agli Scrutini Finali e Tabellone)</div>`;
-            } else {
-                bannerCoord.innerHTML = "";
-            }
-
-            // Popola selettore materie del registro
-            const selMateria = document.getElementById('select-materia-classe-attiva');
-            selMateria.innerHTML = "";
-            cls.materie.forEach((m, idx) => {
-                const opt = document.createElement('option');
-                opt.value = m;
-                opt.innerText = m;
-                selMateria.appendChild(opt);
-                if (idx === 0) materiaAttiva = m;
-            });
-
-            if (cls.materie.length > 0) {
-                cambiaMateriaAttivaRegistro(selMateria.value);
-            } else {
-                materiaAttiva = "";
-                switchClassTab('tab-alunni');
-            }
+            switchClassTab('tab-firme');
         }
 
-        function cambiaMateriaAttivaRegistro(mat) {
-            materiaAttiva = mat;
-            console.log("Materia attiva cambiata in:", materiaAttiva);
+        function cambiaMateriaAttivaRegistro(val) {
+            materiaAttivaSelezionata = val;
+            document.querySelectorAll('.placeholder-materia-voti-testo').forEach(el => el.innerText = materiaAttivaSelezionata);
             
-            // Aggiorna anche le materie nei form di inserimento rapido firme
-            const multiMaterieSelects = document.querySelectorAll('.f-multi-materia');
-            multiMaterieSelects.forEach(sel => {
-                sel.innerHTML = `<option value="${materiaAttiva}">${materiaAttiva}</option>`;
-            });
-
-            // Rinfresca il tab correntemente aperto
-            const tabAttivo = document.querySelector('.tab-btn.active').id;
-            if (tabAttivo === 'btn-tab-firme') renderFirmeClasse();
-            if (tabAttivo === 'btn-tab-appello') renderAppelloGiorno();
-            if (tabAttivo === 'btn-tab-voti') renderVotiClasse();
-            if (tabAttivo === 'btn-tab-scrutini') renderScrutini();
-            if (tabAttivo === 'btn-tab-alunni') renderAlunniClasse();
+            // Ri-renderizza i tab dipendenti dalla materia attiva
+            let tabAttivo = document.querySelector('.tab-btn.active').id;
+            if(tabAttivo === 'btn-tab-voti') renderVotiGriglia();
+            if(tabAttivo === 'btn-tab-scrutini') renderScrutini();
+            if(tabAttivo === 'btn-tab-firme') renderFirmeClasse();
         }
 
         function switchClassTab(tabId) {
-            const btns = document.querySelectorAll('.tab-btn');
-            btns.forEach(b => b.classList.remove('active'));
-            
-            const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
-            document.getElementById(`btn-${tabId}`).classList.add('active');
+            if(tabId === 'tab-firme') { document.getElementById('btn-tab-firme').classList.add('active'); renderFirmeClasse(); }
+            if(tabId === 'tab-appello') { document.getElementById('btn-tab-appello').classList.add('active'); renderAppelloGiorno(); }
+            if(tabId === 'tab-voti') { document.getElementById('btn-tab-voti').classList.add('active'); renderVotiGriglia(); }
+            if(tabId === 'tab-scrutini') { document.getElementById('btn-tab-scrutini').classList.add('active'); renderScrutini(); }
+            if(tabId === 'tab-alunni') { document.getElementById('btn-tab-alunni').classList.add('active'); renderAlunniRimozioneInterfaccia(); }
+
             document.getElementById(tabId).classList.add('active');
-
-            if (tabId === 'tab-firme') renderFirmeClasse();
-            if (tabId === 'tab-appello') renderAppelloGiorno();
-            if (tabId === 'tab-voti') renderVotiClasse();
-            if (tabId === 'tab-scrutini') renderScrutini();
-            if (tabId === 'tab-alunni') renderAlunniClasse();
         }
 
-        // --- GESTIONE ALUNNI INTERFACCIA ---
-        function renderAlunniClasse() {
-            const tbody = document.getElementById('table-alunni-body');
-            tbody.innerHTML = "";
-            const cls = DB.classi[classeAttivaId];
+        // === GIORNALE DI CLASSE & FIRME ===
+        function renderFirmeClasse() {
+            let cl = DB.classes[classeAttivaCodice];
+            
+            // Popola la riga iniziale del form firme multiple
+            let riga = document.querySelector('.riga-firma-multipla');
+            riga.querySelector('.f-multi-data').value = dataLavoroSelezionata;
+            
+            let selM = riga.querySelector('.f-multi-materia');
+            selM.innerHTML = "";
+            cl.materie.forEach(m => {
+                let op = document.createElement('option'); op.value = m; op.innerText = m;
+                selM.appendChild(op);
+            });
+            selM.value = materiaAttivaSelezionata;
 
-            if (!cls.alunni || cls.alunni.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" style="color:#64748B; font-style:italic; text-align:center;">Nessun alunno presente. Inseriscili usando il box di testo soprastante.</td></tr>`;
+            // Render dello storico
+            let body = document.getElementById('table-firme-body');
+            body.innerHTML = "";
+
+            if(!cl.firme || cl.firme.length === 0) {
+                body.innerHTML = "<tr><td colspan='5' style='text-align:center; color:#64748B;'>Nessuna firma apposta su questo registro.</td></tr>";
                 return;
             }
 
-            // Ordinamento alfabetico alunni
-            cls.alunni.sort();
+            // Ordine cronologico decrescente
+            let firmeOrdinate = [...cl.firme].sort((a,b) => new Date(b.data) - new Date(a.data));
 
-            cls.alunni.forEach((al, idx) => {
-                const tr = document.createElement('tr');
+            firmeOrdinate.forEach((f, idx) => {
+                let tr = document.createElement('tr');
+                let dPezzi = f.data.split('-');
                 tr.innerHTML = `
-                    <td><span class="num-registro">${idx + 1}</span></td>
-                    <td><strong>${al}</strong></td>
-                    <td><button class="btn-danger" style="padding: 4px 8px;" onclick="eliminaSingoloAlunno('${al}')">Rimuovi</button></td>
+                    <td><strong>${dPezzi[2]}/${dPezzi[1]}/${dPezzi[0]}</strong></td>
+                    <td><span class="badge-date-top" style="color:var(--dark-grey); font-weight:bold;">${f.ora}</span></td>
+                    <td style="color:var(--primary-dark); font-weight:600;">${f.materia}</td>
+                    <td>${f.argomento}</td>
+                    <td><button class="btn-danger" style="padding:4px 8px;" onclick="rimuoviFirmaClasse(${cl.firme.indexOf(f)})">Elimina</button></td>
                 `;
-                tbody.appendChild(tr);
-            });
-
-            // Sincronizza anche i selettori nei moduli valutazioni
-            const votoSel = document.getElementById('voto-alunno-select');
-            votoSel.innerHTML = "";
-            cls.alunni.forEach(al => {
-                const opt = document.createElement('option');
-                opt.value = al;
-                opt.innerText = al;
-                votoSel.appendChild(opt);
+                body.appendChild(tr);
             });
         }
 
-        function importaAlunniBulk() {
-            const testo = document.getElementById('alunni-bulk-textarea').value.trim();
-            if (!testo) return;
-
-            const righe = testo.split('\n').map(r => r.trim()).filter(r => r.length > 0);
-            if (righe.length === 0) return;
-
-            const cls = DB.classi[classeAttivaId];
-            if (!cls.alunni) cls.alunni = [];
-
-            righe.forEach(r => {
-                if (!cls.alunni.includes(r)) {
-                    cls.alunni.push(r);
-                }
-            });
-
-            salvaNelTempo();
-            renderAlunniClasse();
-            document.getElementById('alunni-bulk-textarea').value = "";
-            alert(`${righe.length} alunni importati e inseriti nell'elenco.`);
-        }
-
-        function eliminaSingoloAlunno(alunnoNome) {
-            if (confirm(`Rimuovere lo studente ${alunnoNome} dalla classe? Verranno rimossi anche i suoi voti e registri giornalieri.`)) {
-                const cls = DB.classi[classeAttivaId];
-                cls.alunni = cls.alunni.filter(a => a !== alunnoNome);
-                
-                // Rimozione a cascata dei voti dell'alunno
-                if (cls.voti) {
-                    cls.voti = cls.voti.filter(v => v.alunno !== alunnoNome);
-                }
-                
-                // Rimozione registri presenze appelli
-                if (cls.appelli) {
-                    for (let d in cls.appelli) {
-                        if (cls.appelli[d][alunnoNome]) delete cls.appelli[d][alunnoNome];
-                    }
-                }
-
-                salvaNelTempo();
-                renderAlunniClasse();
-            }
-        }
-
-        // --- GESTIONE GIORNALE DELLE FIRME MULTIPLE ---
         function aggiungiRigaFirmaInterfaccia() {
-            const container = document.getElementById('container-righe-firme-multiple');
-            const dataDefault = document.querySelector('.f-multi-data').value || utenteConnesso.dataLavoro;
+            let cl = DB.classes[classeAttivaCodice];
+            let container = document.getElementById('container-righe-firme-multiple');
             
-            const nuovaRiga = document.createElement('div');
-            nuovaRiga.className = "riga-firma-multipla";
-            nuovaRiga.style = "display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #CBD5E1;";
-            nuovaRiga.innerHTML = `
+            let div = document.createElement('div');
+            div.className = "riga-firma-multipla";
+            div.style = "display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #CBD5E1;";
+            
+            let optionMaterie = cl.materie.map(m => `<option value="${m}" ${m===materiaAttivaSelezionata?'selected':''}>${m}</option>`).join('');
+
+            div.innerHTML = `
                 <div class="form-group" style="margin-bottom:0;">
                     <label>Data Lezione</label>
-                    <input type="date" class="f-multi-data" value="${dataDefault}">
+                    <input type="date" class="f-multi-data" value="${dataLavoroSelezionata}">
                 </div>
                 <div class="form-group" style="margin-bottom:0;">
                     <label>Materia</label>
-                    <select class="f-multi-materia"><option value="${materiaAttiva}">${materiaAttiva}</option></select>
+                    <select class="f-multi-materia">${optionMaterie}</select>
                 </div>
                 <div class="form-group" style="margin-bottom:0;">
                     <label>Ora</label>
@@ -1877,458 +1776,359 @@ async function caricaDalDatabase() {
                         <option value="1^ ora">1^ ora</option><option value="2^ ora">2^ ora</option>
                         <option value="3^ ora">3^ ora</option><option value="4^ ora">4^ ora</option>
                         <option value="5^ ora">5^ ora</option><option value="6^ ora">6^ ora</option>
-                        <option value="7^ ora">7^ ora</option><option value="8^ ora">8^ ora</option>
                     </select>
                 </div>
                 <div class="form-group" style="margin-bottom:0; flex-grow: 1;">
                     <label>Argomento Svolto / Compiti Assegnati</label>
-                    <input type="text" class="f-multi-argomento" placeholder="Es: Spiegazione capitolo 5..." style="width: 100%;">
+                    <input type="text" class="f-multi-argomento" placeholder="Es: Esercitazione svolta..." style="width: 100%;">
                 </div>
-                <button class="btn-danger" style="align-self: flex-end; margin-bottom: 2px;" onclick="this.parentElement.remove()">X</button>
             `;
-            container.appendChild(nuovaRiga);
+            container.appendChild(div);
         }
 
         function salvaTutteLeFirmeMultiple() {
-            const container = document.getElementById('container-righe-firme-multiple');
-            const righe = container.querySelectorAll('.riga-firma-multipla');
-            const cls = DB.classi[classeAttivaId];
+            let cl = DB.classes[classeAttivaCodice];
+            let righe = document.querySelectorAll('.riga-firma-multipla');
+
+            righe.forEach(r => {
+                let d = r.querySelector('.f-multi-data').value;
+                let m = r.querySelector('.f-multi-materia').value;
+                let o = r.querySelector('.f-multi-ora').value;
+                let arg = r.querySelector('.f-multi-argomento').value.trim();
+
+                if(d && m && o && arg) {
+                    cl.firme.push({ data: d, materia: m, ora: o, argomento: arg });
+                }
+            });
+
+            salvaNelTempo();
             
-            if (!cls.giornaleFirme) cls.giornaleFirme = [];
-            const idxModifica = document.getElementById('firma-index-modifica').value;
+            // Ripristina l'interfaccia a una sola riga pulita
+            let container = document.getElementById('container-righe-firme-multiple');
+            container.innerHTML = container.firstElementChild.outerHTML;
+            container.firstElementChild.querySelector('.f-multi-argomento').value = "";
 
-            // Logica Modifica Record Singolo Esistente
-            if (idxModifica !== "") {
-                const riga = righe[0];
-                const index = parseInt(idxModifica);
-                cls.giornaleFirme[index] = {
-                    data: riga.querySelector('.f-multi-data').value,
-                    materia: riga.querySelector('.f-multi-materia').value,
-                    ora: riga.querySelector('.f-multi-ora').value,
-                    argomento: riga.querySelector('.f-multi-argomento').value.trim()
-                };
-                document.getElementById('firma-index-modifica').value = "";
-                document.getElementById('btn-annulla-firma').classList.add('hidden');
-                document.getElementById('titolo-form-firma').innerText = "🖋️ Apponi Firme Giornale di Classe (Singole o Multiple)";
-                document.getElementById('btn-salva-firma').innerText = "Invia e Registra Tutte le Lezioni";
-            } else {
-                // Logica Inserimento Multiplo di Gruppo
-                righe.forEach(riga => {
-                    const dataVal = riga.querySelector('.f-multi-data').value;
-                    const matVal = riga.querySelector('.f-multi-materia').value;
-                    const oraVal = riga.querySelector('.f-multi-ora').value;
-                    const argVal = riga.querySelector('.f-multi-argomento').value.trim();
+            renderFirmeClasse();
+        }
 
-                    if (!dataVal || !argVal) return;
-
-                    cls.giornaleFirme.push({
-                        data: dataVal,
-                        materia: matVal,
-                        ora: oraVal,
-                        argomento: argVal
-                    });
-                });
-            }
-
+        function rimuoviFirmaClasse(indexOriginale) {
+            if(!confirm("Eliminare questa firma dal giornale?")) return;
+            DB.classes[classeAttivaCodice].firme.splice(indexOriginale, 1);
             salvaNelTempo();
             renderFirmeClasse();
-            
-            // Resetta l'interfaccia a riga singola pulita
-            container.innerHTML = `
-                <div class="riga-firma-multipla" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #CBD5E1;">
-                    <div class="form-group" style="margin-bottom:0;">
-                        <label>Data Lezione</label>
-                        <input type="date" class="f-multi-data" value="${utenteConnesso.dataLavoro}">
-                    </div>
-                    <div class="form-group" style="margin-bottom:0;">
-                        <label>Materia</label>
-                        <select class="f-multi-materia"><option value="${materiaAttiva}">${materiaAttiva}</option></select>
-                    </div>
-                    <div class="form-group" style="margin-bottom:0;">
-                        <label>Ora</label>
-                        <select class="f-multi-ora">
-                            <option value="1^ ora">1^ ora</option><option value="2^ ora">2^ ora</option>
-                            <option value="3^ ora">3^ ora</option><option value="4^ ora">4^ ora</option>
-                            <option value="5^ ora">5^ ora</option><option value="6^ ora">6^ ora</option>
-                            <option value="7^ ora">7^ ora</option><option value="8^ ora">8^ ora</option>
-                        </select>
-                    </div>
-                    <div class="form-group" style="margin-bottom:0; flex-grow: 1;">
-                        <label>Argomento Svolto / Compiti Assegnati</label>
-                        <input type="text" class="f-multi-argomento" placeholder="Es: Spiegazione capitolo 5..." style="width: 100%;">
-                    </div>
-                </div>
-            `;
-            alert("Giornale di classe aggiornato con successo.");
         }
 
-        function renderFirmeClasse() {
-            const tbody = document.getElementById('table-firme-body');
-            tbody.innerHTML = "";
-            const cls = DB.classi[classeAttivaId];
-
-            if (!cls.giornaleFirme || cls.giornaleFirme.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="color:#64748B; font-style:italic; text-align:center;">Nessuna firma registrata in questo giornale.</td></tr>`;
-                return;
-            }
-
-            // Ordinamento cronologico decrescente (lezione più recente in alto)
-            const copieFirme = cls.giornaleFirme.map((f, i) => ({...f, originalIndex: i}));
-            copieFirme.sort((a, b) => new Date(b.data) - new Date(a.data));
-
-            copieFirme.forEach(f => {
-                const tr = document.createElement('tr');
-                const pz = f.data.split('-');
-                tr.innerHTML = `
-                    <td><strong>${pz[2]}/${pz[1]}/${pz[0]}</strong></td>
-                    <td><span class="badge-date-top" style="color:var(--dark-grey); font-weight:600;">${f.ora}</span></td>
-                    <td><span style="color:var(--primary-dark); font-weight:bold;">${f.materia}</span></td>
-                    <td>${f.argomento}</td>
-                    <td>
-                        <button class="action-icon-btn" onclick="attivaModificaFirma(${f.originalIndex})">✏️</button>
-                        <button class="action-icon-btn" style="color:var(--red-fail);" onclick="eliminaFirmaLezione(${f.originalIndex})">🗑️</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function attivaModificaFirma(index) {
-            const cls = DB.classi[classeAttivaId];
-            const f = cls.giornaleFirme[index];
-
-            document.getElementById('firma-index-modifica').value = index;
-            document.getElementById('titolo-form-firma').innerText = "✏️ Modifica Dettagli Lezione Selezionata";
-            document.getElementById('btn-salva-firma').innerText = "Salva Modifica Record";
-            document.getElementById('btn-annulla-firma').classList.remove('hidden');
-
-            const container = document.getElementById('container-righe-firme-multiple');
-            container.innerHTML = `
-                <div class="riga-firma-multipla" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
-                    <div class="form-group" style="margin-bottom:0;">
-                        <label>Data Lezione</label>
-                        <input type="date" class="f-multi-data" value="${f.data}">
-                    </div>
-                    <div class="form-group" style="margin-bottom:0;">
-                        <label>Materia</label>
-                        <select class="f-multi-materia"><option value="${f.materia}">${f.materia}</option></select>
-                    </div>
-                    <div class="form-group" style="margin-bottom:0;">
-                        <label>Ora</label>
-                        <select class="f-multi-ora" id="edit-f-ora"></select>
-                    </div>
-                    <div class="form-group" style="margin-bottom:0; flex-grow: 1;">
-                        <label>Argomento Svolto / Compiti Assegnati</label>
-                        <input type="text" class="f-multi-argomento" value="${f.argomento}" style="width: 100%;">
-                    </div>
-                </div>
-            `;
-
-            const ore = ["1^ ora", "2^ ora", "3^ ora", "4^ ora", "5^ ora", "6^ ora", "7^ ora", "8^ ora"];
-            const oSel = document.getElementById('edit-f-ora');
-            ore.forEach(oraStr => {
-                const opt = document.createElement('option');
-                opt.value = oraStr; opt.innerText = oraStr;
-                if (oraStr === f.ora) opt.selected = true;
-                oSel.appendChild(opt);
-            });
-        }
-
-        function annullaModificaFirma() {
-            document.getElementById('firma-index-modifica').value = "";
-            document.getElementById('btn-annulla-firma').classList.add('hidden');
-            document.getElementById('titolo-form-firma').innerText = "🖋️ Apponi Firme Giornale di Classe (Singole o Multiple)";
-            document.getElementById('btn-salva-firma').innerText = "Invia e Registra Tutte le Lezioni";
-            cambiaMateriaAttivaRegistro(materiaAttiva);
-        }
-
-        function eliminaFirmaLezione(index) {
-            if (confirm("Cancellare definitivamente la firma di questa lezione dal registro storico?")) {
-                const cls = DB.classi[classeAttivaId];
-                cls.giornaleFirme.splice(index, 1);
-                salvaNelTempo();
-                renderFirmeClasse();
-            }
-        }
-
-        // --- GESTIONE APPELLO REGISTRO GIORNALIERO ---
+        // === REGISTRO DELLE PRESENZE (APPELLO) ===
         function renderAppelloGiorno() {
-            const tbody = document.getElementById('table-appello-body');
-            tbody.innerHTML = "";
-            const cls = DB.classi[classeAttivaId];
-            const dataSess = document.getElementById('appello-data-selezionata').value;
+            let cl = DB.classes[classeAttivaCodice];
+            let dataSel = document.getElementById('appello-data-selezionata').value;
+            let body = document.getElementById('table-appello-body');
+            body.innerHTML = "";
 
-            if (!cls.alunni || cls.alunni.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="color:#64748B; font-style:italic; text-align:center;">Nessun alunno configurato in classe.</td></tr>`;
+            if(cl.alunni.length === 0) {
+                body.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Nessun alunno iscitto in questa classe. Vai nel Tab 'Gestione Alunni'</td></tr>";
                 return;
             }
 
-            if (!cls.appelli) cls.appelli = {};
-            if (!cls.appelli[dataSess]) cls.appelli[dataSess] = {};
+            // Inizializza l'appello per questa data se non esiste
+            if(!cl.appelli[dataSel]) cl.appelli[dataSel] = {};
 
-            cls.alunni.sort();
+            let alunniOrdinati = [...cl.alunni].sort((a,b) => a.cognome.localeCompare(b.cognome));
 
-            cls.alunni.forEach((al, idx) => {
-                const statoSalvato = cls.appelli[dataSess][al] ? cls.appelli[dataSess][al].stato : "P";
-                const notaSalvata = cls.appelli[dataSess][al] ? cls.appelli[dataSess][al].nota : "";
+            alunniOrdinati.forEach((al, idx) => {
+                let alId = al.id;
+                // Stato di default: Presente (P)
+                if(!cl.appelli[dataSel][alId]) {
+                    cl.appelli[dataSel][alId] = { stato: "P", nota: "" };
+                }
 
-                const tr = document.createElement('tr');
+                let appData = cl.appelli[dataSel][alId];
+                let tr = document.createElement('tr');
+
                 tr.innerHTML = `
-                    <td><span class="num-registro">${idx + 1}</span></td>
-                    <td><strong>${al}</strong></td>
+                    <td><span class="num-registro">${idx+1}</span></td>
+                    <td><strong>${al.cognome.toUpperCase()} ${al.nome}</strong></td>
                     <td>
-                        <select onchange="salvaStatoAppelloSingolo('${al}', this.value)" style="font-weight:bold; width:130px;">
-                            <option value="P" ${statoSalvato === "P" ? "selected" : ""}>🟢 PRESENTE</option>
-                            <option value="A" ${statoSalvato === "A" ? "selected" : ""}>🔴 ASSENTE</option>
-                            <option value="I" ${statoSalvato === "I" ? "selected" : ""}>🟡 RITARDO</option>
-                            <option value="U" ${statoSalvato === "U" ? "selected" : ""}>🔵 USCITA ANT.</option>
+                        <select onchange="salvaStatoAppelloSingolo('${alId}', this.value)" style="font-weight:bold; color: ${appData.stato==='P'?'var(--green-pass)':(appData.stato==='A'?'var(--red-fail)':'var(--amber-coord)')}">
+                            <option value="P" ${appData.stato==='P'?'selected':''}>✅ Presente</option>
+                            <option value="A" ${appData.stato==='A'?'selected':''}>❌ Assente</option>
+                            <option value="R" ${appData.stato==='R'?'selected':''}>⏳ Ritardo</option>
+                            <option value="U" ${appData.stato==='U'?'selected':''}>🚪 Uscita Anticipata</option>
                         </select>
                     </td>
                     <td>
-                        <input type="text" placeholder="Giustificazione, ore ritardo..." value="${notaSalvata}" 
-                               onchange="salvaNotaAppelloSingolo('${al}', this.value)" style="width:100%;">
+                        <input type="text" placeholder="Giustificato, Note ritardo..." value="${appData.nota}" 
+                               style="width:90%; padding:4px 8px;" onchange="salvaNotaAppelloSingolo('${alId}', this.value)">
                     </td>
                 `;
-                tbody.appendChild(tr);
+                body.appendChild(tr);
             });
         }
 
-        function salvaStatoAppelloSingolo(alunno, stato) {
-            const cls = DB.classi[classeAttivaId];
-            const dataSess = document.getElementById('appello-data-selezionata').value;
-            
-            if (!cls.appelli[dataSess][alunno]) cls.appelli[dataSess][alunno] = { stato: "P", nota: "" };
-            cls.appelli[dataSess][alunno].stato = stato;
-            salvaNelTempo();
-        }
-
-        function salvaNotaAppelloSingolo(alunno, nota) {
-            const cls = DB.classi[classeAttivaId];
-            const dataSess = document.getElementById('appello-data-selezionata').value;
-            
-            if (!cls.appelli[dataSess][alunno]) cls.appelli[dataSess][alunno] = { stato: "P", nota: "" };
-            cls.appelli[dataSess][alunno].nota = nota.trim();
-            salvaNelTempo();
-        }
-
-        function impostaTuttiPresenti() {
-            const cls = DB.classi[classeAttivaId];
-            const dataSess = document.getElementById('appello-data-selezionata').value;
-            
-            cls.alunni.forEach(al => {
-                if (!cls.appelli[dataSess][al]) cls.appelli[dataSess][al] = { stato: "P", nota: "" };
-                cls.appelli[dataSess][al].stato = "P";
-            });
-
+        function salvaStatoAppelloSingolo(alId, valore) {
+            let dataSel = document.getElementById('appello-data-selezionata').value;
+            DB.classes[classeAttivaCodice].appelli[dataSel][alId].stato = valore;
             salvaNelTempo();
             renderAppelloGiorno();
         }
 
-        // --- GESTIONE REGISTRO DELE VALUTAZIONI (VOTI) ---
-        function aggiungiVoto() {
-            const alunno = document.getElementById('voto-alunno-select').value;
-            const dataVal = document.getElementById('voto-data').value;
-            const tipoVal = document.getElementById('voto-tipo').value;
-            const val = parseFloat(document.getElementById('voto-valore').value);
-            const comm = document.getElementById('voto-commento').value.trim();
-
-            if (!alunno || !dataVal) {
-                alert("Verificare i campi di inserimento valutazione.");
-                return;
-            }
-
-            const cls = DB.classi[classeAttivaId];
-            if (!cls.voti) cls.voti = [];
-
-            cls.voti.push({
-                alunno: alunno,
-                data: dataVal,
-                materia: materiaAttiva,
-                tipo: tipoVal,
-                valore: val,
-                commento: comm
-            });
-
+        function salvaNotaAppelloSingolo(alId, testo) {
+            let dataSel = document.getElementById('appello-data-selezionata').value;
+            DB.classes[classeAttivaCodice].appelli[dataSel][alId].nota = testo.trim();
             salvaNelTempo();
-            renderVotiClasse();
-            document.getElementById('voto-commento').value = "";
         }
 
-        function renderVotiClasse() {
-            const tbody = document.getElementById('table-voti-body');
-            tbody.innerHTML = "";
-            const cls = DB.classi[classeAttivaId];
+        function impostaTuttiPresenti() {
+            let cl = DB.classes[classeAttivaCodice];
+            let dataSel = document.getElementById('appello-data-selezionata').value;
+            cl.alunni.forEach(al => {
+                cl.appelli[dataSel][al.id] = { stato: "P", nota: "" };
+            });
+            salvaNelTempo();
+            renderAppelloGiorno();
+        }
 
-            if (!cls.alunni || cls.alunni.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="color:#64748B; font-style:italic; text-align:center;">Nessun alunno inserito in archivio.</td></tr>`;
+        // === REGISTRO DEI VOTI ===
+        function renderVotiGriglia() {
+            let cl = DB.classes[classeAttivaCodice];
+            
+            // Popola il select alunni del form di inserimento voti
+            let vSel = document.getElementById('voto-alunno-select');
+            vSel.innerHTML = "";
+            let alunniOrdinati = [...cl.alunni].sort((a,b) => a.cognome.localeCompare(b.cognome));
+            alunniOrdinati.forEach(al => {
+                let op = document.createElement('option'); op.value = al.id; op.innerText = `${al.cognome.toUpperCase()} ${al.nome}`;
+                vSel.appendChild(op);
+            });
+
+            // Render tabella griglia voti
+            let body = document.getElementById('table-voti-body');
+            body.innerHTML = "";
+
+            if(cl.alunni.length === 0) {
+                body.innerHTML = "<tr><td colspan='3' style='text-align:center;'>Nessun alunno configurato.</td></tr>";
                 return;
             }
 
-            cls.alunni.sort();
+            alunniOrdinati.forEach(al => {
+                let tr = document.createElement('tr');
+                
+                // Filtra i voti dell'alunno relativi alla materia attiva corrente
+                let votiAl = (cl.voti || []).filter(v => v.alunnoId === al.id && v.materia === materiaAttivaSelezionata);
 
-            cls.alunni.forEach((al, idx) => {
-                const tr = document.createElement('tr');
-                
-                // Filtra voti relativi all'alunno e alla materia attiva di sessione
-                const votiAlMat = (cls.voti || []).filter(v => v.alunno === al && v.materia === materiaAttiva);
-                
-                // Generazione quadratini grafici per ogni voto
-                let cellVoti = "";
+                let votiHtml = "";
                 let somma = 0;
-
-                votiAlMat.forEach((v, vIdx) => {
-                    const colClasse = v.valore >= 6 ? "voto-verde" : "voto-rosso";
-                    // Trova l'indice assoluto reale nel DB per la rimozione
-                    const realIndex = cls.voti.findIndex(orig => orig === v);
+                votiAl.forEach(v => {
+                    let valNum = parseFloat(v.valore);
+                    somma += valNum;
+                    let classeColore = valNum >= 6 ? 'voto-verde' : 'voto-rosso';
                     
-                    cellVoti += `
-                        <div class="voto-box" title="${v.data} - Tipo: ${v.tipo} ${v.commento ? '\nNote: ' + v.commento : ''}">
-                            <span class="${colClasse}"><strong>${v.valore}</strong></span>
-                            <small>(${v.tipo[0]})</small>
-                            <span class="btn-delete-voto" onclick="rimuoviSingoloVoto(${realIndex})">×</span>
+                    let dataPezzi = v.data.split('-');
+                    let dataBreve = `${dataPezzi[2]}/${dataPezzi[1]}`;
+
+                    votiHtml += `
+                        <div class="voto-box">
+                            <span class="${classeColore}">${v.valore}</span>
+                            <small>(${v.tipo.charAt(0)} - ${dataBreve})</small>
+                            <span class="btn-delete-voto" onclick="eliminaVotoSingolo(${cl.voti.indexOf(v)})">×</span>
                         </div>
                     `;
-                    somma += v.valore;
                 });
 
-                // Calcolo media matematica aritmetica
-                let cellMedia = "--";
-                if (votiAlMat.length > 0) {
-                    const mediaVal = (somma / votiAlMat.length).toFixed(2);
-                    const bCls = mediaVal >= 6 ? "pass" : "fail";
-                    cellMedia = `<span class="badge-media ${bCls}">${mediaVal}</span>`;
+                let mediaHtml = "<span style='color:#94A3B8;'>--</span>";
+                if(votiAl.length > 0) {
+                    let media = (somma / votiAl.length).toFixed(2);
+                    let passClass = parseFloat(media) >= 6 ? 'pass' : 'fail';
+                    mediaHtml = `<span class="badge-media ${passClass}">${media}</span>`;
                 }
 
                 tr.innerHTML = `
-                    <td><span class="num-registro">${idx + 1}</span></td>
-                    <td><strong>${al}</strong></td>
-                    <td>${cellVoti || "<span style='color:#94A3B8; font-size:13px;'>Nessun voto assegnato</span>"}</td>
-                    <td>${cellMedia}</td>
+                    <td><strong>${al.cognome.toUpperCase()} ${al.nome}</strong></td>
+                    <td>${votiHtml || '<span style="color:#94A3B8; font-size:13px;">Nessun voto inserito in questa materia</span>'}</td>
+                    <td>${mediaHtml}</td>
                 `;
-                tbody.appendChild(tr);
+                body.appendChild(tr);
             });
         }
 
-        function rimuoviSingoloVoto(index) {
-            if (confirm("Eliminare definitivamente questa valutazione dal registro?")) {
-                const cls = DB.classi[classeAttivaId];
-                cls.voti.splice(index, 1);
-                salvaNelTempo();
-                renderVotiClasse();
-            }
-        }
+        function aggiungiVoto() {
+            let cl = DB.classes[classeAttivaCodice];
+            let alId = document.getElementById('voto-alunno-select').value;
+            let dataV = document.getElementById('voto-data').value;
+            let tipoV = document.getElementById('voto-tipo').value;
+            let valoreV = document.getElementById('voto-valore').value;
 
-        // --- GESTIONE SCRUTINI QUADRIMESTRALI ---
-        function renderScrutini() {
-            const tbody = document.getElementById('table-scrutini-body');
-            tbody.innerHTML = "";
-            const cls = DB.classi[classeAttivaId];
-            const q = document.getElementById('scrutinio-quadrimestre').value;
+            if(!alId || !dataV || !valoreV) { alert("Compilare tutti i campi per il voto."); return; }
 
-            if (!cls.alunni || cls.alunni.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="color:#64748B; font-style:italic; text-align:center;">Nessun alunno presente.</td></tr>`;
-                return;
-            }
-
-            // Inizializzazione chiavi strutturali per scrutini nel DB
-            if (!DB.scrutini) DB.scrutini = {};
-            if (!DB.scrutini[classeAttivaId]) DB.scrutini[classeAttivaId] = {};
-            if (!DB.scrutini[classeAttivaId][materiaAttiva]) DB.scrutini[classeAttivaId][materiaAttiva] = {};
-            if (!DB.scrutini[classeAttivaId][materiaAttiva][q]) DB.scrutini[classeAttivaId][materiaAttiva][q] = {};
-
-            cls.alunni.sort();
-
-            cls.alunni.forEach((al, idx) => {
-                // Calcola media matematica di riferimento periodico
-                const votiAlMat = (cls.voti || []).filter(v => v.alunno === al && v.materia === materiaAttiva);
-                let mediaArStr = "--";
-                if (votiAlMat.length > 0) {
-                    let s = 0; votiAlMat.forEach(v => s += v.valore);
-                    mediaArStr = (s / votiAlMat.length).toFixed(2);
-                }
-
-                // Conta assenze dell'alunno calcolate storicamente dalle ore di appello
-                let contAssenze = 0;
-                if (cls.appelli) {
-                    for (let d in cls.appelli) {
-                        if (cls.appelli[d][al] && cls.appelli[d][al].stato === "A") {
-                            contAssenze++;
-                        }
-                    }
-                }
-
-                const dScrut = DB.scrutini[classeAttivaId][materiaAttiva][q][al] || { votoScrutinio: "", assenze: contAssenze, giudizio: "" };
-                
-                // Creazione della riga di immissione voti bloccati di scrutinio
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><span class="num-registro">${idx + 1}</span></td>
-                    <td><strong>${al}</strong></td>
-                    <td><span class="badge-media" style="background:#E2E8F0; color:#334155;">${mediaArStr}</span></td>
-                    <td>
-                        <input type="number" min="1" max="10" step="1" id="scrut-voto-${idx}" value="${dScrut.votoScrutinio || ''}" 
-                               style="width:85px; font-weight:bold; text-align:center; border-color:var(--primary-red);">
-                    </td>
-                    <td>
-                        <input type="number" min="0" id="scrut-ass-${idx}" value="${dScrut.assenze ?? contAssenze}" style="width:75px; text-align:center;">
-                    </td>
-                    <td>
-                        <input type="text" id="scrut-giud-${idx}" value="${dScrut.giudizio || ''}" placeholder="Note di consiglio o livello..." style="width:100%;">
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function proponiVotiScrutinioDalleMedie() {
-            const cls = DB.classi[classeAttivaId];
-            cls.alunni.sort().forEach((al, idx) => {
-                const votiAlMat = (cls.voti || []).filter(v => v.alunno === al && v.materia === materiaAttiva);
-                if (votiAlMat.length > 0) {
-                    let s = 0; votiAlMat.forEach(v => s += v.valore);
-                    const arrotondato = Math.round(s / votiAlMat.length);
-                    document.getElementById(`scrut-voto-${idx}`).value = arrotondato;
-                }
-            });
-        }
-
-        function salvaScrutiniClasse() {
-            const cls = DB.classi[classeAttivaId];
-            const q = document.getElementById('scrutinio-quadrimestre').value;
-            
-            cls.alunni.sort().forEach((al, idx) => {
-                const vScr = document.getElementById(`scrut-voto-${idx}`).value;
-                const assScr = document.getElementById(`scrut-ass-${idx}`).value;
-                const giuScr = document.getElementById(`scrut-giud-${idx}`).value.trim();
-
-                DB.scrutini[classeAttivaId][materiaAttiva][q][al] = {
-                    votoScrutinio: vScr ? parseInt(vScr) : "",
-                    assenze: assScr ? parseInt(assScr) : 0,
-                    giudizio: giuScr
-                };
+            cl.voti.push({
+                alunnoId: alId,
+                data: dataV,
+                tipo: tipoV,
+                valore: valoreV,
+                materia: materiaAttivaSelezionata
             });
 
             salvaNelTempo();
-            alert("💾 Voti e giudizi di scrutinio salvati in archivio e bloccati.");
-            renderScrutini();
+            renderVotiGriglia();
         }
 
-        // --- CALENDARIO AGENDA GESTIONE INTERFACCIA ---
+        function eliminaVotoSingolo(idxOriginale) {
+            if(!confirm("Sei sicuro di voler cancellare questo voto dal registro?")) return;
+            DB.classes[classeAttivaCodice].voti.splice(idxOriginale, 1);
+            salvaNelTempo();
+            renderVotiGriglia();
+        }
+
+        // === SCRUTINI FINALI ===
+        function renderScrutini() {
+            let cl = DB.classes[classeAttivaCodice];
+            let quad = document.getElementById('scrutinio-quadrimestre-select').value;
+            let body = document.getElementById('table-scrutini-body');
+            body.innerHTML = "";
+
+            let alunniOrdinati = [...cl.alunni].sort((a,b) => a.cognome.localeCompare(b.cognome));
+
+            if(!cl.scrutini[quad]) cl.scrutini[quad] = {};
+            if(!cl.scrutini[quad][materiaAttivaSelezionata]) cl.scrutini[quad][materiaAttivaSelezionata] = {};
+
+            alunniOrdinati.forEach(al => {
+                let tr = document.createElement('tr');
+                
+                // Calcola media aritmetica delle prove correnti
+                let votiAl = (cl.voti || []).filter(v => v.alunnoId === al.id && v.materia === materiaAttivaSelezionata);
+                let mediaCalcolata = 0;
+                if(votiAl.length > 0) {
+                    let s = votiAl.reduce((acc, v) => acc + parseFloat(v.valore), 0);
+                    mediaCalcolata = (s / votiAl.length).toFixed(1);
+                }
+
+                // Carica blocco salvato in precedenza
+                if(!cl.scrutini[quad][materiaAttivaSelezionata][al.id]) {
+                    cl.scrutini[quad][materiaAttivaSelezionata][al.id] = { votoScrutinio: Math.round(mediaCalcolata) || "", giudizio: "" };
+                }
+                let scrData = cl.scrutini[quad][materiaAttivaSelezionata][al.id];
+
+                // Creazione opzioni per voto unico scrutini (voti interi)
+                let selectVotoHtml = `<select class="scr-voto-val" data-alid="${al.id}"><option value="">-</option>`;
+                for(let vInt=10; vInt>=3; vInt--) {
+                    selectVotoHtml += `<option value="${vInt}" ${scrData.votoScrutinio==vInt?'selected':''}>${vInt}</option>`;
+                }
+                selectVotoHtml += `</select>`;
+
+                tr.innerHTML = `
+                    <td><strong>${al.cognome.toUpperCase()} ${al.nome}</strong></td>
+                    <td><span class="badge-date-top">${mediaCalcolata > 0 ? mediaCalcolata : 'N.C.'}</span></td>
+                    <td>${selectVotoHtml}</td>
+                    <td>
+                        <input type="text" class="scr-giudizio-text" data-alid="${al.id}" placeholder="Giudizio sintetico o note di scrutinio..." 
+                               value="${scrData.giudizio}" style="width:95%; padding:4px 8px;">
+                    </td>
+                `;
+                body.appendChild(tr);
+            });
+        }
+
+        function salvaScrutiniQuadrimestre() {
+            let cl = DB.classes[classeAttivaCodice];
+            let quad = document.getElementById('scrutinio-quadrimestre-select').value;
+
+            let righeVoti = document.querySelectorAll('.scr-voto-val');
+            let righeGiudizi = document.querySelectorAll('.scr-giudizio-text');
+
+            righeVoti.forEach(sel => {
+                let alId = sel.getAttribute('data-alid');
+                cl.scrutini[quad][materiaAttivaSelezionata][alId].votoScrutinio = sel.value;
+            });
+
+            righeGiudizi.forEach(inp => {
+                let alId = inp.getAttribute('data-alid');
+                cl.scrutini[quad][materiaAttivaSelezionata][alId].giudizio = inp.value.trim();
+            });
+
+            salvaNelTempo();
+            alert("💾 Voti e giudizi bloccati registrati per lo scrutinio della classe!");
+        }
+
+        // === ALUNNI MANAGEMENT ===
+        function renderAlunniRimozioneInterfaccia() {
+            let cl = DB.classes[classeAttivaCodice];
+            let target = document.getElementById('lista-alunni-rimozione-container');
+            target.innerHTML = "";
+
+            document.getElementById('count-alunni-badge').innerText = cl.alunni.length;
+
+            if(cl.alunni.length === 0) {
+                target.innerHTML = "<p style='color:#64748B; font-size:13px;'>Nessun alunno presente in questa sezione.</p>";
+                return;
+            }
+
+            let alunniOrdinati = [...cl.alunni].sort((a,b) => a.cognome.localeCompare(b.cognome));
+
+            alunniOrdinati.forEach((al, idx) => {
+                let div = document.createElement('div');
+                div.className = "class-list-item";
+                div.style.padding = "8px 5px";
+                div.innerHTML = `
+                    <span><small class="num-registro">${idx+1}</small> ${al.cognome.toUpperCase()} ${al.nome}</span>
+                    <button class="btn-danger" style="padding:2px 6px; font-size:11px;" onclick="rimuoviAlunnoDaClasse('${al.id}')">Rappresenta Ritiro</button>
+                `;
+                target.appendChild(div);
+            });
+        }
+
+        function aggiungiNuovoAlunno() {
+            let cl = DB.classes[classeAttivaCodice];
+            let cog = document.getElementById('alunno-cognome').value.trim();
+            let nom = document.getElementById('alunno-nome').value.trim();
+
+            if(!cog || !nom) return;
+
+            let nuovoAl = {
+                id: "AL-" + Date.now() + "-" + Math.floor(Math.random()*1000),
+                cognome: cog,
+                nome: nom,
+                noteInScrutinio: ""
+            };
+
+            cl.alunni.push(nuovoAl);
+            salvaNelTempo();
+
+            document.getElementById('alunno-cognome').value = "";
+            document.getElementById('alunno-nome').value = "";
+
+            renderAlunniRimozioneInterfaccia();
+        }
+
+        function rimuoviAlunnoDaClasse(alId) {
+            let cl = DB.classes[classeAttivaCodice];
+            let alObj = cl.alunni.find(a => a.id === alId);
+            if(!confirm(`Rimuovere definitivamente lo studente ${alObj.cognome.toUpperCase()} ${alObj.nome}? Questa operazione cancellerà anche tutti i suoi voti registrati.`)) return;
+
+            // Rimuove l'alunno dall'elenco
+            cl.alunni = cl.alunni.filter(a => a.id !== alId);
+            // Pulisce i suoi voti
+            cl.voti = cl.voti.filter(v => v.alunnoId !== alId);
+
+            salvaNelTempo();
+            renderAlunniRimozioneInterfaccia();
+        }
+
+        // === AGENDA GENERALE ED EVENTI CALENDARIO ===
         function openAgendaView() {
             showView('agenda-view');
             
-            // Popola filtri classi agenda
-            const clsSelect = document.getElementById('age-classe-select');
-            const filtroSelect = document.getElementById('filtro-agenda-classe');
-            
-            clsSelect.innerHTML = '<option value="Tutte">Tutte le mie classi</option>';
-            filtroSelect.innerHTML = '<option value="Tutte">Tutte le Classi</option>';
+            // Popola i selettori classe e materia nel form dell'agenda
+            let selCl = document.getElementById('age-classe-select');
+            let selFiltro = document.getElementById('filtro-agenda-classe');
 
-            Object.keys(DB.classi).sort().forEach(k => {
-                const opt1 = document.createElement('option'); opt1.value = k; opt1.innerText = "Classe " + k;
-                const opt2 = document.createElement('option'); opt2.value = k; opt2.innerText = "Classe " + k;
-                clsSelect.appendChild(opt1);
-                filtroSelect.appendChild(opt2);
+            selCl.innerHTML = '<option value="Tutte">Tutte le mie classi</option>';
+            selFiltro.innerHTML = '<option value="Tutte">Tutte le mie classi</option>';
+
+            Object.keys(DB.classes).sort().forEach(cId => {
+                let op1 = document.createElement('option'); op1.value = cId; op1.innerText = `Classe ${cId}`;
+                let op2 = document.createElement('option'); op2.value = cId; op2.innerText = `Classe ${cId}`;
+                selCl.appendChild(op1);
+                selFiltro.appendChild(op2);
             });
 
             onAgendaClasseChange();
@@ -2336,63 +2136,40 @@ async function caricaDalDatabase() {
         }
 
         function onAgendaClasseChange() {
-            const cId = document.getElementById('age-classe-select').value;
-            const matSel = document.getElementById('age-materia-select');
-            matSel.innerHTML = '<option value="Generale/Agenda">Generale / Agenda</option>';
+            let cId = document.getElementById('age-classe-select').value;
+            let selMat = document.getElementById('age-materia-select');
+            selMat.innerHTML = '<option value="Generale/Agenda">Generale / Agenda</option>';
 
-            if (cId !== "Tutte" && DB.classi[cId]) {
-                DB.classi[cId].materie.forEach(m => {
-                    const opt = document.createElement('option'); opt.value = m; opt.innerText = m;
-                    matSel.appendChild(opt);
+            if(cId !== "Tutte" && DB.classes[cId]) {
+                DB.classes[cId].materie.forEach(m => {
+                    let op = document.createElement('option'); op.value = m; op.innerText = m;
+                    selMat.appendChild(op);
                 });
             }
         }
 
-        function setAgendaModoVisualizzazione(modo) {
-            agendaModoVista = modo;
-            const pills = ['pill-cal-mese', 'pill-cal-settimana', 'pill-cal-giorno', 'pill-cal-lista'];
-            pills.forEach(p => document.getElementById(p).classList.remove('active'));
-            document.getElementById(`pill-cal-${modo}`).classList.add('active');
-            renderAgenda();
-        }
-
-        function navigaCalendario(direzione) {
-            if (agendaModoVista === 'mese') {
-                agendaDataCorrente.setMonth(agendaDataCorrente.getMonth() + direzione);
-            } else if (agendaModoVista === 'settimana') {
-                agendaDataCorrente.setDate(agendaDataCorrente.getDate() + (direzione * 7));
-            } else if (agendaModoVista === 'giorno') {
-                agendaDataCorrente.setDate(agendaDataCorrente.getDate() + direzione);
-            }
-            renderAgenda();
-        }
-
         function addAgendaEvent() {
-            const dataVal = document.getElementById('age-data').value;
-            const clsVal = document.getElementById('age-classe-select').value;
-            const tipoVal = document.getElementById('age-tipo').value;
-            const matVal = document.getElementById('age-materia-select').value;
-            const titVal = document.getElementById('age-titolo').value.trim();
-            const idModifica = document.getElementById('age-id-modifica').value;
+            let idModifica = document.getElementById('age-id-modifica').value;
+            let dt = document.getElementById('age-data').value;
+            let cl = document.getElementById('age-classe-select').value;
+            let tp = document.getElementById('age-tipo').value;
+            let mat = document.getElementById('age-materia-select').value;
+            let tit = document.getElementById('age-titolo').value.trim();
 
-            if (!dataVal || !titVal) {
-                alert("Compilare i campi data e descrizione.");
-                return;
-            }
+            if(!dt || !tit) { alert("Inserisci la data e il titolo della nota in agenda."); return; }
 
-            if (!DB.agenda) DB.agenda = [];
-
-            if (idModifica !== "") {
-                const idx = parseInt(idModifica);
-                DB.agenda[idx] = { data: dataVal, classe: clsVal, tipo: tipoVal, materia: matVal, titolo: titVal };
+            if(idModifica) {
+                // Modalità Modifica esistente
+                let ev = DB.agenda.find(e => e.id === idModifica);
+                if(ev) {
+                    ev.data = dt; ev.classe = cl; ev.tipo = tp; ev.materia = mat; ev.titolo = tit;
+                }
                 annullaModificaAgenda();
             } else {
+                // Nuovo Inserimento
                 DB.agenda.push({
-                    data: dataVal,
-                    classe: clsVal,
-                    tipo: tipoVal,
-                    materia: matVal,
-                    titolo: titVal
+                    id: "EV-" + Date.now(),
+                    data: dt, classe: cl, tipo: tp, materia: mat, titolo: tit
                 });
             }
 
@@ -2401,127 +2178,11 @@ async function caricaDalDatabase() {
             document.getElementById('age-titolo').value = "";
         }
 
-        function renderAgenda() {
-            const target = document.getElementById('calendar-render-target');
-            const titoloPeriodo = document.getElementById('calendar-period-title');
-            const filtroCls = document.getElementById('filtro-agenda-classe').value;
-            const cercaTesto = document.getElementById('search-agenda-input').value.trim().toLowerCase();
+        function avviaModificaAgenda(id) {
+            let ev = DB.agenda.find(e => e.id === id);
+            if(!ev) return;
 
-            // Filtra eventi in base ai parametri impostati
-            const eventiFiltrati = (DB.agenda || []).filter(ev => {
-                const matchClasse = (filtroCls === "Tutte" || ev.classe === "Tutte" || ev.classe === filtroCls);
-                const matchTesto = (!cercaTesto || ev.titolo.toLowerCase().includes(cercaTesto) || ev.materia.toLowerCase().includes(cercaTesto) || ev.tipo.toLowerCase().includes(cercaTesto));
-                return matchClasse && matchTesto;
-            });
-
-            // VISTA AGENDA IN MODALITÀ TABELLA LISTA COMPLETA
-            if (agendaModoVista === 'lista') {
-                titoloPeriodo.innerText = "Tutti gli Impegni in Lista";
-                
-                if (eventiFiltrati.length === 0) {
-                    target.innerHTML = "<p style='padding:20px; color:#64748B; font-style:italic;'>Nessun impegno trovato con i filtri attivi.</p>";
-                    return;
-                }
-
-                eventiFiltrati.sort((a, b) => new Date(a.data) - new Date(b.data));
-
-                let html = `<table><thead><tr><th>Data</th><th>Destinatario</th><th>Tipo</th><th>Materia</th><th>Impegno Descrizione</th><th>Azioni</th></tr></thead><tbody>`;
-                eventiFiltrati.forEach(ev => {
-                    const idxReale = DB.agenda.findIndex(orig => orig === ev);
-                    const pz = ev.data.split('-');
-                    html += `
-                        <tr>
-                            <td><strong>${pz[2]}/${pz[1]}/${pz[0]}</strong></td>
-                            <td><span class="badge-date-top">${ev.classe === "Tutte" ? "Tutte le Classi" : "Classe " + ev.classe}</span></td>
-                            <td>${ev.tipo}</td>
-                            <td><em>${ev.materia}</em></td>
-                            <td><strong>${ev.titolo}</strong></td>
-                            <td>
-                                <button class="action-icon-btn" onclick="attivaModificaAgenda(${idxReale})">✏️</button>
-                                <button class="action-icon-btn" style="color:var(--red-fail);" onclick="eliminaEventoAgenda(${idxReale})">🗑️</button>
-                            </td>
-                        </tr>
-                    `;
-                });
-                html += `</tbody></table>`;
-                target.innerHTML = html;
-                return;
-            }
-
-            // VISTA AGENDA IN MODALITÀ CALENDARIO MENSILE standard grafico
-            if (agendaModoVista === 'mese') {
-                const mesiNomi = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
-                titoloPeriodo.innerText = `${mesiNomi[agendaDataCorrente.getMonth()]} ${agendaDataCorrente.getFullYear()}`;
-
-                const anno = agendaDataCorrente.getFullYear();
-                const mese = agendaDataCorrente.getMonth();
-
-                const primoGiornoMese = new Date(anno, mese, 1).getDay();
-                const giorniNelMese = new Date(anno, mese + 1, 0).getDate();
-                const offsetInizio = primoGiornoMese === 0 ? 6 : primoGiornoMese - 1;
-
-                let gridHtml = `
-                    <div class="calendar-grid-header">
-                        <div>LUN</div><div>MAR</div><div>MER</div><div>GIO</div><div>VEN</div><div>SAB</div><div>DOM</div>
-                    </div>
-                    <div class="calendar-days">
-                `;
-
-                // Renderizza celle giorni del mese precedente (vuote o disattivate)
-                for (let i = 0; i < offsetInizio; i++) {
-                    gridHtml += `<div class="calendar-day-cell other-month"></div>`;
-                }
-
-                // Renderizza giorni correnti del mese attivo
-                const dataOggiConfronto = new Date().toISOString().split('T')[0];
-
-                for (let giorno = 1; giorno <= giorniNelMese; giorno++) {
-                    const dataCellaStr = `${anno}-${String(mese + 1).padStart(2, '0')}-${String(giorno).padStart(2, '0')}`;
-                    const isOggi = dataCellaStr === dataOggiConfronto ? "today-cell" : "";
-
-                    // Filtra impegni relativi a questo giorno specifico
-                    const evDelGiorno = eventiFiltrati.filter(e => e.data === dataCellaStr);
-
-                    let htmlBadgeEventi = "";
-                    evDelGiorno.forEach(ev => {
-                        let coloreSfondo = "#0284C7"; // Colore default azzurro
-                        if (ev.tipo.includes("COMPITO")) coloreSfondo = "var(--primary-red)";
-                        if (ev.tipo.includes("VERIFICA")) coloreSfondo = "var(--amber-coord)";
-                        if (ev.tipo.includes("Consiglio")) coloreSfondo = "var(--dark-grey)";
-
-                        const idxReale = DB.agenda.findIndex(orig => orig === ev);
-                        htmlBadgeEventi += `
-                            <span class="calendar-event-badge" style="background-color:${coloreSfondo};" 
-                                  onclick="mostraDettaglioImpegnoNotifica(${idxReale})" 
-                                  title="${ev.tipo} - [${ev.classe}]: ${ev.titolo}">
-                                [${ev.classe}] ${ev.titolo}
-                            </span>
-                        `;
-                    });
-
-                    gridHtml += `
-                        <div class="calendar-day-cell ${isOggi}">
-                            <span class="calendar-day-num">${giorno}</span>
-                            <div class="calendar-events-wrap">${htmlBadgeEventi}</div>
-                        </div>
-                    `;
-                }
-
-                gridHtml += `</div>`;
-                target.innerHTML = gridHtml;
-            }
-        }
-
-        function mostraDettaglioImpegnoNotifica(index) {
-            const ev = DB.agenda[index];
-            if (confirm(`📌 DETTAGLI IMPEGNO:\n---------------------------\nData: ${ev.data}\nTipo: ${ev.tipo}\nClasse: ${ev.classe}\nMateria: ${ev.materia}\nDescrizione: ${ev.titolo}\n\nClicca su OK se desideri MODIFICARE questo record, oppure ANNULLA per chiudere.`)) {
-                attivaModificaAgenda(index);
-            }
-        }
-
-        function attivaModificaAgenda(index) {
-            const ev = DB.agenda[index];
-            document.getElementById('age-id-modifica').value = index;
+            document.getElementById('age-id-modifica').value = ev.id;
             document.getElementById('age-data').value = ev.data;
             document.getElementById('age-classe-select').value = ev.classe;
             onAgendaClasseChange();
@@ -2529,8 +2190,8 @@ async function caricaDalDatabase() {
             document.getElementById('age-materia-select').value = ev.materia;
             document.getElementById('age-titolo').value = ev.titolo;
 
-            document.getElementById('agenda-form-title').innerText = "✏️ Modifica l'impegno selezionato";
-            document.getElementById('btn-salva-agenda').innerText = "Salva Modifiche";
+            document.getElementById('agenda-form-title').innerText = "📝 Modifica l'impegno selezionato";
+            document.getElementById('btn-salva-agenda').innerText = "Aggiorna Nota";
             document.getElementById('btn-annulla-agenda').classList.remove('hidden');
         }
 
@@ -2542,230 +2203,282 @@ async function caricaDalDatabase() {
             document.getElementById('age-titolo').value = "";
         }
 
-        function eliminaEventoAgenda(index) {
-            if (confirm("Eliminare definitivamente questo impegno dall'agenda d'istituto?")) {
-                DB.agenda.splice(index, 1);
-                salvaNelTempo();
-                renderAgenda();
-                annullaModificaAgenda();
+        function rimuoviAgendaElemento(id) {
+            if(!confirm("Cancellare questa nota dall'agenda scolastica?")) return;
+            DB.agenda = DB.agenda.filter(e => e.id !== id);
+            salvaNelTempo();
+            renderAgenda();
+        }
+
+        function setAgendaModoVisualizzazione(modo) {
+            modoVisualizzazioneCalendario = modo;
+            document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+            if(modo === 'mese') document.getElementById('pill-cal-mese').classList.add('active');
+            if(modo === 'settimana') document.getElementById('pill-cal-settimana').classList.add('active');
+            if(modo === 'giorno') document.getElementById('pill-cal-giorno').classList.add('active');
+            if(modo === 'lista') document.getElementById('pill-cal-lista').classList.add('active');
+
+            renderAgenda();
+        }
+
+        function navigaCalendario(direzione) {
+            if(modoVisualizzazioneCalendario === 'mese') {
+                dataAncoraggioCalendario.setMonth(dataAncoraggioCalendario.getMonth() + direzione);
+            } else if(modoVisualizzazioneCalendario === 'settimana') {
+                dataAncoraggioCalendario.setDate(dataAncoraggioCalendario.getDate() + (direzione * 7));
+            } else if(modoVisualizzazioneCalendario === 'giorno') {
+                dataAncoraggioCalendario.setDate(dataAncoraggioCalendario.getDate() + direzione);
+            }
+            renderAgenda();
+        }
+
+        function renderAgenda() {
+            let fClasse = document.getElementById('filtro-agenda-classe').value;
+            let fQuery = document.getElementById('search-agenda-input').value.toLowerCase().trim();
+            let target = document.getElementById('calendar-render-target');
+            let title = document.getElementById('calendar-period-title');
+
+            // Filtra l'agenda corrente per i criteri visivi impostati
+            let impegniFiltrati = DB.agenda.filter(ev => {
+                if(fClasse !== "Tutte" && ev.classe !== "Tutte" && ev.classe !== fClasse) return false;
+                if(fQuery) {
+                    let stringaRicerca = (ev.titolo + " " + ev.materia + " " + ev.tipo).toLowerCase();
+                    if(!stringaRicerca.includes(fQuery)) return false;
+                }
+                return true;
+            });
+
+            // Gestione dei modi di visualizzazione
+            if(modoVisualizzazioneCalendario === 'lista') {
+                title.innerText = "Elenco Cronologico Completo";
+                renderAgendaVistaLista(impegniFiltrati, target);
+                return;
+            }
+            if(modoVisualizzazioneCalendario === 'giorno') {
+                let stringaGiorno = dataAncoraggioCalendario.toISOString().split('T')[0];
+                let pz = stringaGiorno.split('-');
+                title.innerText = `Giorno: ${pz[2]}/${pz[1]}/${pz[0]}`;
+                renderAgendaVistaGiorno(stringaGiorno, impegniFiltrati, target);
+                return;
+            }
+            if(modoVisualizzazioneCalendario === 'settimana') {
+                let inizioSett = ottieniInizioSettimana(new Date(dataAncoraggioCalendario));
+                let fineSett = new Date(inizioSett); fineSett.setDate(fineSett.getDate() + 5);
+                title.innerText = `Settimana: ${inizioSett.getDate()}/${inizioSett.getMonth()+1} al ${fineSett.getDate()}/${fineSett.getMonth()+1}`;
+                renderAgendaVistaSettimana(inizioSett, impegniFiltrati, target);
+                return;
+            }
+            if(modoVisualizzazioneCalendario === 'mese') {
+                const mesiNomi = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
+                title.innerText = `${mesiNomi[dataAncoraggioCalendario.getMonth()]} ${dataAncoraggioCalendario.getFullYear()}`;
+                renderAgendaVistaMese(dataAncoraggioCalendario.getFullYear(), dataAncoraggioCalendario.getMonth(), impegniFiltrati, target);
             }
         }
 
-        // --- FIRME LIBERE / RECAP SUPPLENZE ---
+        // --- SOTTO VISTE AGENDAS ---
+        function renderAgendaVistaLista(impegni, target) {
+            target.innerHTML = `<div class="calendar-view-panel"></div>`;
+            let panel = target.querySelector('.calendar-view-panel');
+
+            if(impegni.length === 0) { panel.innerHTML = "<p>Nessun impegno trovato in agenda.</p>"; return; }
+
+            let ordinati = [...impegni].sort((a,b) => new Date(a.data) - new Date(b.data));
+
+            ordinati.forEach(ev => {
+                let pz = ev.data.split('-');
+                let item = document.createElement('div');
+                item.className = "calendar-row-item";
+                item.innerHTML = `
+                    <div class="calendar-row-date">📅 ${pz[2]}/${pz[1]}</div>
+                    <div class="calendar-row-content">
+                        <strong>${ev.tipo} [${ev.classe === 'Tutte' ? 'Tutte' : ev.classe}]</strong> - <span>${ev.materia}</span>
+                        <br>${ev.titolo}
+                    </div>
+                    <div style="padding:15px; display:flex; align-items:center; gap:5px;">
+                        <button class="action-icon-btn" onclick="avviaModificaAgenda('${ev.id}')">✏️</button>
+                        <button class="action-icon-btn" style="color:var(--red-fail);" onclick="rimuoviAgendaElemento('${ev.id}')">🗑️</button>
+                    </div>
+                `;
+                panel.appendChild(item);
+            });
+        }
+
+        function renderAgendaVistaGiorno(giornoIso, impegni, target) {
+            let evGiorno = impegni.filter(e => e.data === giornoIso);
+            renderAgendaVistaLista(evGiorno, target);
+        }
+
+        function renderAgendaVistaSettimana(dataInizio, impegni, target) {
+            target.innerHTML = `<div class="calendar-view-panel"></div>`;
+            let panel = target.querySelector('.calendar-view-panel');
+
+            let giorniSettimanaNomi = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+            let dCorrente = new Date(dataInizio);
+
+            for(let i=0; i<6; i++) {
+                let isoStr = dCorrente.toISOString().split('T')[0];
+                let evDelGiorno = impegni.filter(e => e.data === isoStr);
+                
+                let pz = isoStr.split('-');
+
+                let htmlImpegni = "";
+                evDelGiorno.forEach(e => {
+                    htmlImpegni += `<div style="font-size:13px; margin-top:4px; border-left:3px solid var(--primary-red); padding-left:5px;">
+                        <strong>${e.tipo} (${e.classe})</strong>: ${e.titolo}
+                    </div>`;
+                });
+
+                let item = document.createElement('div');
+                item.className = "calendar-row-item";
+                item.innerHTML = `
+                    <div class="calendar-row-date" style="width:150px;">
+                        <strong>${giorniSettimanaNomi[i]}</strong>
+                        <span style="font-size:12px; font-weight:normal; color:#64748B;">${pz[2]}/${pz[1]}</span>
+                    </div>
+                    <div class="calendar-row-content">
+                        ${htmlImpegni || '<span style="color:#94A3B8; font-size:13px;">Nessun impegno scolastico</span>'}
+                    </div>
+                `;
+                panel.appendChild(item);
+                dCorrente.setDate(dCorrente.getDate() + 1);
+            }
+        }
+
+        function renderAgendaVistaMese(anno, mese, impegni, target) {
+            target.innerHTML = `
+                <div class="calendar-grid">
+                    <div class="calendar-grid-header">
+                        <div>LUN</div><div>MAR</div><div>MER</div><div>GIO</div><div>VEN</div><div>SAB</div><div>DOM</div>
+                    </div>
+                    <div class="calendar-days" id="box-giorni-mese-target"></div>
+                </div>
+            `;
+            let grid = target.querySelector('#box-giorni-mese-target');
+
+            let primoGiornoMese = new Date(anno, mese, 1);
+            let startOffset = primoGiornoMese.getDay() === 0 ? 6 : primoGiornoMese.getDay() - 1; // Allinea a Lunedì
+            
+            let ultimoGiornoMese = new Date(anno, mese + 1, 0).getDate();
+
+            // Celle giorni mese precedente di riempimento
+            for(let x=0; x<startOffset; x++) {
+                let cell = document.createElement('div'); cell.className = "calendar-day-cell other-month";
+                grid.appendChild(cell);
+            }
+
+            // Celle effettive del mese corrente
+            let oggiStringa = new Date().toISOString().split('T')[0];
+
+            for(let d=1; d<=ultimoGiornoMese; d++) {
+                let cell = document.createElement('div');
+                cell.className = "calendar-day-cell";
+                
+                let dataOgg = new Date(anno, mese, d);
+                let isoStr = dataOgg.toISOString().split('T')[0];
+
+                if(isoStr === oggiStringa) cell.classList.add('today-cell');
+
+                cell.innerHTML = `<span class="calendar-day-num">${d}</span><div class="calendar-events-wrap"></div>`;
+                let wrap = cell.querySelector('.calendar-events-wrap');
+
+                // Inserisci i badge degli eventi
+                let evGiorno = impegni.filter(e => e.data === isoStr);
+                evGiorno.forEach(e => {
+                    let badge = document.createElement('span');
+                    badge.className = "calendar-event-badge";
+                    
+                    // Colore del badge a seconda del tipo
+                    let bCol = "var(--accent-color)";
+                    if(e.tipo.includes("COMPITO")) bCol = "var(--primary-red)";
+                    if(e.tipo.includes("Consiglio")) bCol = "var(--amber-coord)";
+                    badge.style.backgroundColor = bCol;
+
+                    badge.innerText = `[${e.classe}] ${e.titolo}`;
+                    badge.title = `${e.tipo} - Materia: ${e.materia}\n${e.titolo}`;
+                    badge.onclick = (event) => { event.stopPropagation(); avviaModificaAgenda(e.id); };
+                    
+                    wrap.appendChild(badge);
+                });
+
+                grid.appendChild(cell);
+            }
+        }
+
+        function ottieniInizioSettimana(d) {
+            let day = d.getDay(), diff = d.getDate() - day + (day == 0 ? -6:1);
+            return new Date(d.setDate(diff));
+        }
+
+        // === FIRME LIBERE / ISTITUTO & SUPPLENZE ===
         function openTutteClassiView() {
             showView('tutte-classi-view');
-            const sel = document.getElementById('tc-classe');
-            sel.innerHTML = "";
-
-            // Popola l'elenco classi d'Istituto generandole anche se vuote
-            const classiDefault = ["1A","2A","3A","4A","5A","1B","2B","3B","4B","5B","1C","2C","3C","4C","5C","1AS","2AS","3AS","4AS","5AS"];
-            const tutteCls = Array.from(new Set([...classiDefault, ...Object.keys(DB.classi)])).sort();
-
-            tutteCls.forEach(c => {
-                const opt = document.createElement('option'); opt.value = c; opt.innerText = c;
-                sel.appendChild(opt);
-            });
-
             renderFirmeLibereIstituto();
         }
 
         function addFirmaLibera() {
-            const cls = document.getElementById('tc-classe').value;
-            const dat = document.getElementById('tc-data').value;
-            const ore = document.getElementById('tc-num-ore').value;
-            const oraLez = document.getElementById('tc-ora-lezione').value;
-            const mat = document.getElementById('tc-materia').value.trim();
-            const supp = document.getElementById('tc-supplenza').checked;
-            const arg = document.getElementById('tc-argomento').value.trim();
+            let cl = document.getElementById('tc-classe').value;
+            let dt = document.getElementById('tc-data').value;
+            let ore = document.getElementById('tc-num-ore').value;
+            let oraLez = document.getElementById('tc-ora-lezione').value;
+            let mat = document.getElementById('tc-materia').value.trim();
+            let arg = document.getElementById('tc-argomento').value.trim();
+            let isSupplenza = document.getElementById('tc-supplenza').checked;
 
-            if (!dat || !mat || !arg) {
-                alert("Compilare i campi essenziali (Materia, Data e Argomento).");
-                return;
-            }
-
-            if (!DB.firmeLibere) DB.firmeLibere = [];
+            if(!dt || !mat || !arg) { alert("Compilare i campi Obbligatori: Data, Materia e Argomento."); return; }
 
             DB.firmeLibere.push({
-                classe: cls, data: dat, oreSvolte: ore, oraInizio: oraLez, materia: mat, isSupplenza: supp, argomento: arg
+                data: dt, classe: cl, oreSvolte: ore, oraQuale: oraLez,
+                materia: mat, argomento: arg, supplenza: isSupplenza
             });
 
             salvaNelTempo();
             renderFirmeLibereIstituto();
-            
+
+            // Svuota i testi
             document.getElementById('tc-materia').value = "";
             document.getElementById('tc-argomento').value = "";
             document.getElementById('tc-supplenza').checked = false;
-            alert("Lezione registrata sul server centrale.");
         }
 
         function renderFirmeLibereIstituto() {
-            const tbody = document.getElementById('tc-firme-body');
-            tbody.innerHTML = "";
+            let body = document.getElementById('tc-firme-body');
+            body.innerHTML = "";
 
-            if (!DB.firmeLibere || DB.firmeLibere.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="color:#64748B; font-style:italic; text-align:center;">Nessuna lezione fuori orario inserita.</td></tr>`;
+            if(!DB.firmeLibere || DB.firmeLibere.length === 0) {
+                body.innerHTML = "<tr><td colspan='5' style='text-align:center;'>Nessuna firma libera o supplenza inserita nello storico istituto.</td></tr>";
                 return;
             }
 
-            // Ordinamento cronologico decrescente
-            DB.firmeLibere.sort((a,b) => new Date(b.data) - new Date(a.data));
+            let ordinate = [...DB.firmeLibere].sort((a,b) => new Date(b.data) - new Date(a.data));
 
-            DB.firmeLibere.forEach(f => {
-                const tr = document.createElement('tr');
-                const pz = f.data.split('-');
-                const badg = f.isSupplenza ? '<span class="badge-supplenza">SUPPLENZA</span>' : '<span class="badge-date-top">LIBERA</span>';
-                
+            ordinate.forEach(f => {
+                let tr = document.createElement('tr');
+                let pz = f.data.split('-');
                 tr.innerHTML = `
                     <td><strong>${pz[2]}/${pz[1]}/${pz[0]}</strong></td>
-                    <td><span class="badge-media" style="background:#E2E8F0; color:#1E293B; font-weight:700;">${f.classe}</span></td>
-                    <td><strong>${f.materia}</strong> <br><small style="color:#64748B;">Ore: ${f.oreSvolte} (${f.oraInizio} lezione)</small></td>
+                    <td><span class="badge-media pass" style="color:var(--dark-grey);">${f.classe}</span></td>
+                    <td><strong>${f.materia}</strong> <br><small style="color:#64748B;">${f.oraQuale} Lezione (${f.oreSvolte} ore svolte)</small></td>
                     <td>${f.argomento}</td>
-                    <td>${badg}</td>
+                    <td>${f.supplenza ? '<span class="badge-supplenza">SUPPLENZA</span>' : '<span class="badge-date-top" style="color:var(--green-pass);">FIRMA LIBERA</span>'}</td>
                 `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        // --- TIMETABLE: ORARIO SETTIMANALE DOCENTE ---
-        function renderOrarioDashboard() {
-            const body = document.getElementById('dashboard-timetable-body');
-            body.innerHTML = "";
-
-            const giorni = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
-            const oreLezione = ["1^ Ora (08:00 - 09:00)", "2^ Ora (09:00 - 10:00)", "3^ Ora (10:00 - 11:00)", "4^ Ora (11:00 - 12:00)", "5^ Ora (12:00 - 13:00)", "6^ Ora (13:00 - 14:00)"];
-
-            if (!DB.orarioDocente) DB.orarioDocente = {};
-
-            oreLezione.forEach((oraTesto, oIdx) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td style="background:#F8FAFC; font-weight:600; font-size:12px;">${oraTesto.split(' ')[0]}</td>`;
-                
-                giorni.forEach(g => {
-                    const cellVal = DB.orarioDocente[g] ? (DB.orarioDocente[g][oIdx] || "") : "";
-                    const td = document.createElement('td');
-
-                    if (cellVal !== "") {
-                        // Cella attiva configurata con classe: cliccandoci si apre il registro
-                        td.innerHTML = `<div class="timetable-cell-active" onclick="apriDettaglioClasse('${cellVal}')">Classe ${cellVal}</div>`;
-                    } else {
-                        // Cella libera: permette l'associazione rapida a una classe
-                        const sel = document.createElement('select');
-                        sel.className = "timetable-select";
-                        sel.onchange = (e) => assegnaClasseAOrarioLezione(g, oIdx, e.target.value);
-                        sel.innerHTML = '<option value="">--</option>';
-                        
-                        Object.keys(DB.classi).sort().forEach(k => {
-                            const opt = document.createElement('option'); opt.value = k; opt.innerText = k;
-                            if (k === cellVal) opt.selected = true;
-                            sel.appendChild(opt);
-                        });
-                        td.appendChild(sel);
-                    }
-                    tr.appendChild(td);
-                });
                 body.appendChild(tr);
             });
         }
 
-        function assegnaClasseAOrarioLezione(giorno, oraIndex, classeId) {
-            if (!DB.orarioDocente[giorno]) DB.orarioDocente[giorno] = {};
-            
-            if (classeId === "") {
-                delete DB.orarioDocente[giorno][oraIndex];
-            } else {
-                DB.orarioDocente[giorno][oraIndex] = classeId;
-            }
-
-            salvaNelTempo();
-            renderOrarioDashboard();
-        }
-
-        // --- AVANZAMENTO ANNO SCOLASTICO ---
-        function renderListaAvanzamentoAnno() {
-            const listContainer = document.getElementById('passaggio-anno-classi-list');
-            listContainer.innerHTML = "";
-
-            const chiavi = Object.keys(DB.classi).sort();
-            if (chiavi.length === 0) {
-                listContainer.innerHTML = "<p style='color:#64748B; font-style:italic;'>Nessuna classe attiva in elenco.</p>";
-                return;
-            }
-
-            chiavi.forEach(k => {
-                let destinazioneFutura = "Rimossa (Fine ciclo)";
-                const numMatch = k.match(/\d+/);
-                if (numMatch) {
-                    const annoCorrenteNum = parseInt(numMatch[0]);
-                    if (annoCorrenteNum < 5) {
-                        destinazioneFutura = "Diventa " + k.replace(numMatch[0], annoCorrenteNum + 1);
-                    }
-                }
-                
-                const div = document.createElement('div');
-                div.style = "padding:6px; border-bottom:1px solid var(--border-color); font-size:13px;";
-                div.innerHTML = `➡️ Classe <strong>${k}</strong> <span style='color:var(--amber-coord); font-weight:bold;'>➔ ${destinazioneFutura}</span>`;
-                listContainer.appendChild(div);
-            });
-        }
-
-        function confermaPassaggioAnno() {
-            if (!confirm("⚠️ ATTENZIONE: Questa procedura sposterà in avanti di un anno tutte le classi attuali. I registri intermedi, i voti, i registri presenze e le firme correnti verranno DEFINITIVAMENTE cancellati per fare spazio al nuovo anno scolastico. Desideri procedere?")) return;
-            if (!confirm("CONFERMA FINALE: Sei veramente sicuro? L'operazione non è revocabile.")) return;
-
-            let nuoveClassi = {};
-
-            for (let k in DB.classi) {
-                const clsVecchia = DB.classi[k];
-                const numMatch = k.match(/\d+/);
-                
-                if (numMatch) {
-                    const numeroAnno = parseInt(numMatch[0]);
-                    if (numeroAnno < 5) {
-                        // Avanza l'anno (es: da 1A a 2A)
-                        const nuovoIdClasse = k.replace(numMatch[0], numeroAnno + 1);
-                        nuoveClassi[nuovoIdClasse] = {
-                            id: nuovoIdClasse,
-                            materie: clsVecchia.materie,
-                            coordinatore: clsVecchia.coordinatore,
-                            alunni: clsVecchia.alunni, // Gli alunni rimangono iscritti avanzando di corso
-                            giornaleFirme: [],
-                            appelli: {},
-                            voti: []
-                        };
-                    }
-                    // Le classi quinte (diplomati) vengono escluse, cessando il ciclo scolastico
-                } else {
-                    // Record senza numero rimangono invariati resettando i registri interni
-                    nuoveClassi[k] = { ...clsVecchia, giornaleFirme: [], appelli: {}, voti: [] };
-                }
-            }
-
-            DB.classi = nuoveClassi;
-            DB.agenda = [];
-            DB.firmeLibere = [];
-            DB.scrutini = {};
-            DB.orarioDocente = {}; // Resetta l'orario delle lezioni per il nuovo anno
-
-            salvaNelTempo();
-            alert("🚀 Cambio anno scolastico eseguito con successo! I registri sono stati puliti e aggiornati.");
-            openSettingsView();
-        }
-
-        // --- SISTEMA DI SICUREZZA: BACKUP CIFRATO AES-GCM COMPLETO ---
+        // === SICUREZZA DATI: BACKUP CIFRATO AES-GCM ===
         async function esportaDatiCifrati() {
-            const password = prompt("Inserisci una Password sicura per cifrare il file di backup:");
-            if (!password) { alert("Esportazione annullata. Password richiesta per conformità GDPR."); return; }
+            const password = prompt("🔒 Inserisci una chiave/password di cifratura per il tuo file di backup:");
+            if (!password) return;
 
             try {
-                const stringDati = JSON.stringify(DB);
+                const testoChiaro = JSON.stringify(DB);
                 const encoder = new TextEncoder();
-                const datiBuffer = encoder.encode(stringDati);
+                const datiBinari = encoder.encode(testoChiaro);
 
-                // Generazione Salt e IV casuali di sicurezza crittografica
+                // Generazione Salt e Chiave tramite PBKDF2
                 const salt = window.crypto.getRandomValues(new Uint8Array(16));
-                const iv = window.crypto.getRandomValues(new Uint8Array(12));
-
                 const passwordBuffer = encoder.encode(password);
+                
                 const passwordKey = await window.crypto.subtle.importKey(
                     "raw", passwordBuffer, { name: "PBKDF2" }, false, ["deriveKey"]
                 );
@@ -2775,41 +2488,27 @@ async function caricaDalDatabase() {
                     passwordKey, { name: "AES-GCM", length: 256 }, false, ["encrypt"]
                 );
 
-                const bufferCifrato = await window.crypto.subtle.encrypt(
-                    { name: "AES-GCM", iv: iv }, cryptoKey, datiBuffer
+                const iv = window.crypto.getRandomValues(new Uint8Array(12));
+                const payloadCifrato = await window.crypto.subtle.encrypt(
+                    { name: "AES-GCM", iv: iv }, cryptoKey, datiBinari
                 );
 
-                // Pacchetto dati combinato (Salt + IV + Payload cifrato)
-                const backupCompletoBuffer = new Uint8Array(salt.length + iv.length + bufferCifrato.byteLength);
-                backupCompletoBuffer.set(salt, 0);
-                backupCompletoBuffer.set(iv, salt.length);
-                backupCompletoBuffer.set(new Uint8Array(bufferCifrato), salt.length + iv.length);
-
-                // Conversione in formato leggibile stringa Base64
-                let stringaBinaria = "";
-                backupCompletoBuffer.forEach(b => stringaBinaria += String.fromCharCode(b));
-                const base64Contenuto = btoa(stringaBinaria);
-
-                const oggettoEsportazione = {
-                    tipo: "CLASSEVIVA_DOCENTE_SECURE_BACKUP",
-                    versione: "2.0",
-                    dataEsportazione: new Date().toISOString(),
-                    payload: base64Contenuto
+                // Struttura pacchetto di salvataggio finale
+                const backupOggetto = {
+                    salt: btoa(String.fromCharCode(...salt)),
+                    iv: btoa(String.fromCharCode(...iv)),
+                    payload: btoa(String.fromCharCode(...new Uint8Array(payloadCifrato)))
                 };
 
-                // Generazione automatica download del file .json
-                const blob = new Blob([JSON.stringify(oggettoEsportazione, null, 2)], { type: "application/json" });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `backup_registro_cifrato_${new Date().toISOString().split('T')[0]}.json`;
-                a.click();
-                URL.revokeObjectURL(url);
-                
-                alert("🔒 Backup cifrato scaricato correttamente. Conserva con cura la password.");
+                // Download del file JSON prodotto
+                const blob = new Blob([JSON.stringify(backupOggetto)], { type: "application/json" });
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = `Backup-RegistroCifrato-${utenteConnesso?utenteConnesso.username:'Docente'}-${dataLavoroSelezionata}.json`;
+                link.click();
             } catch (err) {
                 console.error(err);
-                alert("Errore tecnico durante la cifratura del file.");
+                alert("❌ Errore critico durante la generazione del backup cifrato.");
             }
         }
 
@@ -2817,32 +2516,22 @@ async function caricaDalDatabase() {
             const file = event.target.files[0];
             if (!file) return;
 
-            const password = prompt("Inserisci la Password usata per cifrare questo file di backup:");
+            const password = prompt("🔓 Inserisci la password corretta per decifrare l'archivio importato:");
             if (!password) { event.target.value = ""; return; }
 
             const reader = new FileReader();
-            reader.onload = async function(e) {
+            reader.onload = async (e) => {
                 try {
-                    const jsonBackup = JSON.parse(e.target.result);
-                    if (jsonBackup.tipo !== "CLASSEVIVA_DOCENTE_SECURE_BACKUP") {
-                        throw new Error("Formato file non supportato o non riconosciuto.");
-                    }
-
-                    // Ricostruzione buffer binario dalla stringa Base64
-                    const stringaBinaria = atob(jsonBackup.payload);
-                    const arrayBufferTotale = new Uint8Array(stringaBinaria.length);
-                    for (let i = 0; i < stringaBinaria.length; i++) {
-                        arrayBufferTotale[i] = stringaBinaria.charCodeAt(i);
-                    }
-
-                    // Estrazione dei segmenti Salt, IV e Payload cifrato effettivo
-                    const salt = arrayBufferTotale.slice(0, 16);
-                    const iv = arrayBufferTotale.slice(16, 28);
-                    const encryptedPayload = arrayBufferTotale.slice(28);
+                    const backupOggetto = JSON.parse(e.target.result);
+                    
+                    // Ricostruzione array binari dai dati in Base64
+                    const salt = Uint8Array.from(atob(backupOggetto.salt), c => c.charCodeAt(0));
+                    const iv = Uint8Array.from(atob(backupOggetto.iv), c => c.charCodeAt(0));
+                    const encryptedPayload = Uint8Array.from(atob(backupOggetto.payload), c => c.charCodeAt(0));
 
                     const encoder = new TextEncoder();
                     const passwordBuffer = encoder.encode(password);
-                    
+
                     const passwordKey = await window.crypto.subtle.importKey(
                         "raw", passwordBuffer, { name: "PBKDF2" }, false, ["deriveKey"]
                     );
